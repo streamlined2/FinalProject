@@ -1,0 +1,19 @@
+package edu.practice.finalproject.controller.admin;
+
+import edu.practice.finalproject.view.action.Action;
+import edu.practice.finalproject.view.action.AdminAction;
+
+public class Admin extends User {
+
+	public Admin(final String login, final byte[] password) {
+		super(login, password);
+	}
+	
+	public Admin() {}
+
+	@Override
+	public void checkPermission(Action action) throws SecurityException {
+		if(!(action instanceof AdminAction)) throw new SecurityException("Administrator may perform appropriate actions only!");
+	}
+
+}
