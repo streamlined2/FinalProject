@@ -10,25 +10,25 @@
 	<title>User authentication form</title>
 </head>
 <body>
-	<div class="error">${sessionScope.error}</div><br>
+	<p><div class="error">${sessionScope.error}</div><p>
 	<hr>
 	<form action="main" method="post">
 		<label for="client">Client</label>
-		<input type="radio" id="client" name="type" value="client" checked/>
+		<input type="radio" id="client" name="role" value="client" checked/>
 		<label for="manager">Manager</label>
-		<input type="radio" id="manager" name="type" value="manager"/>
+		<input type="radio" id="manager" name="role" value="manager"/>
 		<label for="admin">Administrator</label>
-		<input type="radio" id="admin" name="type" value="admin"/><br>
+		<input type="radio" id="admin" name="role" value="admin"/><br>
 
 		<div>
 		<table>
 		<tr>
 			<td><label for="user">Login</label></td>
-			<td><input type="text" id="user" name="user" value="" placeholder="Enter login here" size="30" required pattern="[0-9A-Za-zРђ-РЇР°-СЏРЃС‘Р„С”Р†С–Р‡С—]+" title="please enter letters or digits"/></td>
+			<td><input type="text" id="user" name="user" value="" placeholder="Enter login here" size="30" required pattern="${requestScope.loginPattern}" title="please enter letters or digits"/></td>
 		</tr>
 		<tr>
 			<td><label for="password">Password</label></td>
-			<td><input type="password" id="password" name="password" value="" placeholder="Enter password here" size="30" required pattern="[0-9A-Za-zРђ-РЇР°-СЏРЃС‘Р„С”Р†С–Р‡С—]+" title="please enter letters or digits"/></td>
+			<td><input type="password" id="password" name="password" value="" placeholder="Enter password here" size="30" required pattern="${requestScope.passwordPattern}" title="please enter letters or digits"/></td>
 		</tr>
 		</table>
 		<hr>

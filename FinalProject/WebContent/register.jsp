@@ -40,7 +40,7 @@
 		</tr>
 		</table>
 		<hr>
-		<input type="submit" value="Login"/>
+		<input type="submit" value="Register"/>
 		<input type="reset" value="Clear" />
 	</form>
 </body>

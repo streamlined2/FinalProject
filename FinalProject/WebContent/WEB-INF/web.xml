@@ -29,13 +29,13 @@
     <session-timeout>10</session-timeout>
   </session-config>
   <servlet>
-    <description>Front Controller class</description>
-    <servlet-name>FrontControllerServlet</servlet-name>
-    <servlet-class>edu.practice.finalproject.controller.FrontControllerServlet</servlet-class>
+    <description>Front Controller servlet</description>
+    <servlet-name>FCServlet</servlet-name>
+    <servlet-class>edu.practice.finalproject.controller.FCServlet</servlet-class>
     <load-on-startup>1</load-on-startup>
   </servlet>
   <servlet-mapping>
-    <servlet-name>FrontControllerServlet</servlet-name>
+    <servlet-name>FCServlet</servlet-name>
     <url-pattern>/main</url-pattern>
   </servlet-mapping>
 </web-app>

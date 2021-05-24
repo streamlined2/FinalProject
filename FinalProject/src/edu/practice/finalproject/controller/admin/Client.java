@@ -11,8 +11,8 @@ public class Client extends User {
 	private String lastName;
 	private String passport;
 
-	public Client(String login, byte[] password, String firstName, String lastName, String passport) throws NoSuchAlgorithmException {
-		super(login, password);
+	public Client(String login, byte[] passwordDigest, String firstName, String lastName, String passport) throws NoSuchAlgorithmException {
+		super(login, passwordDigest);
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.passport = passport;

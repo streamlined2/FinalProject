@@ -1,8 +1,11 @@
 package edu.practice.finalproject.controller;
 
 import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -24,20 +27,35 @@ import edu.practice.finalproject.view.form.Form;
  * Main servlet class that implements Front Controller patterm
  * @author Serhii Pylypenko
  */
-public class FrontControllerServlet extends HttpServlet {
+public class FCServlet extends HttpServlet {
 	
 	private static final int NO_APPROPRIATE_FORM_MAPPING=1;
 	
 	public static final String USER_ATTRIBUTE = "user";
 	public static final String FORM_ATTRIBUTE = "form";
 	public static final String ERROR_ATTRIBUTE = "error";
+	public static final String LOGIN_PATTERN_ATTRIBUTE = "loginPattern"; 
+	public static final String PASSWORD_PATTERN_ATTRIBUTE = "passwordPattern"; 
+	public static final String NAME_PATTERN_ATTRIBUTE = "namePattern"; 
+	public static final String PASSPORT_PATTERN_ATTRIBUTE = "passportPattern";
 	public static final String ACTION_PARAMETER = "action";
 	public static final String USER_PARAMETER = "user";
+	public static final String ROLE_PARAMETER = "role";
+	public static final String CLIENT_ROLE_PARAMETER = "client";
+	public static final String ADMIN_ROLE_PARAMETER = "admin";
+	public static final String MANAGER_ROLE_PARAMETER = "manager";
+	public static final String PASSWORD_PARAMETER = "password";
+	public static final String REGISTER_PARAMETER = "register";
 	
+	public static final String LOGIN_PATTERN = "[0-9A-Za-zÀ-ßà-ÿ¨¸ªº²³¯¿]+";
+	public static final String PASSWORD_PATTERN = "[0-9A-Za-zÀ-ßà-ÿ¨¸ªº²³¯¿]+";
+	public static final String NAME_PATTERN = "[0-9A-Za-zÀ-ßà-ÿ¨¸ªº²³¯¿]+";
+	public static final String PASSPORT_PATTERN = "[ 0-9A-Za-zÀ-ßà-ÿ¨¸ªº²³¯¿]+";
+
 	private EntityManager entityManager;
 	private FormDispatcher formDispatcher;
 	
-	public FrontControllerServlet() {
+	public FCServlet() {
 		super();
 	}
 	
@@ -49,22 +67,22 @@ public class FrontControllerServlet extends HttpServlet {
 			
 			formDispatcher=new FormDispatcher(
 					getServletContext().getInitParameter("adminUserName"),
-					getServletContext().getInitParameter("adminPassword").getBytes());
+					getDigest(getServletContext().getInitParameter("adminPassword").getBytes()));
 		
-		}catch(NamingException e) {
+		}catch(NamingException | NoSuchAlgorithmException e) {
 			throw new ServletException(e);
 		}
 	}
 
     private void process(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException {
-		User user=(User)getAttribute(req,USER_ATTRIBUTE);
-		Form currentForm=(Form)getAttribute(req,FORM_ATTRIBUTE);
 		setAttribute(req,ERROR_ATTRIBUTE,null);
+		Form currentForm=(Form)getAttribute(req,FORM_ATTRIBUTE);
 		if(currentForm==null) {
 			currentForm=formDispatcher.getInitialForm();
 		}else {
 			final Action action=currentForm.getAction(req.getParameterMap());
 			final boolean actionSucceeded=action.execute(req,entityManager);
+			final User user=(User)getAttribute(req,USER_ATTRIBUTE);
 			final Form nextForm=formDispatcher.getNextForm(user, currentForm, action, actionSucceeded);
 			if(nextForm!=null) {
 				currentForm=nextForm;
@@ -82,6 +100,7 @@ public class FrontControllerServlet extends HttpServlet {
 	
 	private void render(final Form form,final HttpServletRequest req,final HttpServletResponse resp) throws ServletException {
 		try {
+			form.init(req);
 			getServletContext().getRequestDispatcher(form.getName()).forward(req,resp);
 		} catch (IOException e) {
 			throw new ServletException(e);
@@ -115,6 +134,10 @@ public class FrontControllerServlet extends HttpServlet {
 		return null;
 	}
 	
+	public static String getParameterValue(final HttpServletRequest req,final String parameter) {
+		return getParameterValue(req.getParameterMap(),parameter);
+	}
+
 	public static String getParameterValue(final Map<String,String[]> parameters,final String parameter) {
 		final String[] values=parameters.get(parameter);
 		if(values!=null && values.length>0) {
@@ -128,4 +151,17 @@ public class FrontControllerServlet extends HttpServlet {
 		return values!=null && Arrays.asList(values).contains(actionName); 
 	}
 	
+	private static final String SHA_256="SHA-256";
+
+	public static byte[] getDigest(final byte[] input) throws NoSuchAlgorithmException {
+    	final MessageDigest md=MessageDigest.getInstance(SHA_256);
+    	md.update(input);
+        return md.digest();
+    }
+	
+	public static boolean checkPattern(final String value, final String pattern) {
+		if(value==null) return false;
+		return Pattern.matches(pattern, value);
+	}
+
 }

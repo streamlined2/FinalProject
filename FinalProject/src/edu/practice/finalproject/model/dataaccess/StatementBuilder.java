@@ -21,6 +21,7 @@ public abstract class StatementBuilder {
 	private static final String WHERE_CLAUSE = " WHERE ";
 	private static final String FROM_CLAUSE = " FROM ";
 	private static final String SELECT_CLAUSE = "SELECT ";
+	private static final String AND_CLAUSE = " AND ";
 
 	private StatementBuilder() {}
 	
@@ -49,12 +50,22 @@ public abstract class StatementBuilder {
 		final StringBuilder sb=new StringBuilder();
 		if(value.getClass()==String.class) { 
 			sb.append("'").append(value).append("'");
-		}else { 
+		}else if(value.getClass().isArray() && value.getClass().getComponentType()==byte.class){
+			sb.append("X'").append(byteArray2String((byte[])value)).append("'");
+		}else {
 			sb.append(value);
 		}
 		return sb.toString();
 	}
 	
+    private static String byteArray2String(final byte[] bytes) {
+    	final StringBuilder sb=new StringBuilder();
+    	for(final byte b:bytes) {
+    		sb.append(String.format("%02X", b));
+    	}
+    	return sb.toString();
+    }
+
 	public static StringBuilder getFieldList(final Iterable<Method> accessor,final String separator) {
 		return getFieldList(accessor,separator,"");
 	}
@@ -130,6 +141,30 @@ public abstract class StatementBuilder {
 				append(IN_CLAUSE).
 				append(getStringValue(key)).
 				append(" )");
+	}
+	
+	public static <E extends Entity> StringBuilder getSelectByCompositeKeyStatement(
+			final Class<E> cl,final String[] keys,final Object[] values) {
+		return new StringBuilder(SELECT_CLAUSE).
+				append(getFieldList(EntityInspector.getSetters(cl,false),",")).
+				append(FROM_CLAUSE).
+				append(getTableName(cl)).
+				append(WHERE_CLAUSE).
+				append(getKeyPairWhereClause(keys,values));
+	}
+	
+	private static StringBuilder getKeyPairWhereClause(final String[] keys,final Object[] values) {
+		final StringBuilder sb=new StringBuilder();
+		int count=Math.min(keys.length,values.length)-1;
+		if(count>=0) {
+			sb.append(keys[count]).append("=").append(getStringValue(values[count]));
+			count--;
+			while(count>=0) {
+				sb.append(AND_CLAUSE).append(keys[count]).append("=").append(getStringValue(values[count]));
+				count--;
+			}
+		}
+		return sb;
 	}
 	
 	public static <E extends Entity> StringBuilder getFetchEntitiesStatement(

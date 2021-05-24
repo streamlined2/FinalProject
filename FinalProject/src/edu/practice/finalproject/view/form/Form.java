@@ -3,6 +3,8 @@ package edu.practice.finalproject.view.form;
 import java.util.Map;
 import java.util.Objects;
 
+import javax.servlet.http.HttpServletRequest;
+
 import edu.practice.finalproject.view.action.Action;
 
 /**
@@ -17,6 +19,8 @@ public abstract class Form {
 	protected Form(final String name) {
 		this.name=name;
 	}
+	
+	public void init(HttpServletRequest req) {}
 	
 	public String getName() { return name;}
 	

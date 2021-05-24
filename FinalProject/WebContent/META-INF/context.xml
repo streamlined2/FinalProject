@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context>
+    <Resource 
+      name="jdbc/autoleasing" auth="Container" 
+      type="javax.sql.DataSource" 
+      maxTotal="10" maxIdle="5" maxWaitMillis="10000" 
+      username="jacksparrow" password="horriblesecret" 
+      driverClassName="com.mysql.cj.jdbc.Driver" 
+      url="jdbc:mysql://localhost:3306/autoleasing?serverTimezone=UTC"/>
+</Context>

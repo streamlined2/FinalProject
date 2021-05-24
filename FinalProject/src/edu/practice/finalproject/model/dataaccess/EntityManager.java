@@ -62,8 +62,7 @@ public final class EntityManager {
 		return fetchEntities(cl,false);
 	}
 	
-	public <E extends Entity> List<E> fetchEntities(
-			final Class<E> cl,final boolean skipID) {
+	public <E extends Entity> List<E> fetchEntities(final Class<E> cl,final boolean skipID) {
 		final List<E> entities=new ArrayList<>();
 		final StringBuilder clause=StatementBuilder.getFetchEntitiesStatement(cl,skipID);
 
@@ -108,8 +107,7 @@ public final class EntityManager {
 		}
 	}
 	
-    public <M extends Entity,S extends Entity> List<S> fetchLinks(
-    		final M master,final Class<S> slaveClass) {
+    public <M extends Entity,S extends Entity> List<S> fetchLinks(final M master,final Class<S> slaveClass) {
 		final List<S> entities=new ArrayList<>();
 		final StringBuilder clause=StatementBuilder.getFetchSlaveEntitiesStatement(master,slaveClass);
 
@@ -129,8 +127,7 @@ public final class EntityManager {
 		return entities;
     }
 
-	public <M extends Entity,S extends Entity> boolean persistLinks(
-			final M masterEntity,final S... slaveEntities) {
+	public <M extends Entity,S extends Entity> boolean persistLinks(final M masterEntity,final S... slaveEntities) {
 		final StringBuilder clause=StatementBuilder.getInsertLinksStatement(masterEntity,(Class<S>)slaveEntities.getClass().getComponentType());
 
 		boolean done=true;
@@ -156,8 +153,7 @@ public final class EntityManager {
 		return done;
 	}
 	
-	public <E extends Entity> boolean remove(
-			final E entity) {
+	public <E extends Entity> boolean remove(final E entity) {
 		final StringBuilder clause=StatementBuilder.getDeleteStatement(entity);
 		
 		try(final Connection conn=dataSource.getConnection()){
@@ -170,13 +166,12 @@ public final class EntityManager {
 		}
 	}
 
-	public <E extends Entity> boolean merge(
-			final E entity) {
+	public <E extends Entity> boolean merge(final E entity) {
 		final StringBuilder clause=StatementBuilder.getUpdateStatement(entity);
 
 		try(final Connection conn=dataSource.getConnection()){
 			conn.setAutoCommit(false);
-			try (final Statement statement=conn.createStatement()){
+			try(final Statement statement=conn.createStatement()){
 				return performUpdate(clause, conn, statement, count->count>0);
 			}
 		} catch (SQLException e) {
@@ -184,8 +179,7 @@ public final class EntityManager {
 		}
 	}
 	
-	public <M extends Entity,S extends Entity> boolean removeLinks(
-			final M master,final Class<S> slaveClass) {
+	public <M extends Entity,S extends Entity> boolean removeLinks(final M master,final Class<S> slaveClass) {
 		final StringBuilder clause=StatementBuilder.getDeleteLinkStatement(master,slaveClass);
 		
 		try(final Connection conn=dataSource.getConnection()){
@@ -215,6 +209,24 @@ public final class EntityManager {
 		final E entity=EntityInspector.createEntity(cl);
 		final StringBuilder clause=StatementBuilder.getSelectByNaturalKeyStatement(cl,entity,key);
 
+		try (
+				final Statement statement=dataSource.getConnection().createStatement();
+				final ResultSet rs=statement.executeQuery(clause.toString())){
+		
+			if(rs.next()) {
+				fillEntityValues(entity, EntityInspector.getSetters(cl,false), rs);
+				return entity;
+			}
+		} catch (SQLException e) {
+			throw new DataAccessException(e);
+		}
+		return null;
+	}
+
+	public <E extends Entity> E findByCompositeKey(final Class<E> cl,final String[] keys,final Object[] values) {
+		final E entity=EntityInspector.createEntity(cl);
+		final StringBuilder clause=StatementBuilder.getSelectByCompositeKeyStatement(cl,keys,values);
+		
 		try (
 				final Statement statement=dataSource.getConnection().createStatement();
 				final ResultSet rs=statement.executeQuery(clause.toString())){

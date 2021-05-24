@@ -2,6 +2,7 @@ package edu.practice.finalproject.view.action;
 
 import java.util.Objects;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 import edu.practice.finalproject.model.dataaccess.EntityManager;
@@ -16,7 +17,7 @@ public abstract class Action {
 	
 	public String getName() { return name;}
 	
-	public abstract boolean execute(HttpServletRequest req,EntityManager entityManager);
+	public abstract boolean execute(HttpServletRequest req,EntityManager entityManager) throws ServletException;
 
 	@Override
 	public boolean equals(final Object o) {

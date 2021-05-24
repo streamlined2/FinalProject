@@ -2,7 +2,9 @@ package edu.practice.finalproject.view.form;
 
 import java.util.Map;
 
-import edu.practice.finalproject.controller.FrontControllerServlet;
+import javax.servlet.http.HttpServletRequest;
+
+import edu.practice.finalproject.controller.FCServlet;
 import edu.practice.finalproject.controller.transition.FormDispatcher;
 import edu.practice.finalproject.view.action.Action;
 
@@ -13,8 +15,15 @@ public class LoginForm extends Form {
 	}
 	
 	@Override
+	public void init(final HttpServletRequest req) {
+		req.setAttribute(FCServlet.LOGIN_PATTERN_ATTRIBUTE, FCServlet.LOGIN_PATTERN);
+		req.setAttribute(FCServlet.PASSWORD_PATTERN_ATTRIBUTE, FCServlet.PASSWORD_PATTERN);
+	}
+	
+	@Override
 	public Action getAction(final Map<String,String[]> parameters) {
-		if(FrontControllerServlet.isActionPresent(parameters,"register")) return FormDispatcher.REGISTER_ACTION;
+		if(FCServlet.isActionPresent(parameters,FCServlet.REGISTER_PARAMETER))
+			return FormDispatcher.REGISTER_ACTION;
 		return getDefaultAction();
 	}
 

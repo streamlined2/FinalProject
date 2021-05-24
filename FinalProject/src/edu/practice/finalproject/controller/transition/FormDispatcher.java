@@ -14,8 +14,8 @@ public class FormDispatcher {
 	private final Admin admin;
 	private final Form initialForm;
 	
-	public FormDispatcher(final String initialUserName,final byte[] initialUserPassword) {
-		admin=new Admin(initialUserName,initialUserPassword);
+	public FormDispatcher(final String initialUserName,final byte[] initialUserPwdDigest) {
+		admin=new Admin(initialUserName,initialUserPwdDigest);
 		initialForm=LOGIN_FORM;
 	}
 	
@@ -27,8 +27,8 @@ public class FormDispatcher {
 	
 	private final TransitionRuleMap transitions=new TransitionRuleMap();
 	{
-		transitions.addRule(null, LOGIN_FORM, LOGIN_ACTION, null);
 		transitions.addRule(null, LOGIN_FORM, REGISTER_ACTION, REGISTER_FORM);
+		transitions.addRule(null, LOGIN_FORM, LOGIN_ACTION, null);
 		//TODO fill up rest of the transition rule map
 	}
 
