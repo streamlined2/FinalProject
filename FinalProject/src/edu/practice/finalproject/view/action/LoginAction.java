@@ -1,15 +1,15 @@
 package edu.practice.finalproject.view.action;
 
-import java.security.NoSuchAlgorithmException;
+import java.util.Optional;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 import edu.practice.finalproject.controller.FCServlet;
-import edu.practice.finalproject.controller.admin.Client;
-import edu.practice.finalproject.controller.admin.Admin;
-import edu.practice.finalproject.controller.admin.Manager;
+import edu.practice.finalproject.controller.Names;
 import edu.practice.finalproject.controller.admin.User;
 import edu.practice.finalproject.model.dataaccess.EntityManager;
+import utilities.Utilities;
 
 public class LoginAction extends Action {
 	
@@ -19,38 +19,28 @@ public class LoginAction extends Action {
 
 	private static final String ERROR_MSG="Error occured while trying to login. Please try again";
 	
-	private static Class<? extends User> mapNameToUserRoleClass(final String name){
-		switch(name) {
-			case FCServlet.CLIENT_ROLE_PARAMETER: return Client.class;
-			case FCServlet.MANAGER_ROLE_PARAMETER: return Manager.class;
-			case FCServlet.ADMIN_ROLE_PARAMETER: return Admin.class;
-			default: throw new IllegalArgumentException("wrong user role");
-		}
-	}
-
 	@Override
 	public boolean execute(final HttpServletRequest req,final EntityManager entityManager) throws ServletException {
-		final String role=FCServlet.getParameterValue(req, FCServlet.ROLE_PARAMETER);
-		final String login=FCServlet.getParameterValue(req,FCServlet.USER_PARAMETER);
-		if(FCServlet.checkPattern(login,FCServlet.LOGIN_PATTERN)) {
-			try {
-				final String password=FCServlet.getParameterValue(req, FCServlet.PASSWORD_PARAMETER);
-				if(FCServlet.checkPattern(password,FCServlet.PASSWORD_PATTERN)) {
-					final byte[] passwordDigest=FCServlet.getDigest(password.getBytes());
-					final User user=entityManager.findByCompositeKey(
-							mapNameToUserRoleClass(role),
-							new String[] {"login","passwordDigest"},
-							new Object[] {login,passwordDigest});
-					if(user!=null) {
-						FCServlet.setAttribute(req, FCServlet.USER_ATTRIBUTE, user);
-						return true;
-					}
-				}
-			} catch (NoSuchAlgorithmException e) {
-				throw new ServletException(e);
+		try {
+			Utilities.checkIfValid(req,Names.USER_PARAMETER,Utilities::checkLogin);
+			Utilities.checkIfValid(req,Names.PASSWORD_PARAMETER,Utilities::checkPassword);
+
+			final String role=FCServlet.getParameterValue(req,Names.ROLE_PARAMETER);
+			final String login=FCServlet.getParameterValue(req,Names.USER_PARAMETER);
+			final byte[] passwordDigest=Utilities.getDigest(FCServlet.getParameterValue(req, Names.PASSWORD_PARAMETER).getBytes());
+
+			final Optional<? extends User> user=entityManager.findByCompositeKey(
+					Utilities.mapUserRoleToClass(role),
+					new String[] {"login","passwordDigest"},
+					new Object[] {login, passwordDigest});
+			
+			if(!user.isEmpty()) {
+				FCServlet.setUser(req, user.get());
+				return true;
 			}
+		}catch (Exception e) {
+			FCServlet.setError(req, String.format("%s: %s",ERROR_MSG,e.getMessage()));
 		}
-		FCServlet.setAttribute(req, FCServlet.ERROR_ATTRIBUTE, ERROR_MSG);
 		return false;
 	}
 

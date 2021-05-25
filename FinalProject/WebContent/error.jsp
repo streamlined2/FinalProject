@@ -4,11 +4,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>Error page</title>
-	<style>
-		.error { color:red }
-	</style>
+	<link rel="stylesheet" href="styles.css">
+	<meta charset="UTF-8">
+	<title>Error page</title>
 </head>
 <body>
 	<p><%=LocalDateTime.now() %></p>

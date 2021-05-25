@@ -1,6 +1,6 @@
 package edu.practice.finalproject.model.entity;
 
-import edu.practice.finalproject.model.analysis.EntityInspector;
+import edu.practice.finalproject.model.analysis.Inspector;
 
 public abstract class NaturalKeyEntity<K extends Comparable<? super K>> extends Entity {
 
@@ -17,7 +17,7 @@ public abstract class NaturalKeyEntity<K extends Comparable<? super K>> extends 
 	protected abstract String keyFieldGetter();
 
 	public static <K extends Comparable<? super K>,E extends NaturalKeyEntity<K>> String keyFieldName(final E entity) {
-		return EntityInspector.getFieldName(entity.keyFieldGetter());
+		return Inspector.getFieldName(entity.keyFieldGetter());
 	}
 
 	/**

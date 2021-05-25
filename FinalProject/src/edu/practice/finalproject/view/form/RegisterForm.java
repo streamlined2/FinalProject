@@ -1,8 +1,11 @@
 package edu.practice.finalproject.view.form;
 
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 
 import edu.practice.finalproject.controller.FCServlet;
+import edu.practice.finalproject.controller.Names;
 import edu.practice.finalproject.controller.transition.FormDispatcher;
 import edu.practice.finalproject.view.action.Action;
 
@@ -14,15 +17,22 @@ public class RegisterForm extends Form {
 
 	@Override
 	public void init(final HttpServletRequest req) {
-		req.setAttribute(FCServlet.LOGIN_PATTERN_ATTRIBUTE, FCServlet.LOGIN_PATTERN);
-		req.setAttribute(FCServlet.PASSWORD_PATTERN_ATTRIBUTE, FCServlet.PASSWORD_PATTERN);
-		req.setAttribute(FCServlet.NAME_PATTERN_ATTRIBUTE, FCServlet.NAME_PATTERN);
-		req.setAttribute(FCServlet.PASSPORT_PATTERN_ATTRIBUTE, FCServlet.PASSPORT_PATTERN);
+		req.setAttribute(Names.LOGIN_PATTERN_ATTRIBUTE, Names.LOGIN_PATTERN);
+		req.setAttribute(Names.PASSWORD_PATTERN_ATTRIBUTE, Names.PASSWORD_PATTERN);
+		req.setAttribute(Names.NAME_PATTERN_ATTRIBUTE, Names.NAME_PATTERN);
+		req.setAttribute(Names.PASSPORT_PATTERN_ATTRIBUTE, Names.PASSPORT_PATTERN);
 	}
 	
 	@Override
+	public Action getAction(final Map<String,String[]> parameters) {
+		if(FCServlet.isActionPresent(parameters,Names.REGISTER_NEW_PARAMETER))
+			return FormDispatcher.REGISTER_NEW_ACTION;
+		return getDefaultAction();
+	}
+
+	@Override
 	public Action getDefaultAction() {
-		return FormDispatcher.REGISTER_ACTION;
+		return FormDispatcher.REGISTER_NEW_ACTION;
 	}
 
 }

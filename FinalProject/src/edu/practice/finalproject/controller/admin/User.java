@@ -4,7 +4,6 @@ import edu.practice.finalproject.model.entity.NaturalKeyEntity;
 import edu.practice.finalproject.view.action.Action;
 
 public abstract class User extends NaturalKeyEntity<String> {
-	
 	protected String login;
 	protected byte[] passwordDigest;
 	

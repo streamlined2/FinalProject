@@ -21,6 +21,7 @@ public abstract class Form {
 	}
 	
 	public void init(HttpServletRequest req) {}
+	public void destroy() {}
 	
 	public String getName() { return name;}
 	

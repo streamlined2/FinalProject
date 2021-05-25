@@ -4,15 +4,12 @@
 <html>
 <head>
 	<meta charset="UTF-8">
-	<style>
-		.error { color:red }
-	</style>
+	<link rel="stylesheet" href="styles.css">
 	<title>User authentication form</title>
 </head>
 <body>
-	<p><div class="error">${sessionScope.error}</div><p>
-	<hr>
-	<form action="main" method="post">
+	<%@include file="common-controls.jsp" %>
+	<form>
 		<label for="client">Client</label>
 		<input type="radio" id="client" name="role" value="client" checked/>
 		<label for="manager">Manager</label>

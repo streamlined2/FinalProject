@@ -1,11 +1,9 @@
 package edu.practice.finalproject.controller;
 
 import java.io.IOException;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -22,6 +20,7 @@ import edu.practice.finalproject.controller.transition.FormDispatcher;
 import edu.practice.finalproject.model.dataaccess.EntityManager;
 import edu.practice.finalproject.view.action.Action;
 import edu.practice.finalproject.view.form.Form;
+import utilities.Utilities;
 
 /**
  * Main servlet class that implements Front Controller patterm
@@ -29,29 +28,9 @@ import edu.practice.finalproject.view.form.Form;
  */
 public class FCServlet extends HttpServlet {
 	
-	private static final int NO_APPROPRIATE_FORM_MAPPING=1;
+	private static final int NO_APPROPRIATE_FORM_MAPPING_CODE=1;
+	private static final String NO_APPROPRIATE_FORM_MAPPING_MSG="No appropriate mapping for given user,form and action!"; 
 	
-	public static final String USER_ATTRIBUTE = "user";
-	public static final String FORM_ATTRIBUTE = "form";
-	public static final String ERROR_ATTRIBUTE = "error";
-	public static final String LOGIN_PATTERN_ATTRIBUTE = "loginPattern"; 
-	public static final String PASSWORD_PATTERN_ATTRIBUTE = "passwordPattern"; 
-	public static final String NAME_PATTERN_ATTRIBUTE = "namePattern"; 
-	public static final String PASSPORT_PATTERN_ATTRIBUTE = "passportPattern";
-	public static final String ACTION_PARAMETER = "action";
-	public static final String USER_PARAMETER = "user";
-	public static final String ROLE_PARAMETER = "role";
-	public static final String CLIENT_ROLE_PARAMETER = "client";
-	public static final String ADMIN_ROLE_PARAMETER = "admin";
-	public static final String MANAGER_ROLE_PARAMETER = "manager";
-	public static final String PASSWORD_PARAMETER = "password";
-	public static final String REGISTER_PARAMETER = "register";
-	
-	public static final String LOGIN_PATTERN = "[0-9A-Za-zÀ-ßà-ÿ¨¸ªº²³¯¿]+";
-	public static final String PASSWORD_PATTERN = "[0-9A-Za-zÀ-ßà-ÿ¨¸ªº²³¯¿]+";
-	public static final String NAME_PATTERN = "[0-9A-Za-zÀ-ßà-ÿ¨¸ªº²³¯¿]+";
-	public static final String PASSPORT_PATTERN = "[ 0-9A-Za-zÀ-ßà-ÿ¨¸ªº²³¯¿]+";
-
 	private EntityManager entityManager;
 	private FormDispatcher formDispatcher;
 	
@@ -67,7 +46,7 @@ public class FCServlet extends HttpServlet {
 			
 			formDispatcher=new FormDispatcher(
 					getServletContext().getInitParameter("adminUserName"),
-					getDigest(getServletContext().getInitParameter("adminPassword").getBytes()));
+					Utilities.getDigest(getServletContext().getInitParameter("adminPassword").getBytes()));
 		
 		}catch(NamingException | NoSuchAlgorithmException e) {
 			throw new ServletException(e);
@@ -75,36 +54,66 @@ public class FCServlet extends HttpServlet {
 	}
 
     private void process(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException {
-		setAttribute(req,ERROR_ATTRIBUTE,null);
-		Form currentForm=(Form)getAttribute(req,FORM_ATTRIBUTE);
+		clearError(req);
+		Form currentForm=getForm(req);
 		if(currentForm==null) {
 			currentForm=formDispatcher.getInitialForm();
 		}else {
 			final Action action=currentForm.getAction(req.getParameterMap());
 			final boolean actionSucceeded=action.execute(req,entityManager);
-			final User user=(User)getAttribute(req,USER_ATTRIBUTE);
+			currentForm.destroy();
+			final User user=getUser(req);
 			final Form nextForm=formDispatcher.getNextForm(user, currentForm, action, actionSucceeded);
 			if(nextForm!=null) {
 				currentForm=nextForm;
 			}else {
 				try {
-					resp.sendError(NO_APPROPRIATE_FORM_MAPPING);
+					setError(req,NO_APPROPRIATE_FORM_MAPPING_MSG);
+					resp.sendError(NO_APPROPRIATE_FORM_MAPPING_CODE,NO_APPROPRIATE_FORM_MAPPING_MSG);
 				} catch (IOException e) {
 					throw new ServletException(e);
 				}
 			}
 		}
-		setAttribute(req, FORM_ATTRIBUTE, currentForm);
-		render(currentForm, req, resp);
-	}
-	
-	private void render(final Form form,final HttpServletRequest req,final HttpServletResponse resp) throws ServletException {
+		setForm(req, currentForm);
+		currentForm.init(req);
 		try {
-			form.init(req);
-			getServletContext().getRequestDispatcher(form.getName()).forward(req,resp);
+			getServletContext().getRequestDispatcher(currentForm.getName()).forward(req,resp);
 		} catch (IOException e) {
 			throw new ServletException(e);
 		}
+	}
+    
+	public static Form getForm(final HttpServletRequest req) {
+		return (Form)getAttribute(req,Names.FORM_ATTRIBUTE);
+	}
+	
+	public static void setForm(final HttpServletRequest req, final Form form) {
+		setAttribute(req, Names.FORM_ATTRIBUTE, form);
+	}
+	
+	public static void clearForm(final HttpServletRequest req) {
+		removeAttribute(req, Names.FORM_ATTRIBUTE);
+	}
+
+	public static User getUser(final HttpServletRequest req) {
+		return (User)getAttribute(req,Names.USER_ATTRIBUTE);
+	}
+	
+	public static void setUser(final HttpServletRequest req, final User user) {
+		setAttribute(req, Names.USER_ATTRIBUTE, user);
+	}
+	
+	public static void clearUser(final HttpServletRequest req) {
+		removeAttribute(req, Names.USER_ATTRIBUTE);
+	}
+
+	public static void setError(final HttpServletRequest req,final String message) {
+		setAttribute(req,Names.ERROR_ATTRIBUTE,message);
+	}
+	
+	public static void clearError(final HttpServletRequest req) {
+		removeAttribute(req,Names.ERROR_ATTRIBUTE);
 	}
 	
 	@Override
@@ -134,6 +143,13 @@ public class FCServlet extends HttpServlet {
 		return null;
 	}
 	
+	public static void removeAttribute(final HttpServletRequest req,final String name) {
+		final HttpSession session=req.getSession();
+		if(session!=null) {
+			session.removeAttribute(name);
+		}
+	}
+	
 	public static String getParameterValue(final HttpServletRequest req,final String parameter) {
 		return getParameterValue(req.getParameterMap(),parameter);
 	}
@@ -147,21 +163,8 @@ public class FCServlet extends HttpServlet {
 	}
 	
 	public static boolean isActionPresent(final Map<String,String[]> parameters,final String actionName) {
-		final String[] values=parameters.get(ACTION_PARAMETER);
+		final String[] values=parameters.get(Names.ACTION_PARAMETER);
 		return values!=null && Arrays.asList(values).contains(actionName); 
-	}
-	
-	private static final String SHA_256="SHA-256";
-
-	public static byte[] getDigest(final byte[] input) throws NoSuchAlgorithmException {
-    	final MessageDigest md=MessageDigest.getInstance(SHA_256);
-    	md.update(input);
-        return md.digest();
-    }
-	
-	public static boolean checkPattern(final String value, final String pattern) {
-		if(value==null) return false;
-		return Pattern.matches(pattern, value);
 	}
 
 }

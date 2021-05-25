@@ -4,7 +4,7 @@ import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.List;
 
-import edu.practice.finalproject.model.analysis.EntityInspector;
+import edu.practice.finalproject.model.analysis.Inspector;
 import edu.practice.finalproject.model.entity.Entity;
 import edu.practice.finalproject.model.entity.NaturalKeyEntity;
 
@@ -74,9 +74,9 @@ public abstract class StatementBuilder {
 		final StringBuilder sb=new StringBuilder();
 		final Iterator<Method> i=accessor.iterator();
 		if(i.hasNext()) {
-			sb.append(EntityInspector.getFieldName(prefix,i.next()));
+			sb.append(Inspector.getFieldName(prefix,i.next()));
 			while(i.hasNext()) {
-				sb.append(separator).append(EntityInspector.getFieldName(prefix,i.next()));
+				sb.append(separator).append(Inspector.getFieldName(prefix,i.next()));
 			}
 		}
 		return sb;
@@ -105,10 +105,10 @@ public abstract class StatementBuilder {
 		final Iterator<Method> fieldIterator=fields.iterator();
 		final Iterator<?> valueIterator=values.iterator();
 		if(fieldIterator.hasNext() && valueIterator.hasNext()) {
-			sb.append(EntityInspector.getFieldName(prefix,fieldIterator.next())).append("=").append(getStringValue(valueIterator.next()));
+			sb.append(Inspector.getFieldName(prefix,fieldIterator.next())).append("=").append(getStringValue(valueIterator.next()));
 			while(fieldIterator.hasNext() && valueIterator.hasNext()) {
 				sb.append(separator).
-				append(EntityInspector.getFieldName(prefix,fieldIterator.next())).append("=").append(getStringValue(valueIterator.next()));
+				append(Inspector.getFieldName(prefix,fieldIterator.next())).append("=").append(getStringValue(valueIterator.next()));
 			}
 		}
 		return sb;
@@ -116,8 +116,8 @@ public abstract class StatementBuilder {
 	
 	public static <E extends Entity> StringBuilder getUpdateStatement(final E entity) {
 		final Class<E> cl=(Class<E>) entity.getClass();
-		final List<Method> getters=EntityInspector.getGetters(cl,true);
-		final List<Object> values=EntityInspector.getValues(entity,getters);
+		final List<Method> getters=Inspector.getGetters(cl,true);
+		final List<Object> values=Inspector.getValues(entity,getters);
 		
 		return new StringBuilder(UPDATE_CLAUSE).
 				append(StatementBuilder.getTableName(cl)).
@@ -133,7 +133,7 @@ public abstract class StatementBuilder {
 	public static <K extends Comparable<? super K>,E extends NaturalKeyEntity<K>> StringBuilder getSelectByNaturalKeyStatement(
 			final Class<E> cl,final E entity,final K key) {
 		return new StringBuilder(SELECT_CLAUSE).
-				append(getFieldList(EntityInspector.getSetters(cl,false),",")).
+				append(getFieldList(Inspector.getSetters(cl,false),",")).
 				append(FROM_CLAUSE).
 				append(getTableName(cl)).
 				append(WHERE_CLAUSE).
@@ -146,7 +146,7 @@ public abstract class StatementBuilder {
 	public static <E extends Entity> StringBuilder getSelectByCompositeKeyStatement(
 			final Class<E> cl,final String[] keys,final Object[] values) {
 		return new StringBuilder(SELECT_CLAUSE).
-				append(getFieldList(EntityInspector.getSetters(cl,false),",")).
+				append(getFieldList(Inspector.getSetters(cl,false),",")).
 				append(FROM_CLAUSE).
 				append(getTableName(cl)).
 				append(WHERE_CLAUSE).
@@ -170,19 +170,19 @@ public abstract class StatementBuilder {
 	public static <E extends Entity> StringBuilder getFetchEntitiesStatement(
 			final Class<E> cl,final boolean skipID) {
 		return new StringBuilder(SELECT_CLAUSE).
-				append(getFieldList(EntityInspector.getSetters(cl,skipID),",")).
+				append(getFieldList(Inspector.getSetters(cl,skipID),",")).
 				append(FROM_CLAUSE).
 				append(getTableName(cl));
 	}
 	
 	public static <E extends Entity> StringBuilder getInsertStatement(final E entity) {
 		final Class<E> cl=(Class<E>) entity.getClass();
-		final List<Method> getters=EntityInspector.getGetters(cl,true);
+		final List<Method> getters=Inspector.getGetters(cl,true);
 		return new StringBuilder(INSERT_CLAUSE).
 				append(getTableName(cl)).append(" (").
 				append(getFieldList(getters,",")).
 				append(VALUES_CLAUSE).
-				append(getValueList(EntityInspector.getValues(entity,getters),",")).
+				append(getValueList(Inspector.getValues(entity,getters),",")).
 				append(")");
 	}
 	
@@ -199,7 +199,7 @@ public abstract class StatementBuilder {
 	public static <M extends Entity,S extends Entity> StringBuilder getFetchSlaveEntitiesStatement(
 			final M master,final Class<S> slaveClass) {
 		return new StringBuilder(SELECT_CLAUSE).
-				append(getFieldList(EntityInspector.getSetters(slaveClass,false),",","B")).
+				append(getFieldList(Inspector.getSetters(slaveClass,false),",","B")).
 				append(FROM_CLAUSE).
 				append(getLinkTableName((Class<M>)master.getClass(),slaveClass)).append(" A ").
 				append(JOIN_CLAUSE).

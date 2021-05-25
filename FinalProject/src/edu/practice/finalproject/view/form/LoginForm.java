@@ -5,6 +5,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import edu.practice.finalproject.controller.FCServlet;
+import edu.practice.finalproject.controller.Names;
 import edu.practice.finalproject.controller.transition.FormDispatcher;
 import edu.practice.finalproject.view.action.Action;
 
@@ -16,13 +17,13 @@ public class LoginForm extends Form {
 	
 	@Override
 	public void init(final HttpServletRequest req) {
-		req.setAttribute(FCServlet.LOGIN_PATTERN_ATTRIBUTE, FCServlet.LOGIN_PATTERN);
-		req.setAttribute(FCServlet.PASSWORD_PATTERN_ATTRIBUTE, FCServlet.PASSWORD_PATTERN);
+		req.setAttribute(Names.LOGIN_PATTERN_ATTRIBUTE, Names.LOGIN_PATTERN);
+		req.setAttribute(Names.PASSWORD_PATTERN_ATTRIBUTE, Names.PASSWORD_PATTERN);
 	}
 	
 	@Override
 	public Action getAction(final Map<String,String[]> parameters) {
-		if(FCServlet.isActionPresent(parameters,FCServlet.REGISTER_PARAMETER))
+		if(FCServlet.isActionPresent(parameters,Names.REGISTER_PARAMETER))
 			return FormDispatcher.REGISTER_ACTION;
 		return getDefaultAction();
 	}

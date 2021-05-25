@@ -3,7 +3,7 @@ package edu.practice.finalproject.model.entity;
 import java.io.Serializable;
 import java.util.Objects;
 
-import edu.practice.finalproject.model.analysis.EntityInspector;
+import edu.practice.finalproject.model.analysis.Inspector;
 
 public abstract class Entity implements Serializable {
 
@@ -32,7 +32,7 @@ public abstract class Entity implements Serializable {
 	}
 
 	@Override public String toString() {
-		return EntityInspector.toString(this);
+		return Inspector.toString(this);
 	}
-
+	
 }

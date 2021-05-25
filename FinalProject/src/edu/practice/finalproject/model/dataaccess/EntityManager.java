@@ -11,12 +11,12 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.IntPredicate;
 import javax.sql.DataSource;
 
-import edu.practice.finalproject.controller.admin.User;
-import edu.practice.finalproject.model.analysis.EntityInspector;
+import edu.practice.finalproject.model.analysis.Inspector;
 import edu.practice.finalproject.model.entity.Entity;
 import edu.practice.finalproject.model.entity.NaturalKeyEntity;
 
@@ -29,15 +29,13 @@ public final class EntityManager {
 		this.dataSource=dataSource;
 	}
 	
-	public DataSource getDataSource() { return dataSource;}
-	
 	private static final String[] ENTITY_BEANS_PACKAGE_PREFIXES={
 			"edu.practice.finalproject.controller.admin.",
 			"edu.practice.finalproject.model.entity.",
 			"edu.practice.finalproject.model.entity.document.",
 			"edu.practice.finalproject.model.entity.domain."
 	};
-	private static final Set<Class<? extends Entity>> discoveredEntityClasses=EntityInspector.discoverEntityClasses(ENTITY_BEANS_PACKAGE_PREFIXES);
+	private static final Set<Class<? extends Entity>> discoveredEntityClasses=Inspector.discoverEntityClasses(ENTITY_BEANS_PACKAGE_PREFIXES);
 	
 	public static boolean isConcreteClass(final Class<?> cl) {
 		final int modifiers=cl.getModifiers();
@@ -53,11 +51,6 @@ public final class EntityManager {
 		return set;
 	}
 	
-	public static void main(final String... args) {
-		System.out.println(discoveredEntityClasses);
-		System.out.println(getConcreteDescendantsOf(User.class));
-	}
-	
 	public <E extends Entity> List<E> fetchEntities(final Class<E> cl) {
 		return fetchEntities(cl,false);
 	}
@@ -70,9 +63,9 @@ public final class EntityManager {
 				final Statement statement=dataSource.getConnection().createStatement();
 				final ResultSet rs=statement.executeQuery(clause.toString())){
 			
-			final List<Method> setters=EntityInspector.getSetters(cl,skipID);
+			final List<Method> setters=Inspector.getSetters(cl,skipID);
 			while(rs.next()) {
-				final E entity=EntityInspector.createEntity(cl);
+				final E entity=Inspector.createEntity(cl);
 				fillEntityValues(entity,setters,rs);
 				entities.add(entity);
 			}
@@ -99,9 +92,10 @@ public final class EntityManager {
 						}
 					}
 				}
+			}finally{
 				conn.rollback();
-				return false;
 			}
+			return false;
 		} catch (SQLException e) {
 			throw new DataAccessException(e);
 		}
@@ -115,9 +109,9 @@ public final class EntityManager {
 				final Statement statement=dataSource.getConnection().createStatement();
 				final ResultSet rs=statement.executeQuery(clause.toString())){
 			
-			final List<Method> setters=EntityInspector.getSetters(slaveClass,false);
+			final List<Method> setters=Inspector.getSetters(slaveClass,false);
 			while(rs.next()) {
-				final S entity=EntityInspector.createEntity(slaveClass);
+				final S entity=Inspector.createEntity(slaveClass);
 				fillEntityValues(entity,setters,rs);
 				entities.add(entity);
 			}
@@ -130,10 +124,10 @@ public final class EntityManager {
 	public <M extends Entity,S extends Entity> boolean persistLinks(final M masterEntity,final S... slaveEntities) {
 		final StringBuilder clause=StatementBuilder.getInsertLinksStatement(masterEntity,(Class<S>)slaveEntities.getClass().getComponentType());
 
-		boolean done=true;
 		try(final Connection conn=dataSource.getConnection()){
 			conn.setAutoCommit(false);
 			try(final PreparedStatement statement=conn.prepareStatement(clause.toString())){
+				boolean done=true;
 				for(final S slaveEntity:slaveEntities) {
 					statement.setLong(1, slaveEntity.getId());
 					if(!statement.execute() && statement.getUpdateCount()!=1) {
@@ -142,15 +136,16 @@ public final class EntityManager {
 					}
 				}
 				if(done) {
-					conn.commit();			
-				}else {
-					conn.rollback();
+					conn.commit();
+					return true;
 				}
+			}finally {
+				conn.rollback();
 			}
 		} catch (SQLException e) {
 			throw new DataAccessException(e);
 		}
-		return done;
+		return false;
 	}
 	
 	public <E extends Entity> boolean remove(final E entity) {
@@ -194,19 +189,22 @@ public final class EntityManager {
 
 	private <K extends Comparable<? super K>> boolean performUpdate(final StringBuilder clause, final Connection conn, final Statement statement, final IntPredicate condition)
 			throws SQLException {
-		final int count=statement.executeUpdate(clause.toString());
-		if(condition.test(count)) {
-			conn.commit();
-			return true;
-		}else {
+		try {
+			final int count=statement.executeUpdate(clause.toString());
+			if(condition.test(count)) {
+				conn.commit();
+				return true;
+			}			
+		}finally {
 			conn.rollback();
-			return false;
 		}
+		return false;
 	}
 	
-	public <K extends Comparable<? super K>,E extends NaturalKeyEntity<K>> E findByKey(
-			final Class<E> cl,final K key) {
-		final E entity=EntityInspector.createEntity(cl);
+	public <K extends Comparable<? super K>,E extends NaturalKeyEntity<K>> 
+			Optional<E> findByKey(final Class<E> cl,final K key) {
+		
+		final E entity=Inspector.createEntity(cl);
 		final StringBuilder clause=StatementBuilder.getSelectByNaturalKeyStatement(cl,entity,key);
 
 		try (
@@ -214,31 +212,30 @@ public final class EntityManager {
 				final ResultSet rs=statement.executeQuery(clause.toString())){
 		
 			if(rs.next()) {
-				fillEntityValues(entity, EntityInspector.getSetters(cl,false), rs);
-				return entity;
+				fillEntityValues(entity, Inspector.getSetters(cl,false), rs);
+				return Optional.of(entity);
 			}
 		} catch (SQLException e) {
 			throw new DataAccessException(e);
 		}
-		return null;
+		return Optional.empty();
 	}
 
-	public <E extends Entity> E findByCompositeKey(final Class<E> cl,final String[] keys,final Object[] values) {
-		final E entity=EntityInspector.createEntity(cl);
+	public <E extends Entity> Optional<E>findByCompositeKey(final Class<E> cl,final String[] keys,final Object[] values) {
 		final StringBuilder clause=StatementBuilder.getSelectByCompositeKeyStatement(cl,keys,values);
-		
 		try (
 				final Statement statement=dataSource.getConnection().createStatement();
 				final ResultSet rs=statement.executeQuery(clause.toString())){
 		
+			final E entity=Inspector.createEntity(cl);
 			if(rs.next()) {
-				fillEntityValues(entity, EntityInspector.getSetters(cl,false), rs);
-				return entity;
+				fillEntityValues(entity, Inspector.getSetters(cl,false), rs);
+				return Optional.of(entity);
 			}
 		} catch (SQLException e) {
 			throw new DataAccessException(e);
 		}
-		return null;
+		return Optional.empty();
 	}
 
 	private <E extends Entity> void fillEntityValues(
@@ -246,7 +243,7 @@ public final class EntityManager {
 		int k=1;
 		try {
 			for(final Method setter:setters) {
-				EntityInspector.set(entity,setter,rs.getObject(k++));
+				Inspector.set(entity,setter,rs.getObject(k++));
 			}
 		} catch (SQLException e) {
 			throw new DataAccessException(e);

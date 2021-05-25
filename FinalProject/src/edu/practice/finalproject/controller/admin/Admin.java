@@ -15,5 +15,5 @@ public class Admin extends User {
 	public void checkPermission(Action action) throws SecurityException {
 		if(!(action instanceof AdminAction)) throw new SecurityException("Administrator may perform appropriate actions only!");
 	}
-
+	
 }

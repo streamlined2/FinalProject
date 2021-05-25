@@ -3,6 +3,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+	<link rel="stylesheet" href="styles.css">
 	<meta charset="UTF-8">
 	<title>Welcome form</title>
 </head>

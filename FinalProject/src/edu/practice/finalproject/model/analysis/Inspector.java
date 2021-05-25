@@ -1,7 +1,6 @@
 package edu.practice.finalproject.model.analysis;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.net.URISyntaxException;
@@ -15,10 +14,10 @@ import java.util.Set;
 
 import edu.practice.finalproject.model.entity.Entity;
 
-public abstract class EntityInspector {
+public abstract class Inspector {
 	
-	private EntityInspector() {}
-
+	private Inspector() {}
+	
 	public static <E extends Entity> E createEntity(final Class<E> cl) {
 		try {
 			return cl.getDeclaredConstructor().newInstance();
@@ -35,8 +34,7 @@ public abstract class EntityInspector {
 		}
 	}
 	
-	public static <E extends Entity> void set(
-			final E entity,final Method setter,final Object value) {
+	public static <E extends Entity> void set(final E entity,final Method setter,final Object value) {
 		try {
 			setter.invoke(entity, value);
 		} catch (ReflectiveOperationException e) {
@@ -44,8 +42,7 @@ public abstract class EntityInspector {
 		}
 	}
 	
-	public static <E extends Entity> List<Object> getValues(
-			final E entity,final List<Method> getters) {
+	public static <E extends Entity> List<Object> getValues(final E entity,final List<Method> getters) {
 		final List<Object> values=new ArrayList<>(getters.size());
 		for(final Method getter:getters) {
 			values.add(get(entity,getter));
@@ -65,9 +62,7 @@ public abstract class EntityInspector {
 		return getGetters(cl,false);
 	}
 
-	public static List<Method> getGetters(
-			final Class<? extends Entity> cl,final boolean skipID){
-		
+	public static List<Method> getGetters(final Class<? extends Entity> cl,final boolean skipID){
 		final List<Method> list=new LinkedList<>();
 		final Method[] methods=cl.getMethods();
 		for(final Method method:methods) {
@@ -85,9 +80,7 @@ public abstract class EntityInspector {
 		return list;
 	}
 	
-	public static <E extends Entity> List<Method> getSetters(
-			final Class<E> cl,final boolean skipID){
-		
+	public static <E extends Entity> List<Method> getSetters(final Class<E> cl,final boolean skipID){
 		final List<Method> list=new LinkedList<>();
 		final Method[] methods=cl.getMethods();
 		for(final Method method:methods) {
@@ -129,11 +122,11 @@ public abstract class EntityInspector {
 		final Iterator<Method> i=getGetters(entity.getClass()).iterator();
 		if(i.hasNext()) {
 			Method method=i.next();
-			sb.append(getFieldName(method)).append("=").append(EntityInspector.get(entity,method));
+			sb.append(getFieldName(method)).append("=").append(Inspector.get(entity,method));
 			while(i.hasNext()) {
 				method=i.next();
 				sb.append(",");
-				sb.append(getFieldName(method)).append("=").append(EntityInspector.get(entity,method));
+				sb.append(getFieldName(method)).append("=").append(Inspector.get(entity,method));
 			}
 		}
 		sb.append("]");

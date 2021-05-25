@@ -2,18 +2,18 @@ package edu.practice.finalproject.model.entity.document;
 
 import java.time.LocalDateTime;
 
-import edu.practice.finalproject.controller.admin.Client;
+import edu.practice.finalproject.controller.admin.User;
 import edu.practice.finalproject.model.entity.Entity;
 
 public class Order extends Entity {
-	private Client client;
+	private User client;
 	private String passport;
 	private boolean driverPresent;
 	private LocalDateTime startTime;
 	private LocalDateTime endTime;
 
-	public Client getClient() { return client;}
-	public void setClient(Client client) { this.client = client;}
+	public User getClient() { return client;}
+	public void setClient(User client) { this.client = client;}
 
 	public String getPassport() { return passport;}
 	public void setPassport(String passport) { this.passport = passport;}
