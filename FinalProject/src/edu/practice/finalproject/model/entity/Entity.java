@@ -8,7 +8,7 @@ import edu.practice.finalproject.model.analysis.Inspector;
 public abstract class Entity implements Serializable {
 
 	protected long id;
-	public static final String ID_FIELD="id";
+	public static final String ID_FIELD="id".toUpperCase();
 	
 	public long getId() { return id;}
 	public void setId(long id) { this.id=id;}

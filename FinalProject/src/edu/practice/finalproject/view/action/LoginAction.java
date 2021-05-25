@@ -37,6 +37,8 @@ public class LoginAction extends Action {
 			if(!user.isEmpty()) {
 				FCServlet.setUser(req, user.get());
 				return true;
+			}else {
+				FCServlet.setError(req, ERROR_MSG);
 			}
 		}catch (Exception e) {
 			FCServlet.setError(req, String.format("%s: %s",ERROR_MSG,e.getMessage()));

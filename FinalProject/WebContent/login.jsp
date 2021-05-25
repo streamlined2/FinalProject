@@ -21,11 +21,11 @@
 		<table>
 		<tr>
 			<td><label for="user">Login</label></td>
-			<td><input type="text" id="user" name="user" value="" placeholder="Enter login here" size="30" required pattern="${requestScope.loginPattern}" title="please enter letters or digits"/></td>
+			<td><input type="text" id="user" name="user" value="" placeholder="Enter login here" size="30" required pattern="${requestScope.loginPattern}" title="Please enter letters or digits"/></td>
 		</tr>
 		<tr>
 			<td><label for="password">Password</label></td>
-			<td><input type="password" id="password" name="password" value="" placeholder="Enter password here" size="30" required pattern="${requestScope.passwordPattern}" title="please enter letters or digits"/></td>
+			<td><input type="password" id="password" name="password" value="" placeholder="Enter password here" size="30" required pattern="${requestScope.passwordPattern}" title="Please enter letters or digits"/></td>
 		</tr>
 		</table>
 		<hr>
