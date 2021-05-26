@@ -47,7 +47,7 @@ public class FCServlet extends HttpServlet {
 			formDispatcher=new FormDispatcher(
 					getServletContext().getInitParameter("adminUserName"),
 					Utilities.getDigest(getServletContext().getInitParameter("adminPassword").getBytes()));
-		
+
 		}catch(NamingException | NoSuchAlgorithmException e) {
 			throw new ServletException(e);
 		}

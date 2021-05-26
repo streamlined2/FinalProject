@@ -32,7 +32,7 @@ public class RegisterForm extends Form {
 
 	@Override
 	public Action getDefaultAction() {
-		return FormDispatcher.REGISTER_NEW_ACTION;
+		return FormDispatcher.BACK_ACTION;
 	}
 
 }

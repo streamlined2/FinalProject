@@ -11,6 +11,8 @@
 	<%@include file="common-controls.jsp" %>
 	
 	<form>
+	<fieldset>
+		<legend>Personalia</legend>
 		<table>
 		<tr>
 			<td><label for="firstname">Firstname</label></td>
@@ -49,8 +51,10 @@
 		</tr>
 		</table>
 		<hr>
-		<input type="submit" value="Register" formevent="main?action=register_new" method="post"/>
+		<input type="submit" value="Register" formevent="main?action=register_new" formmethod="post"/>
 		<input type="reset" value="Clear" />
+		<input type="submit" value="Back" formevent="main?action=back" formmethod="post" formnovalidate/>
+	</fieldset>
 	</form>
 </body>
 </html>

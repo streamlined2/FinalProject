@@ -10,6 +10,8 @@
 <body>
 	<%@include file="common-controls.jsp" %>
 	<form>
+	<fieldset>
+		<legend>Credentials</legend>
 		<label for="client">Client</label>
 		<input type="radio" id="client" name="role" value="client" checked/>
 		<label for="manager">Manager</label>
@@ -28,13 +30,14 @@
 			<td><input type="password" id="password" name="password" value="" placeholder="Enter password here" size="30" required pattern="${requestScope.passwordPattern}" title="Please enter letters or digits"/></td>
 		</tr>
 		</table>
-		<hr>
 		</div>
 		<div>
+		<hr>
 			<input type="submit" value="Login" formaction="main?action=login" formmethod="post"/>
 			<input type="reset" value="Clear" />
-			<input type="submit" value="Register" formaction="main?action=register" formmethod="post"/>
+			<input type="submit" value="Register" formaction="main?action=register" formmethod="post" formnovalidate/>
 		</div>
+	</fieldset>
 	</form>
 </body>
 </html>
