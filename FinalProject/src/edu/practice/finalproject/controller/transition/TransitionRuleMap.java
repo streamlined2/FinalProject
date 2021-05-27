@@ -1,8 +1,11 @@
 package edu.practice.finalproject.controller.transition;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.Optional;
+
 import edu.practice.finalproject.controller.admin.User;
 import edu.practice.finalproject.view.action.Action;
 import edu.practice.finalproject.view.form.Form;
@@ -10,12 +13,12 @@ import edu.practice.finalproject.view.form.Form;
 public class TransitionRuleMap {
 	
 	private static class TransitionRuleKey {
-		private final User user;
+		private final Class<? extends User> userClass;
 		private final Form form;
 		private final Action action;
 		
-		private TransitionRuleKey(User user,Form form,Action action){
-			this.user=user;
+		private TransitionRuleKey(final Class<? extends User> userClass,final Form form,final Action action){
+			this.userClass=userClass;
 			this.form=form;
 			this.action=action;
 		}
@@ -24,7 +27,7 @@ public class TransitionRuleMap {
 			if(o instanceof TransitionRuleKey) {
 				final TransitionRuleKey key=(TransitionRuleKey)o;
 				return 
-						Objects.equals(user, key.user) &&
+						Objects.equals(userClass, key.userClass) &&
 						Objects.equals(form, key.form) &&
 						Objects.equals(action, key.action);
 			}
@@ -32,18 +35,30 @@ public class TransitionRuleMap {
 		}
 		
 		@Override public int hashCode() {
-			return Objects.hash(user,form,action);
+			return Objects.hash(userClass,form,action);
+		}
+		
+		public boolean encompasses(final TransitionRuleKey key) {
+			boolean suits=true;
+			if(userClass!=null)	suits = suits && userClass.isAssignableFrom(key.userClass); 
+			if(form!=null) suits = suits && Objects.equals(form, key.form);
+			if(action!=null) suits = suits && Objects.equals(action, key.action); 
+			return suits;
 		}
 	}
 	
-	private final Map<TransitionRuleKey,Form> ruleMap=new HashMap<>();
+	private final Map<TransitionRuleKey,Form> ruleMap=new LinkedHashMap<>();
 	
-	public void addRule(User user,Form sourceForm,Action action,Form targetForm) {
-		ruleMap.put(new TransitionRuleKey(user,sourceForm,action), targetForm);
+	public void addRule(Class<? extends User> userClass,Form sourceForm,Action action,Form targetForm) {
+		ruleMap.put(new TransitionRuleKey(userClass,sourceForm,action), targetForm);
 	}
 	
-	public Form getNextForm(User user,Form sourceForm,Action action) {
-		return ruleMap.get(new TransitionRuleKey(user, sourceForm, action));
+	public Optional<Form> getNextForm(final User user,final Form sourceForm,final Action action) {
+		final TransitionRuleKey seekKey=new TransitionRuleKey(user==null?null:user.getClass(), sourceForm, action);
+		for(final Entry<TransitionRuleKey,Form> entry:ruleMap.entrySet()) {
+			if(entry.getKey().encompasses(seekKey)) return Optional.of(entry.getValue());
+		}
+		return Optional.empty();
 	}
 
 }

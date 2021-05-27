@@ -166,5 +166,4 @@ public class FCServlet extends HttpServlet {
 		final String[] values=parameters.get(Names.ACTION_PARAMETER);
 		return values!=null && Arrays.asList(values).contains(actionName); 
 	}
-
 }

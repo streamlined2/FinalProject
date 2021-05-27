@@ -26,8 +26,8 @@
 		<tr>
 			<td><label for="passport">Passport</label></td>
 			<td><input type="text" id="passport" name="passport" value="" placeholder="Enter passport number here" size="50" pattern="${requestScope.passportPattern}" title="Please enter letters or digits" required/></td>
-		</tr>
-		<tr> -->
+		</tr> -->
+		<tr>
 			<td><label for="role">Role</label></td>
 			<td>
 				<select name="role" id="role">
