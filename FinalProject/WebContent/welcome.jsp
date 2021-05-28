@@ -8,7 +8,8 @@
 	<title>Welcome form</title>
 </head>
 <body>
-<h1>Welcome!</h1>
-<a href="main">Click here to proceed</a>
+	<%@include file="common-controls.jsp" %>
+	<p><h1>Welcome!</h1>
+	<p><a href="main">Click here to proceed</a>
 </body>
 </html>

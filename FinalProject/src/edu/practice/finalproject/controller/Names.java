@@ -7,6 +7,7 @@ public abstract class Names {
 	public static final String USER_ATTRIBUTE = "user";
 	public static final String FORM_ATTRIBUTE = "form";
 	public static final String ERROR_ATTRIBUTE = "error";
+	public static final String MESSAGE_ATTRIBUTE = "message";
 	public static final String LOCALE_ATTRIBUTE = "locale";
 	public static final String ENGLISH_LOCALE = "en";
 	public static final String UKRAINIAN_LOCALE = "uk";

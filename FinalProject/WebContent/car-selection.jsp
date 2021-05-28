@@ -117,8 +117,10 @@
 			</table>
 		</fieldset>
 		<hr>
-		<input type="submit" value="Select" formevent="main?action=select_car" formmethod="post"/>
-		<input type="reset" value="Clear" />
+		<table><tfoot>
+		<td><input type="submit" value="Select" formevent="main?action=select_car" formmethod="post"/></td>
+		<td><input type="reset" value="Clear" /></td>
+		</tfoot></table>
 	</fieldset>
 	</form>
 </body>

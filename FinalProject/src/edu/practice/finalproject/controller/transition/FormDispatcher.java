@@ -48,9 +48,9 @@ public class FormDispatcher {
 	public Form getInitialForm() { return LOGIN_FORM;}
 
 	public Form getNextForm(final User user,final Form form,final Action action,final boolean actionSucceeded) {
-		if(!actionSucceeded) return form;
 		if(action==SWITCH_LOCALE_ACTION) return form;
 		if(action==LOGOUT_ACTION) return getInitialForm();
+		if(!actionSucceeded) return form;
 		return transitions.getNextForm(user, form, action).orElse(getInitialForm());
 	}
 	

@@ -57,6 +57,7 @@ public class FCServlet extends HttpServlet {
     private void process(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException {
     	initLocale(req);
 		clearError(req);
+		clearMessage(req);
 		Form currentForm=getForm(req);
 		if(currentForm==null) {
 			currentForm=formDispatcher.getInitialForm();
@@ -118,6 +119,14 @@ public class FCServlet extends HttpServlet {
 		removeAttribute(req,Names.ERROR_ATTRIBUTE);
 	}
 	
+	public static void setMessage(final HttpServletRequest req,final String message) {
+		setAttribute(req,Names.MESSAGE_ATTRIBUTE,message);
+	}
+	
+	public static void clearMessage(final HttpServletRequest req) {
+		removeAttribute(req,Names.MESSAGE_ATTRIBUTE);
+	}
+	
 	@Override
 	protected void doGet(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException {
 		process(req,resp);
@@ -133,7 +142,15 @@ public class FCServlet extends HttpServlet {
 			setAttribute(req, Names.LOCALE_ATTRIBUTE, Locale.ENGLISH);
 		}
 	}
-
+	
+	public static void setLocale(final HttpServletRequest req,final Locale locale) {
+		setAttribute(req, Names.LOCALE_ATTRIBUTE, locale);
+	}
+	
+	public static Locale getLocale(final HttpServletRequest req) {
+		return (Locale)getAttribute(req, Names.LOCALE_ATTRIBUTE);
+	}
+	
 	public static boolean setAttribute(final HttpServletRequest req,final String name,final Object value) {
 		final HttpSession session=req.getSession();
 		if(session!=null) {
@@ -160,6 +177,11 @@ public class FCServlet extends HttpServlet {
 	
 	public static String getParameterValue(final HttpServletRequest req,final String parameter) {
 		return getParameterValue(req.getParameterMap(),parameter);
+	}
+
+	public static String getParameterValue(final HttpServletRequest req,final String parameter,final String defaultValue) {
+		final String value=getParameterValue(req.getParameterMap(),parameter);
+		return value==null?defaultValue:value;
 	}
 
 	public static String getParameterValue(final Map<String,String[]> parameters,final String parameter) {

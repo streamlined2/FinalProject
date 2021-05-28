@@ -1,5 +1,6 @@
 package edu.practice.finalproject.view.action;
 
+import java.util.Locale;
 import java.util.Optional;
 
 import javax.servlet.ServletException;
@@ -36,6 +37,7 @@ public class LoginAction extends Action {
 			
 			if(!user.isEmpty()) {
 				FCServlet.setUser(req, user.get());
+				FCServlet.setMessage(req, String.format("%s, %s!", FCServlet.getLocale(req)==Locale.ENGLISH?"Hello":"Добрий день",user.get().toString()));
 				return true;
 			}else {
 				FCServlet.setError(req, ERROR_MSG);

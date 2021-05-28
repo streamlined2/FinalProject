@@ -33,9 +33,11 @@
 		</div>
 		<div>
 		<hr>
-			<input type="submit" value="Login" formaction="main?action=login" formmethod="post"/>
-			<input type="reset" value="Clear" />
-			<input type="submit" value="Register" formaction="main?action=register" formmethod="post" formnovalidate/>
+		<table><tfoot>
+			<td><input type="submit" value="Login" formaction="main?action=login" formmethod="post"/></td>
+			<td><input type="reset" value="Clear" /></td>
+			<td><input type="submit" value="Register" formaction="main?action=register" formmethod="post" formnovalidate/></td>
+		</tfoot></table>
 		</div>
 	</fieldset>
 	</form>
