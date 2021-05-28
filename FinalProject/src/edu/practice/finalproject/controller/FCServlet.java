@@ -3,6 +3,7 @@ package edu.practice.finalproject.controller;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.naming.Context;
@@ -54,6 +55,7 @@ public class FCServlet extends HttpServlet {
 	}
 
     private void process(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException {
+    	initLocale(req);
 		clearError(req);
 		Form currentForm=getForm(req);
 		if(currentForm==null) {
@@ -124,6 +126,12 @@ public class FCServlet extends HttpServlet {
 	@Override
 	protected void doPost(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException {
 		process(req,resp);
+	}
+	
+	public static void initLocale(final HttpServletRequest req) {
+		if(getAttribute(req, Names.LOCALE_ATTRIBUTE)==null) {
+			setAttribute(req, Names.LOCALE_ATTRIBUTE, Locale.ENGLISH);
+		}
 	}
 
 	public static boolean setAttribute(final HttpServletRequest req,final String name,final Object value) {

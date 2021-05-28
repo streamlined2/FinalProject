@@ -6,7 +6,9 @@ import edu.practice.finalproject.controller.admin.User;
 import edu.practice.finalproject.view.action.Action;
 import edu.practice.finalproject.view.action.BackAction;
 import edu.practice.finalproject.view.action.ConfirmCarCriteriaAction;
+import edu.practice.finalproject.view.action.SwitchLocaleAction;
 import edu.practice.finalproject.view.action.LoginAction;
+import edu.practice.finalproject.view.action.LogoutAction;
 import edu.practice.finalproject.view.action.RegisterAction;
 import edu.practice.finalproject.view.action.RegisterNewAction;
 import edu.practice.finalproject.view.form.CarSelectionCriteriaForm;
@@ -27,6 +29,8 @@ public class FormDispatcher {
 	public static final RegisterNewAction REGISTER_NEW_ACTION=new RegisterNewAction("register_new");
 	public static final BackAction BACK_ACTION=new BackAction("back");
 	public static final ConfirmCarCriteriaAction CONFIRM_CAR_CRITERIA_ACTION=new ConfirmCarCriteriaAction("confirm_car_criteria");
+	public static final SwitchLocaleAction SWITCH_LOCALE_ACTION=new SwitchLocaleAction("change_locale");
+	public static final LogoutAction LOGOUT_ACTION=new LogoutAction("logout");
 
 	public static final LoginForm LOGIN_FORM=new LoginForm("/login.jsp");
 	public static final RegisterForm REGISTER_FORM=new RegisterForm("/register.jsp");
@@ -45,6 +49,8 @@ public class FormDispatcher {
 
 	public Form getNextForm(final User user,final Form form,final Action action,final boolean actionSucceeded) {
 		if(!actionSucceeded) return form;
+		if(action==SWITCH_LOCALE_ACTION) return form;
+		if(action==LOGOUT_ACTION) return getInitialForm();
 		return transitions.getNextForm(user, form, action).orElse(getInitialForm());
 	}
 	

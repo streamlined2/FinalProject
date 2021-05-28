@@ -5,6 +5,9 @@ import java.util.Objects;
 
 import javax.servlet.http.HttpServletRequest;
 
+import edu.practice.finalproject.controller.FCServlet;
+import edu.practice.finalproject.controller.Names;
+import edu.practice.finalproject.controller.transition.FormDispatcher;
 import edu.practice.finalproject.view.action.Action;
 
 /**
@@ -25,7 +28,12 @@ public abstract class Form {
 	
 	public String getName() { return name;}
 	
-	public Action getAction(Map<String,String[]> parameters) {	return getDefaultAction();	}
+	public Action getAction(Map<String,String[]> parameters) {	
+		if(FCServlet.isActionPresent(parameters,Names.LOCALE_PARAMETER)) return FormDispatcher.SWITCH_LOCALE_ACTION;
+		if(FCServlet.isActionPresent(parameters,Names.LOGOUT_PARAMETER)) return FormDispatcher.LOGOUT_ACTION;
+		return getDefaultAction();	
+	}
+	
 	public abstract Action getDefaultAction();
 
 	@Override

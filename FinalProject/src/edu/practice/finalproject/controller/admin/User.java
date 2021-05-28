@@ -45,5 +45,9 @@ public abstract class User extends NaturalKeyEntity<String> {
 	protected String keyFieldGetter() {
 		return "getLogin";
 	}
+	
+	@Override public String toString() {
+		return login;
+	}
 
 }

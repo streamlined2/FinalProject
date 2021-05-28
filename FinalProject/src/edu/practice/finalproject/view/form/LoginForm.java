@@ -25,7 +25,7 @@ public class LoginForm extends Form {
 	public Action getAction(final Map<String,String[]> parameters) {
 		if(FCServlet.isActionPresent(parameters,Names.REGISTER_PARAMETER))
 			return FormDispatcher.REGISTER_ACTION;
-		return getDefaultAction();
+		return super.getAction(parameters);
 	}
 
 	@Override

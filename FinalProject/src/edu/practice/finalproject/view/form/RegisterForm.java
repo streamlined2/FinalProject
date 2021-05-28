@@ -27,7 +27,7 @@ public class RegisterForm extends Form {
 	public Action getAction(final Map<String,String[]> parameters) {
 		if(FCServlet.isActionPresent(parameters,Names.REGISTER_NEW_PARAMETER))
 			return FormDispatcher.REGISTER_NEW_ACTION;
-		return getDefaultAction();
+		return super.getAction(parameters);
 	}
 
 	@Override

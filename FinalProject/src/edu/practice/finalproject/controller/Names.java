@@ -7,6 +7,9 @@ public abstract class Names {
 	public static final String USER_ATTRIBUTE = "user";
 	public static final String FORM_ATTRIBUTE = "form";
 	public static final String ERROR_ATTRIBUTE = "error";
+	public static final String LOCALE_ATTRIBUTE = "locale";
+	public static final String ENGLISH_LOCALE = "en";
+	public static final String UKRAINIAN_LOCALE = "uk";
 	public static final String LOGIN_PATTERN_ATTRIBUTE = "loginPattern"; 
 	public static final String PASSWORD_PATTERN_ATTRIBUTE = "passwordPattern"; 
 	public static final String NAME_PATTERN_ATTRIBUTE = "namePattern"; 
@@ -17,6 +20,8 @@ public abstract class Names {
 	public static final String ROLE_PARAMETER = "role";
 	public static final String CLIENT_ROLE_PARAMETER = "client";
 	public static final String ADMIN_ROLE_PARAMETER = "admin";
+	public static final String LOCALE_PARAMETER = "locale";
+	public static final String LOGOUT_PARAMETER = "logout";
 	public static final String MANAGER_ROLE_PARAMETER = "manager";
 	public static final String PASSWORD_PARAMETER = "password";
 	public static final String PASSWORD2_PARAMETER = "password2";

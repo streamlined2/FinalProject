@@ -26,5 +26,9 @@ public class Client extends User {
 	public void checkPermission(Action action) throws SecurityException {
 		if(!(action instanceof ClientAction)) throw new SecurityException("Client may perform appropriate actions only!");
 	}
+	
+	@Override public String toString() {
+		return new StringBuilder(firstName).append(" ").append(lastName).toString();
+	}
 
 }
