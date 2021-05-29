@@ -1,5 +1,7 @@
 package edu.practice.finalproject.controller;
 
+import java.util.Locale;
+
 public abstract class Names {
 	
 	private Names() {}
@@ -9,12 +11,11 @@ public abstract class Names {
 	public static final String ERROR_ATTRIBUTE = "error";
 	public static final String MESSAGE_ATTRIBUTE = "message";
 	public static final String LOCALE_ATTRIBUTE = "locale";
-	public static final String ENGLISH_LOCALE = "en";
-	public static final String UKRAINIAN_LOCALE = "uk";
 	public static final String LOGIN_PATTERN_ATTRIBUTE = "loginPattern"; 
 	public static final String PASSWORD_PATTERN_ATTRIBUTE = "passwordPattern"; 
 	public static final String NAME_PATTERN_ATTRIBUTE = "namePattern"; 
 	public static final String PASSPORT_PATTERN_ATTRIBUTE = "passportPattern";
+	public static final String AVAILABLE_LOCALES_ATTRIBUTE = "availableLocales";
 
 	public static final String ACTION_PARAMETER = "action";
 	public static final String USER_PARAMETER = "user";

@@ -35,6 +35,9 @@ public class FCServlet extends HttpServlet {
 	private EntityManager entityManager;
 	private FormDispatcher formDispatcher;
 	
+	public static final Locale UKRAINIAN_LOCALE = Locale.forLanguageTag("uk");
+	private static final Locale[] availableLocales= { Locale.ENGLISH, UKRAINIAN_LOCALE};
+	
 	public FCServlet() {
 		super();
 	}
@@ -55,6 +58,8 @@ public class FCServlet extends HttpServlet {
 	}
 
     private void process(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException {
+		getServletContext().setAttribute(Names.AVAILABLE_LOCALES_ATTRIBUTE,availableLocales);
+		
     	initLocale(req);
 		clearError(req);
 		clearMessage(req);
@@ -141,6 +146,11 @@ public class FCServlet extends HttpServlet {
 		if(getAttribute(req, Names.LOCALE_ATTRIBUTE)==null) {
 			setAttribute(req, Names.LOCALE_ATTRIBUTE, Locale.ENGLISH);
 		}
+	}
+	
+	public static boolean isAcceptableLanguage(final String language) {
+		if(language==null) return false;
+		return Arrays.asList(availableLocales).contains(Locale.forLanguageTag(language)); 
 	}
 	
 	public static void setLocale(final HttpServletRequest req,final Locale locale) {

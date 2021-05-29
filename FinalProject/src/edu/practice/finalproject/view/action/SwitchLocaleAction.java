@@ -17,17 +17,15 @@ public class SwitchLocaleAction extends Action {
 
 	@Override
 	public boolean execute(HttpServletRequest req, EntityManager entityManager) throws ServletException {
-		final String language=FCServlet.getParameterValue(req,Names.LOCALE_PARAMETER,Names.ENGLISH_LOCALE);
-		switch(language) {
-		case Names.ENGLISH_LOCALE:
-		case Names.UKRAINIAN_LOCALE:
-			final Locale locale = Locale.forLanguageTag(language);
-			FCServlet.setLocale(req,locale);
-			FCServlet.setMessage(req, locale==Locale.ENGLISH?"Locale switched to English":"Локаль змінено на Українську");
-			return true;
-		default:
+		final String language=FCServlet.getParameterValue(req,Names.LOCALE_PARAMETER);
+		if(!FCServlet.isAcceptableLanguage(language)) {
 			throw new ServletException("wrong locale");
 		}
+		final Locale locale = Locale.forLanguageTag(language);
+		Locale.setDefault(locale);
+		FCServlet.setLocale(req,locale);
+		FCServlet.setMessage(req, locale==Locale.ENGLISH?"Locale switched to English":"Локаль змінено на Українську");
+		return true;
 	}
 
 }
