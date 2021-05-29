@@ -2,6 +2,8 @@ package utilities;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
@@ -28,6 +30,23 @@ public abstract class Utilities {
 		final MessageDigest md=MessageDigest.getInstance(algorithm);
 		md.update(input);
 	    return md.digest();
+	}
+	
+	public static String[] getLabels(final Class<? extends Enum<?>> cl) {
+		final String[] labels=new String[cl.getEnumConstants().length];
+		int k=0;
+		for(final Enum<?> value:cl.getEnumConstants()) {
+			labels[k++]=value.toString();
+		}
+		return labels;
+	}
+	
+	public static Optional<Enum<?>> getEnumByLabel(final Class<? extends Enum<?>> cl,final String label){
+		Objects.requireNonNull(label);
+		for(final Enum<?> value:cl.getEnumConstants()) {
+			if(label.equals(value.toString())) return Optional.of(value);
+		}
+		return Optional.empty();
 	}
 
 	public static boolean checkPattern(final String value, final String pattern) {

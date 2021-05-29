@@ -16,6 +16,10 @@ public abstract class Names {
 	public static final String NAME_PATTERN_ATTRIBUTE = "namePattern"; 
 	public static final String PASSPORT_PATTERN_ATTRIBUTE = "passportPattern";
 	public static final String AVAILABLE_LOCALES_ATTRIBUTE = "availableLocales";
+	public static final String MANUFACTURER_VALUES_ATTRIBUTE = "manufacturerValues";
+	public static final String QUALITY_GRADES_VALUES_ATTRIBUTE = "qualityGradeValues";
+	public static final String COLOR_VALUES_ATTRIBUTE = "colorValues";
+	public static final String STYLE_VALUES_ATTRIBUTE = "styleValues";
 
 	public static final String ACTION_PARAMETER = "action";
 	public static final String USER_PARAMETER = "user";
