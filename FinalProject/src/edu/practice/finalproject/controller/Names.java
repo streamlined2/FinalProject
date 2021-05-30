@@ -1,7 +1,5 @@
 package edu.practice.finalproject.controller;
 
-import java.util.Locale;
-
 public abstract class Names {
 	
 	private Names() {}
@@ -17,7 +15,7 @@ public abstract class Names {
 	public static final String PASSPORT_PATTERN_ATTRIBUTE = "passportPattern";
 	public static final String AVAILABLE_LOCALES_ATTRIBUTE = "availableLocales";
 	public static final String MANUFACTURER_VALUES_ATTRIBUTE = "manufacturerValues";
-	public static final String QUALITY_GRADES_VALUES_ATTRIBUTE = "qualityGradeValues";
+	public static final String QUALITY_GRADE_VALUES_ATTRIBUTE = "qualityGradeValues";
 	public static final String COLOR_VALUES_ATTRIBUTE = "colorValues";
 	public static final String STYLE_VALUES_ATTRIBUTE = "styleValues";
 
@@ -36,6 +34,24 @@ public abstract class Names {
 	public static final String REGISTER_NEW_PARAMETER = "register_new";
 	public static final String FIRSTNAME_PARAMETER = "firstname";
 	public static final String LASTNAME_PARAMETER = "lastname";
+	public static final String CONFIRM_CAR_CRITERIA_PARAMETER = "confirm_car_criteria";
+	public static final String SELECT_CAR_PARAMETER = "select_car";
+	public static final String SELECT_BY_MANUFACTURER_PARAMETER = "selectByManufacturer";
+	public static final String MANUFACTURER_PARAMETER = "manufacturer";
+	public static final String SELECT_BY_QUALITY_GRADE_PARAMETER = "selectByQualityGrade";
+	public static final String QUALITY_GRADE_PARAMETER = "qualityGrade";
+	public static final String SELECT_BY_COLOR_PARAMETER = "selectByColor";
+	public static final String COLOR_PARAMETER = "color";
+	public static final String SELECT_BY_STYLE_PARAMETER = "selectByStyle";
+	public static final String STYLE_PARAMETER = "style";
+	public static final String ASCENDING_ORDER = "asc";
+	public static final String DESCENDING_ORDER = "desc";
+	public static final String ORDER_BY_RENT_COST_PARAMETER = "orderByRentCost";
+	public static final String RENT_COST_ORDER_PARAMETER = "costSort";
+	public static final String ORDER_BY_MODEL_PARAMETER = "orderByModel";
+	public static final String MODEL_PARAMETER = "modelSort";
+	public static final String ORDER_BY_PRODUCTION_DATE = "orderByProductionDate";
+	public static final String PRODUCTION_DATE_PARAMETER = "productionDateSort";
 	
 	public static final String LOGIN_PATTERN = "[0-9A-Za-zÀ-ßà-ÿ¨¸ªº²³¯¿]+";
 	public static final String PASSWORD_PATTERN = "[0-9A-Za-zÀ-ßà-ÿ¨¸ªº²³¯¿]+";

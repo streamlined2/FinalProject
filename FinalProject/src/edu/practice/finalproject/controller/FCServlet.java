@@ -16,12 +16,13 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 
+import edu.practice.finalproject.controller.admin.Admin;
 import edu.practice.finalproject.controller.admin.User;
 import edu.practice.finalproject.controller.transition.FormDispatcher;
 import edu.practice.finalproject.model.dataaccess.EntityManager;
 import edu.practice.finalproject.view.action.Action;
 import edu.practice.finalproject.view.form.Form;
-import utilities.Utilities;
+import utilities.Utils;
 
 /**
  * Main servlet class that implements Front Controller patterm
@@ -35,6 +36,8 @@ public class FCServlet extends HttpServlet {
 	private EntityManager entityManager;
 	private FormDispatcher formDispatcher;
 	
+	private Admin admin;
+	
 	public static final Locale UKRAINIAN_LOCALE = Locale.forLanguageTag("uk");
 	private static final Locale[] availableLocales= { Locale.ENGLISH, UKRAINIAN_LOCALE};
 	
@@ -47,19 +50,21 @@ public class FCServlet extends HttpServlet {
 		try{
 			final Context envContext=(Context)new InitialContext().lookup("java:/comp/env");
 			entityManager=new EntityManager((DataSource)envContext.lookup("jdbc/autoleasing"));
+
+			formDispatcher=new FormDispatcher();
 			
-			formDispatcher=new FormDispatcher(
+			admin=new Admin(
 					getServletContext().getInitParameter("adminUserName"),
-					Utilities.getDigest(getServletContext().getInitParameter("adminPassword").getBytes()));
+					Utils.getDigest(getServletContext().getInitParameter("adminPassword").getBytes()));
+
+			getServletContext().setAttribute(Names.AVAILABLE_LOCALES_ATTRIBUTE,availableLocales);
 
 		}catch(NamingException | NoSuchAlgorithmException e) {
 			throw new ServletException(e);
 		}
 	}
 
-    private void process(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException {
-		getServletContext().setAttribute(Names.AVAILABLE_LOCALES_ATTRIBUTE,availableLocales);
-		
+    private void process(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException {	
     	initLocale(req);
 		clearError(req);
 		clearMessage(req);
@@ -92,6 +97,16 @@ public class FCServlet extends HttpServlet {
 		}
 	}
     
+	@Override
+	protected void doGet(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException {
+		process(req,resp);
+	}
+
+	@Override
+	protected void doPost(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException {
+		process(req,resp);
+	}
+	
 	public static Form getForm(final HttpServletRequest req) {
 		return (Form)getAttribute(req,Names.FORM_ATTRIBUTE);
 	}
@@ -132,20 +147,14 @@ public class FCServlet extends HttpServlet {
 		removeAttribute(req,Names.MESSAGE_ATTRIBUTE);
 	}
 	
-	@Override
-	protected void doGet(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException {
-		process(req,resp);
-	}
-
-	@Override
-	protected void doPost(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException {
-		process(req,resp);
-	}
-	
 	public static void initLocale(final HttpServletRequest req) {
 		if(getAttribute(req, Names.LOCALE_ATTRIBUTE)==null) {
-			setAttribute(req, Names.LOCALE_ATTRIBUTE, Locale.ENGLISH);
+			setAttribute(req, Names.LOCALE_ATTRIBUTE, getDefaultLocale());
 		}
+	}
+	
+	public static Locale getDefaultLocale() {
+		return Locale.ENGLISH;
 	}
 	
 	public static boolean isAcceptableLanguage(final String language) {

@@ -3,6 +3,9 @@ package edu.practice.finalproject.model.dataaccess;
 import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Objects;
 
 import edu.practice.finalproject.model.analysis.Inspector;
 import edu.practice.finalproject.model.entity.Entity;
@@ -22,6 +25,7 @@ public abstract class StatementBuilder {
 	private static final String FROM_CLAUSE = " FROM ";
 	private static final String SELECT_CLAUSE = "SELECT ";
 	private static final String AND_CLAUSE = " AND ";
+	private static final String ORDER_BY_CLAUSE = " ORDER BY ";
 
 	private StatementBuilder() {}
 	
@@ -46,11 +50,14 @@ public abstract class StatementBuilder {
 		return cl.getSimpleName().toLowerCase()+"_"+Entity.ID_FIELD;
 	}
 	
-	public static String getStringValue(final Object value) {
+	public static String mapObjectToString(final Object value) {
 		final StringBuilder sb=new StringBuilder();
-		if(value.getClass()==String.class) { 
+		final Class<?> cl=value.getClass();
+		if(cl.isEnum()) {
+			sb.append(((Enum<?>)value).ordinal());
+		}else if(cl==String.class) { 
 			sb.append("'").append(value).append("'");
-		}else if(value.getClass().isArray() && value.getClass().getComponentType()==byte.class){
+		}else if(cl.isArray() && cl.getComponentType()==byte.class){
 			sb.append("X'").append(byteArray2String((byte[])value)).append("'");
 		}else {
 			sb.append(value);
@@ -82,13 +89,32 @@ public abstract class StatementBuilder {
 		return sb;
 	}
 	
+	public static StringBuilder getOrderFieldList(final Map<String,Boolean> orderKeys) {
+		final StringBuilder sb=new StringBuilder();
+		Iterator<Entry<String, Boolean>> i=orderKeys.entrySet().iterator();
+		if(i.hasNext()) {
+			Entry<String, Boolean> entry=i.next();
+			addOrderItem(sb,entry.getKey(),entry.getValue());
+			while(i.hasNext()) {
+				entry=i.next();
+				sb.append(",");
+				addOrderItem(sb,entry.getKey(),entry.getValue());
+			}
+		}
+		return sb;
+	}
+	
+	private static void addOrderItem(final StringBuilder sb,final String orderKey,final boolean ascending) {
+		sb.append(orderKey).append(" ").append(ascending?"ASC":"DESC");
+	}
+	
 	public static StringBuilder getValueList(final Iterable<?> iterable,final String separator) {
 		final StringBuilder sb=new StringBuilder();
 		final Iterator<?> i=iterable.iterator();
 		if(i.hasNext()) {
-			sb.append(getStringValue(i.next()));
+			sb.append(mapObjectToString(i.next()));
 			while(i.hasNext()) {
-				sb.append(separator).append(getStringValue(i.next()));
+				sb.append(separator).append(mapObjectToString(i.next()));
 			}
 		}
 		return sb;
@@ -105,10 +131,10 @@ public abstract class StatementBuilder {
 		final Iterator<Method> fieldIterator=fields.iterator();
 		final Iterator<?> valueIterator=values.iterator();
 		if(fieldIterator.hasNext() && valueIterator.hasNext()) {
-			sb.append(Inspector.getFieldName(prefix,fieldIterator.next())).append("=").append(getStringValue(valueIterator.next()));
+			sb.append(Inspector.getFieldName(prefix,fieldIterator.next())).append("=").append(mapObjectToString(valueIterator.next()));
 			while(fieldIterator.hasNext() && valueIterator.hasNext()) {
 				sb.append(separator).
-				append(Inspector.getFieldName(prefix,fieldIterator.next())).append("=").append(getStringValue(valueIterator.next()));
+				append(Inspector.getFieldName(prefix,fieldIterator.next())).append("=").append(mapObjectToString(valueIterator.next()));
 			}
 		}
 		return sb;
@@ -126,7 +152,7 @@ public abstract class StatementBuilder {
 				append(WHERE_CLAUSE).
 				append(Entity.ID_FIELD).
 				append(IN_CLAUSE).
-				append(StatementBuilder.getStringValue(entity.getId())).
+				append(StatementBuilder.mapObjectToString(entity.getId())).
 				append(" )");
 	}
 
@@ -139,36 +165,43 @@ public abstract class StatementBuilder {
 				append(WHERE_CLAUSE).
 				append(NaturalKeyEntity.keyFieldName(entity)).
 				append(IN_CLAUSE).
-				append(getStringValue(key)).
+				append(mapObjectToString(key)).
 				append(" )");
 	}
 	
-	public static <E extends Entity> StringBuilder getSelectByCompositeKeyStatement(
-			final Class<E> cl,final String[] keys,final Object[] values) {
-		return new StringBuilder(SELECT_CLAUSE).
-				append(getFieldList(Inspector.getSetters(cl,false),",")).
-				append(FROM_CLAUSE).
-				append(getTableName(cl)).
-				append(WHERE_CLAUSE).
-				append(getKeyPairWhereClause(keys,values));
+	public static <E extends Entity> StringBuilder getSelectByKeyStatement(final Class<E> cl,final Map<String,?> keyPairs) {
+		return getSelectByKeyOrderedStatement(cl,keyPairs,null);
 	}
 	
-	private static StringBuilder getKeyPairWhereClause(final String[] keys,final Object[] values) {
+	public static <E extends Entity> StringBuilder getSelectByKeyOrderedStatement(final Class<E> cl,final Map<String,?> keyPairs,final Map<String,Boolean> orderKeys) {
+		final StringBuilder sb=new StringBuilder(SELECT_CLAUSE).
+				append(getFieldList(Inspector.getSetters(cl,false),",")).
+				append(FROM_CLAUSE).
+				append(getTableName(cl));
+		if(Objects.nonNull(keyPairs) && !keyPairs.isEmpty()) {
+			sb.append(WHERE_CLAUSE).append(getKeyPairWhereClause(keyPairs));
+		}
+		if(Objects.nonNull(orderKeys) && !orderKeys.isEmpty()) {
+			sb.append(ORDER_BY_CLAUSE).append(getOrderFieldList(orderKeys));
+		}
+		return sb;
+	}
+	
+	private static <V> StringBuilder getKeyPairWhereClause(final Map<String,V> entries) {
 		final StringBuilder sb=new StringBuilder();
-		int count=Math.min(keys.length,values.length)-1;
-		if(count>=0) {
-			sb.append(keys[count]).append("=").append(getStringValue(values[count]));
-			count--;
-			while(count>=0) {
-				sb.append(AND_CLAUSE).append(keys[count]).append("=").append(getStringValue(values[count]));
-				count--;
+		final Iterator<Entry<String,V>> i=entries.entrySet().iterator();
+		if(i.hasNext()) {
+			Map.Entry<String,V> entry=i.next();
+			sb.append(entry.getKey()).append("=").append(mapObjectToString(entry.getValue()));
+			while(i.hasNext()) {
+				entry=i.next();
+				sb.append(AND_CLAUSE).append(entry.getKey()).append("=").append(mapObjectToString(entry.getValue()));
 			}
 		}
 		return sb;
 	}
 	
-	public static <E extends Entity> StringBuilder getFetchEntitiesStatement(
-			final Class<E> cl,final boolean skipID) {
+	public static <E extends Entity> StringBuilder getFetchEntitiesStatement(final Class<E> cl,final boolean skipID) {
 		return new StringBuilder(SELECT_CLAUSE).
 				append(getFieldList(Inspector.getSetters(cl,skipID),",")).
 				append(FROM_CLAUSE).
@@ -186,18 +219,16 @@ public abstract class StatementBuilder {
 				append(")");
 	}
 	
-	public static <M extends Entity,S extends Entity> StringBuilder getInsertLinksStatement(
-			final M master,final Class<S> slaveClass) {
+	public static <M extends Entity,S extends Entity> StringBuilder getInsertLinksStatement(final M master,final Class<S> slaveClass) {
 		return new StringBuilder(INSERT_CLAUSE).
 				append(getLinkTableName((Class<M>)master.getClass(),slaveClass)).append(" (").
 				append(getLinkName(master)).append(",").append(getLinkName(slaveClass)).
 				append(VALUES_CLAUSE).
-				append(getStringValue(master.getId())).append(",").append("?").
+				append(mapObjectToString(master.getId())).append(",").append("?").
 				append(")");
 	}
 	
-	public static <M extends Entity,S extends Entity> StringBuilder getFetchSlaveEntitiesStatement(
-			final M master,final Class<S> slaveClass) {
+	public static <M extends Entity,S extends Entity> StringBuilder getFetchSlaveEntitiesStatement(	final M master,final Class<S> slaveClass) {
 		return new StringBuilder(SELECT_CLAUSE).
 				append(getFieldList(Inspector.getSetters(slaveClass,false),",","B")).
 				append(FROM_CLAUSE).
@@ -208,29 +239,27 @@ public abstract class StatementBuilder {
 				append(WHERE_CLAUSE).
 				append(getQualifiedAttribute("A",getLinkName(master))).
 				append(IN_CLAUSE).
-				append(getStringValue(master.getId())).
+				append(mapObjectToString(master.getId())).
 				append(" )");
 	}
 	
-	public static <E extends Entity> StringBuilder getDeleteStatement(
-			final E entity) {
+	public static <E extends Entity> StringBuilder getDeleteStatement(final E entity) {
 		return new StringBuilder(DELETE_CLAUSE).
 			append(getTableName((Class<E>) entity.getClass())).
 			append(WHERE_CLAUSE).
 			append(Entity.ID_FIELD).
 			append(IN_CLAUSE).
-			append(getStringValue(entity.getId())).
+			append(mapObjectToString(entity.getId())).
 			append(" )");
 	}
 	
-	public static <M extends Entity,S extends Entity> StringBuilder getDeleteLinkStatement(
-			final M master,final Class<S> slaveClass) {
+	public static <M extends Entity,S extends Entity> StringBuilder getDeleteLinkStatement(final M master,final Class<S> slaveClass) {
 		return new StringBuilder(DELETE_CLAUSE).
 			append(getLinkTableName((Class<M>)master.getClass(),slaveClass)).
 			append(WHERE_CLAUSE).
 			append(getLinkName(master)).
 			append(IN_CLAUSE).
-			append(getStringValue(master.getId())).
+			append(mapObjectToString(master.getId())).
 			append(" )");
 	}
 }

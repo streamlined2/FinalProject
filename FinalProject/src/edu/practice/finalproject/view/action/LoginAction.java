@@ -1,6 +1,8 @@
 package edu.practice.finalproject.view.action;
 
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.servlet.ServletException;
@@ -10,7 +12,7 @@ import edu.practice.finalproject.controller.FCServlet;
 import edu.practice.finalproject.controller.Names;
 import edu.practice.finalproject.controller.admin.User;
 import edu.practice.finalproject.model.dataaccess.EntityManager;
-import utilities.Utilities;
+import utilities.Utils;
 
 public class LoginAction extends Action {
 	
@@ -23,17 +25,17 @@ public class LoginAction extends Action {
 	@Override
 	public boolean execute(final HttpServletRequest req,final EntityManager entityManager) throws ServletException {
 		try {
-			Utilities.checkIfValid(req,Names.USER_PARAMETER,Utilities::checkLogin);
-			Utilities.checkIfValid(req,Names.PASSWORD_PARAMETER,Utilities::checkPassword);
+			Utils.checkIfValid(req,Names.USER_PARAMETER,Utils::checkLogin);
+			Utils.checkIfValid(req,Names.PASSWORD_PARAMETER,Utils::checkPassword);
 
 			final String role=FCServlet.getParameterValue(req,Names.ROLE_PARAMETER);
 			final String login=FCServlet.getParameterValue(req,Names.USER_PARAMETER);
-			final byte[] passwordDigest=Utilities.getDigest(FCServlet.getParameterValue(req, Names.PASSWORD_PARAMETER).getBytes());
+			final byte[] passwordDigest=Utils.getDigest(FCServlet.getParameterValue(req, Names.PASSWORD_PARAMETER).getBytes());
 
-			final Optional<? extends User> user=entityManager.findByCompositeKey(
-					Utilities.mapUserRoleToClass(role),
-					new String[] {"login","passwordDigest"},
-					new Object[] {login, passwordDigest});
+			final Map<String,Object> keyPairs=new HashMap<>();
+			keyPairs.put("login", login);
+			keyPairs.put("passwordDigest", passwordDigest);
+			final Optional<? extends User> user=entityManager.findByCompositeKey(Utils.mapUserRoleToClass(role),keyPairs);
 			
 			if(!user.isEmpty()) {
 				FCServlet.setUser(req, user.get());

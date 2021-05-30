@@ -16,9 +16,9 @@ import edu.practice.finalproject.controller.admin.Client;
 import edu.practice.finalproject.controller.admin.Manager;
 import edu.practice.finalproject.controller.admin.User;
 
-public abstract class Utilities {
+public abstract class Utils {
 	
-	private Utilities() {}
+	private Utils() {}
 
 	public static final String SHA_256="SHA-256";
 
@@ -41,12 +41,16 @@ public abstract class Utilities {
 		return labels;
 	}
 	
-	public static Optional<Enum<?>> getEnumByLabel(final Class<? extends Enum<?>> cl,final String label){
+	public static <V extends Enum<?>> V getByLabel(final Class<V> cl,final String label){
 		Objects.requireNonNull(label);
-		for(final Enum<?> value:cl.getEnumConstants()) {
-			if(label.equals(value.toString())) return Optional.of(value);
+		for(final V value:cl.getEnumConstants()) {
+			if(label.equals(value.toString())) return value;
 		}
-		return Optional.empty();
+		throw new IllegalArgumentException("incorrect label "+label+" for enum class "+cl.getName());
+	}
+	
+	public static boolean isAscendingOrder(final String flag) {
+		return flag.equals("asc");
 	}
 
 	public static boolean checkPattern(final String value, final String pattern) {
@@ -55,19 +59,19 @@ public abstract class Utilities {
 	}
 	
 	public static boolean checkLogin(final String login) {
-		return Utilities.checkPattern(login,Names.LOGIN_PATTERN);
+		return Utils.checkPattern(login,Names.LOGIN_PATTERN);
 	}
 	
 	public static boolean checkPassword(final String password) {
-		return Utilities.checkPattern(password,Names.PASSWORD_PATTERN);
+		return Utils.checkPattern(password,Names.PASSWORD_PATTERN);
 	}
 
 	public static boolean checkName(final String name) {
-		return Utilities.checkPattern(name,Names.NAME_PATTERN);
+		return Utils.checkPattern(name,Names.NAME_PATTERN);
 	}
 
 	public static boolean checkPassport(final String name) {
-		return Utilities.checkPattern(name,Names.PASSPORT_PATTERN);
+		return Utils.checkPattern(name,Names.PASSPORT_PATTERN);
 	}
 
 	public static void checkIfValid(final HttpServletRequest req,final String parameter,final Predicate<String> checker) {

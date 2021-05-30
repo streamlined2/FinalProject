@@ -3,13 +3,17 @@ package edu.practice.finalproject.model.dataaccess;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -201,8 +205,7 @@ public final class EntityManager {
 		return false;
 	}
 	
-	public <K extends Comparable<? super K>,E extends NaturalKeyEntity<K>> 
-			Optional<E> findByKey(final Class<E> cl,final K key) {
+	public <K extends Comparable<? super K>,E extends NaturalKeyEntity<K>> Optional<E> findByKey(final Class<E> cl,final K key) {
 		
 		final E entity=Inspector.createEntity(cl);
 		final StringBuilder clause=StatementBuilder.getSelectByNaturalKeyStatement(cl,entity,key);
@@ -221,8 +224,8 @@ public final class EntityManager {
 		return Optional.empty();
 	}
 
-	public <E extends Entity> Optional<E>findByCompositeKey(final Class<E> cl,final String[] keys,final Object[] values) {
-		final StringBuilder clause=StatementBuilder.getSelectByCompositeKeyStatement(cl,keys,values);
+	public <E extends Entity,V> Optional<E>findByCompositeKey(final Class<E> cl,final Map<String,V> keyPairs) {
+		final StringBuilder clause=StatementBuilder.getSelectByKeyStatement(cl,keyPairs);
 		try (
 				final Statement statement=dataSource.getConnection().createStatement();
 				final ResultSet rs=statement.executeQuery(clause.toString())){
@@ -238,16 +241,47 @@ public final class EntityManager {
 		return Optional.empty();
 	}
 
+	public <E extends Entity,V> List<E> fetchByCompositeKeyOrdered(final Class<E> cl,final Map<String,V> keyPairs,final Map<String,Boolean> orderKeys) {
+		final List<E> list=new LinkedList<>();
+		final StringBuilder clause=StatementBuilder.getSelectByKeyOrderedStatement(cl,keyPairs,orderKeys);
+		try (
+				final Statement statement=dataSource.getConnection().createStatement();
+				final ResultSet rs=statement.executeQuery(clause.toString())){
+		
+			while(rs.next()) {
+				final E entity=Inspector.createEntity(cl);
+				fillEntityValues(entity, Inspector.getSetters(cl,false), rs);
+				list.add(entity);
+			}
+		} catch (SQLException e) {
+			throw new DataAccessException(e);
+		}
+		return list;
+	}
+
 	private <E extends Entity> void fillEntityValues(
 			final E entity, final List<Method> setters, final ResultSet rs) {
 		int k=1;
 		try {
 			for(final Method setter:setters) {
-				Inspector.set(entity,setter,rs.getObject(k++));
+				Class<?>[] paramTypes=setter.getParameterTypes();
+				Object value = rs.getObject(k++);
+				Object obj=mapValueToObject(paramTypes[0],value);
+				Inspector.set(entity,setter,obj);
 			}
 		} catch (SQLException e) {
 			throw new DataAccessException(e);
 		}
 	}
 
+	private static <V> V mapValueToObject(final Class<V> cl,final Object value) {
+		if(cl.isEnum()) {
+			return (V)((Class<Enum<?>>)cl).getEnumConstants()[((Number)value).intValue()];
+		}else if(LocalDate.class.isAssignableFrom(cl)) {
+			return (V)((Date)value).toLocalDate();
+		}else {
+			return (V)value;
+		}
+	}
+	
 }

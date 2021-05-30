@@ -4,7 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import edu.practice.finalproject.model.dataaccess.EntityManager;
 
-public class AdminAction extends Action {
+public abstract class AdminAction extends Action {
 	
 	public AdminAction(final String name) {
 		super(name);
@@ -12,7 +12,6 @@ public class AdminAction extends Action {
 
 	@Override
 	public boolean execute(final HttpServletRequest req,final EntityManager entityManager) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 

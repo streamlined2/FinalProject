@@ -34,5 +34,4 @@ public class RegisterForm extends Form {
 	public Action getDefaultAction() {
 		return FormDispatcher.BACK_ACTION;
 	}
-
 }
