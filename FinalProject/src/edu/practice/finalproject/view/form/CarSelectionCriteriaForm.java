@@ -35,6 +35,6 @@ public class CarSelectionCriteriaForm extends Form {
 
 	@Override
 	public Action getDefaultAction() {
-		return FormDispatcher.CONFIRM_CAR_CRITERIA_ACTION;
+		return FormDispatcher.BACK_ACTION;
 	}
 }

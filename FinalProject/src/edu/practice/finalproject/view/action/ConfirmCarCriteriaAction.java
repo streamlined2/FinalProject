@@ -25,7 +25,7 @@ public class ConfirmCarCriteriaAction extends ClientAction {
 		super(name);
 	}
 	
-	private static <V> void addKeyPair(final Map<String,Object> keyPairs,final String flag,final String key,final Optional<V> value) {
+	private static <V> void addFilterKeyValue(final Map<String,Object> keyPairs,final String flag,final String key,final Optional<V> value) {
 		if(Objects.nonNull(flag) && !flag.isEmpty() && !value.isEmpty()) {
 			keyPairs.put(key, value.get());
 		}
@@ -49,10 +49,10 @@ public class ConfirmCarCriteriaAction extends ClientAction {
 		final String style=FCServlet.getParameterValue(req,Names.STYLE_PARAMETER);
 		
 		final Map<String,Object> keyPairs=new HashMap<>();
-		addKeyPair(keyPairs,selectByManufacturer,"manufacturer",Utils.getByLabel(Manufacturer.class,manufacturer));
-		addKeyPair(keyPairs,selectByQualityGrade,"qualityGrade",Utils.getByLabel(QualityGrade.class,qualityGrade));
-		addKeyPair(keyPairs,selectByColor,"color",Utils.getByLabel(Color.class,color));
-		addKeyPair(keyPairs,selectByStyle,"style",Utils.getByLabel(Style.class,style));
+		addFilterKeyValue(keyPairs,selectByManufacturer,"manufacturer",Utils.getByLabel(Manufacturer.class,manufacturer));
+		addFilterKeyValue(keyPairs,selectByQualityGrade,"qualityGrade",Utils.getByLabel(QualityGrade.class,qualityGrade));
+		addFilterKeyValue(keyPairs,selectByColor,"color",Utils.getByLabel(Color.class,color));
+		addFilterKeyValue(keyPairs,selectByStyle,"style",Utils.getByLabel(Style.class,style));
 		
 		final String orderByRentCost=FCServlet.getParameterValue(req,Names.ORDER_BY_RENT_COST_PARAMETER);
 		final String costSort=FCServlet.getParameterValue(req,Names.RENT_COST_ORDER_PARAMETER);

@@ -10,16 +10,13 @@
 <body>
 	<%@include file="common-controls.jsp" %>
 	<form>
-	<fieldset>
-		<legend>Credentials</legend>
+	<fieldset><legend>Credentials</legend>
 		<label for="client">Client</label>
 		<input type="radio" id="client" name="role" value="client" checked/>
 		<label for="manager">Manager</label>
 		<input type="radio" id="manager" name="role" value="manager"/>
 		<label for="admin">Administrator</label>
-		<input type="radio" id="admin" name="role" value="admin"/><br>
-
-		<div>
+		<input type="radio" id="admin" name="role" value="admin"/>
 		<table>
 		<tr>
 			<td><label for="user">Login</label></td>
@@ -30,14 +27,11 @@
 			<td><input type="password" id="password" name="password" value="" placeholder="Enter password here" size="30" required pattern="${requestScope.passwordPattern}" title="Please enter letters or digits"/></td>
 		</tr>
 		</table>
-		</div>
-		<div>
 		<hr>
-		<table><tfoot>
-			<td><input type="submit" value="Login" formaction="main?action=login" formmethod="post"/></td>
-			<td><input type="reset" value="Clear" /></td>
-			<td><input type="submit" value="Register" formaction="main?action=register" formmethod="post" formnovalidate/></td>
-		</tfoot></table>
+		<div>
+		<input type="submit" value="Login" formaction="main?action=login" formmethod="post"/>
+		<input type="reset" value="Clear" />
+		<input type="submit" value="Register" formaction="main?action=register" formmethod="post" formnovalidate/>
 		</div>
 	</fieldset>
 	</form>

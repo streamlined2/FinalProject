@@ -20,6 +20,9 @@
 					</c:choose>
 				</c:forEach>
 			</select>
+<!-- 		<button type="submit" width="24" height="24" formaction="main?action=locale" formmethod="post">
+				<img src="switchlocale.png">
+			</button> -->
 		</form></td>
 		<td><div class="message">${sessionScope.message}</div></td>
 		<td><div class="error">${sessionScope.error}</div></td>

@@ -10,7 +10,7 @@
 <body>
 	<%@include file="common-controls.jsp" %>
 	
-	<form>
+	<form event="main?action=confirm_car_criteria" method="post">
 		<fieldset>
 		<legend>Car criteria</legend>
 			<fieldset>
@@ -98,10 +98,8 @@
 			</table>
 		</fieldset>
 		<hr>
-		<table><tr>
-		<td><input type="submit" value="Select" formevent="main?action=confirm_car_criteria" formmethod="post"/></td>
-		<td><input type="reset" value="Clear" /></td>
-		</tr></table>
+		<input type="submit" value="Select" formaction="main?action=confirm_car_criteria" formmethod="post"/>
+		<input type="reset" value="Clear" />
 	</fieldset>
 	</form>
 </body>
