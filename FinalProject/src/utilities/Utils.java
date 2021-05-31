@@ -41,16 +41,16 @@ public abstract class Utils {
 		return labels;
 	}
 	
-	public static <V extends Enum<?>> V getByLabel(final Class<V> cl,final String label){
-		Objects.requireNonNull(label);
+	public static <V extends Enum<?>> Optional<V> getByLabel(final Class<V> cl,final String label){
+		if(Objects.isNull(label)) return Optional.empty();
 		for(final V value:cl.getEnumConstants()) {
-			if(label.equals(value.toString())) return value;
+			if(label.equals(value.toString())) return Optional.of(value);
 		}
 		throw new IllegalArgumentException("incorrect label "+label+" for enum class "+cl.getName());
 	}
 	
 	public static boolean isAscendingOrder(final String flag) {
-		return flag.equals("asc");
+		return Objects.nonNull(flag) && flag.equals("asc");
 	}
 
 	public static boolean checkPattern(final String value, final String pattern) {

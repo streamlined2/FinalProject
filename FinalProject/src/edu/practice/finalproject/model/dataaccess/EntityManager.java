@@ -64,7 +64,8 @@ public final class EntityManager {
 		final StringBuilder clause=StatementBuilder.getFetchEntitiesStatement(cl,skipID);
 
 		try (
-				final Statement statement=dataSource.getConnection().createStatement();
+				final Connection conn=dataSource.getConnection();
+				final Statement statement=conn.createStatement();
 				final ResultSet rs=statement.executeQuery(clause.toString())){
 			
 			final List<Method> setters=Inspector.getSetters(cl,skipID);
@@ -110,7 +111,8 @@ public final class EntityManager {
 		final StringBuilder clause=StatementBuilder.getFetchSlaveEntitiesStatement(master,slaveClass);
 
 		try (
-				final Statement statement=dataSource.getConnection().createStatement();
+				final Connection conn=dataSource.getConnection();
+				final Statement statement=conn.createStatement();
 				final ResultSet rs=statement.executeQuery(clause.toString())){
 			
 			final List<Method> setters=Inspector.getSetters(slaveClass,false);
@@ -211,7 +213,8 @@ public final class EntityManager {
 		final StringBuilder clause=StatementBuilder.getSelectByNaturalKeyStatement(cl,entity,key);
 
 		try (
-				final Statement statement=dataSource.getConnection().createStatement();
+				final Connection conn=dataSource.getConnection();
+				final Statement statement=conn.createStatement();
 				final ResultSet rs=statement.executeQuery(clause.toString())){
 		
 			if(rs.next()) {
@@ -227,7 +230,8 @@ public final class EntityManager {
 	public <E extends Entity,V> Optional<E>findByCompositeKey(final Class<E> cl,final Map<String,V> keyPairs) {
 		final StringBuilder clause=StatementBuilder.getSelectByKeyStatement(cl,keyPairs);
 		try (
-				final Statement statement=dataSource.getConnection().createStatement();
+				final Connection conn=dataSource.getConnection();				
+				final Statement statement=conn.createStatement();
 				final ResultSet rs=statement.executeQuery(clause.toString())){
 		
 			final E entity=Inspector.createEntity(cl);
@@ -245,7 +249,8 @@ public final class EntityManager {
 		final List<E> list=new LinkedList<>();
 		final StringBuilder clause=StatementBuilder.getSelectByKeyOrderedStatement(cl,keyPairs,orderKeys);
 		try (
-				final Statement statement=dataSource.getConnection().createStatement();
+				final Connection conn=dataSource.getConnection();
+				final Statement statement=conn.createStatement();
 				final ResultSet rs=statement.executeQuery(clause.toString())){
 		
 			while(rs.next()) {

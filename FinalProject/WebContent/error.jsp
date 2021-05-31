@@ -13,7 +13,7 @@
 	<h1 class="error">Error occured which program can't handle!</h1>
 	<p><%=exception %></p>
 	<c:if test="${!empty pageContext.exception}">
-		<p><%=pageContext.getException().getMessage() %>
+		<p>${pageContext.exception.message}
 	</c:if>
 	<p><a href="main">Click here to start anew</a></p>
 </body>

@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -24,9 +25,9 @@ public class ConfirmCarCriteriaAction extends ClientAction {
 		super(name);
 	}
 	
-	private static <V> void addKeyPair(final Map<String,V> keyPairs,final String flag,final String key,final V value) {
-		if(Objects.nonNull(flag) && !flag.isEmpty()) {
-			keyPairs.put(key, value);
+	private static <V> void addKeyPair(final Map<String,Object> keyPairs,final String flag,final String key,final Optional<V> value) {
+		if(Objects.nonNull(flag) && !flag.isEmpty() && !value.isEmpty()) {
+			keyPairs.put(key, value.get());
 		}
 	}
 	
