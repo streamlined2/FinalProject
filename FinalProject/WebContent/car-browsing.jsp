@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="edu.practice.finalproject.model.analysis.Inspector" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html>
@@ -12,18 +13,18 @@
 	
 	<form>
 		<table>
-		<c:forEach items="${sessionScope.query}" var="entity">
-			<tr>
-				<td>${entity}</td>
-			</tr>
-		</c:forEach>
+			<c:forEach items="${query}" var="entity">
+				<tr>
+					<c:forEach items="${entity.iterator()}" var="value">
+						<td>${value}</td>
+					</c:forEach>
+				</tr>
+			</c:forEach>
 		</table>
 		<hr>
-		<table><tr>
-		<td><input type="submit" value="Select" formevent="main?action=select_car" formmethod="post"/></td>
-		<td><input type="reset" value="Clear"/></td>
-		<td><input type="submit" value="Back" formevent="main?action=back" formmethod="post" formnovalidate/></td>
-		</tr></table>
+		<input type="submit" value="Select" formaction="main?action=select_car" formmethod="post"/>
+		<input type="reset" value="Clear"/>
+		<input type="submit" value="Back" formaction="main?action=back" formmethod="post" formnovalidate/>
 	</form>
 </body>
 </html>

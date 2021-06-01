@@ -7,9 +7,9 @@ import javax.servlet.http.HttpServletRequest;
 import edu.practice.finalproject.controller.FCServlet;
 import edu.practice.finalproject.controller.Names;
 import edu.practice.finalproject.controller.transition.FormDispatcher;
+import edu.practice.finalproject.model.analysis.Inspector;
 import edu.practice.finalproject.model.entity.domain.Car;
 import edu.practice.finalproject.view.action.Action;
-import utilities.Utils;
 
 public class CarSelectionCriteriaForm extends Form {
 
@@ -20,10 +20,10 @@ public class CarSelectionCriteriaForm extends Form {
 	@Override
 	public void init(HttpServletRequest req) {
 		super.init(req);
-		req.setAttribute(Names.MANUFACTURER_VALUES_ATTRIBUTE, Utils.getLabels(Car.Manufacturer.class));
-		req.setAttribute(Names.QUALITY_GRADE_VALUES_ATTRIBUTE, Utils.getLabels(Car.QualityGrade.class));
-		req.setAttribute(Names.COLOR_VALUES_ATTRIBUTE, Utils.getLabels(Car.Color.class));
-		req.setAttribute(Names.STYLE_VALUES_ATTRIBUTE, Utils.getLabels(Car.Style.class));
+		req.setAttribute(Names.MANUFACTURER_VALUES_ATTRIBUTE, Inspector.getLabels(Car.Manufacturer.class));
+		req.setAttribute(Names.QUALITY_GRADE_VALUES_ATTRIBUTE, Inspector.getLabels(Car.QualityGrade.class));
+		req.setAttribute(Names.COLOR_VALUES_ATTRIBUTE, Inspector.getLabels(Car.Color.class));
+		req.setAttribute(Names.STYLE_VALUES_ATTRIBUTE, Inspector.getLabels(Car.Style.class));
 	}
 
 	@Override

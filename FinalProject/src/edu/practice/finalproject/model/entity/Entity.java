@@ -1,11 +1,12 @@
 package edu.practice.finalproject.model.entity;
 
 import java.io.Serializable;
+import java.util.Iterator;
 import java.util.Objects;
 
 import edu.practice.finalproject.model.analysis.Inspector;
 
-public abstract class Entity implements Serializable {
+public abstract class Entity implements Serializable, Iterable<Object> {
 
 	protected long id;
 	public static final String ID_FIELD="id".toUpperCase();
@@ -35,4 +36,17 @@ public abstract class Entity implements Serializable {
 		return Inspector.toString(this);
 	}
 	
+	public Iterator<Object> iterator() {
+		return new Iterator<Object>() {
+			private final Iterator<Object> i=Inspector.getValues(Entity.this).iterator();  
+
+			@Override public boolean hasNext() {
+				return i.hasNext();
+			}
+
+			@Override public Object next() {
+				return i.next();
+			}
+		};
+	}
 }

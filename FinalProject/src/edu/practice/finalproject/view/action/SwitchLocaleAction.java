@@ -21,13 +21,10 @@ public class SwitchLocaleAction extends Action {
 	@Override
 	public boolean execute(HttpServletRequest req, EntityManager entityManager) throws ServletException {
 		final String language=FCServlet.getParameterValue(req,Names.LOCALE_PARAMETER);
-		Locale locale = FCServlet.getDefaultLocale();
-		if(FCServlet.isAcceptableLanguage(language)) {
-			locale = Locale.forLanguageTag(language);
-		}
+		final Locale locale = FCServlet.getAcceptableLocale(language);
 		Locale.setDefault(locale);
 		FCServlet.setLocale(req,locale);
-		FCServlet.setMessage(req, 
+		FCServlet.setMessage(req, //TODO replace with resource bundle message
 				locale==Locale.ENGLISH?
 						LOCALE_SWITCHED_TO_ENGLISH_MESSAGE:
 							LOCALE_SWITCHED_TO_UKRAINIAN_MESSAGE);

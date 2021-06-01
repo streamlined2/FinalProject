@@ -3,7 +3,6 @@ package utilities;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
@@ -30,23 +29,6 @@ public abstract class Utils {
 		final MessageDigest md=MessageDigest.getInstance(algorithm);
 		md.update(input);
 	    return md.digest();
-	}
-	
-	public static String[] getLabels(final Class<? extends Enum<?>> cl) {
-		final String[] labels=new String[cl.getEnumConstants().length];
-		int k=0;
-		for(final Enum<?> value:cl.getEnumConstants()) {
-			labels[k++]=value.toString();
-		}
-		return labels;
-	}
-	
-	public static <V extends Enum<?>> Optional<V> getByLabel(final Class<V> cl,final String label){
-		if(Objects.isNull(label)) return Optional.empty();
-		for(final V value:cl.getEnumConstants()) {
-			if(label.equals(value.toString())) return Optional.of(value);
-		}
-		throw new IllegalArgumentException("incorrect label "+label+" for enum class "+cl.getName());
 	}
 	
 	public static boolean isAscendingOrder(final String flag) {

@@ -3,8 +3,11 @@ package edu.practice.finalproject.controller;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -39,7 +42,7 @@ public class FCServlet extends HttpServlet {
 	private Admin admin;
 	
 	public static final Locale UKRAINIAN_LOCALE = Locale.forLanguageTag("uk");
-	private static final Locale[] availableLocales= { Locale.ENGLISH, UKRAINIAN_LOCALE};
+	private static final List<Locale> availableLocales= List.of(Locale.ENGLISH,UKRAINIAN_LOCALE);
 	
 	public FCServlet() {
 		super();
@@ -157,9 +160,11 @@ public class FCServlet extends HttpServlet {
 		return Locale.ENGLISH;
 	}
 	
-	public static boolean isAcceptableLanguage(final String language) {
-		if(language==null) return false;
-		return Arrays.asList(availableLocales).contains(Locale.forLanguageTag(language)); 
+	public static Locale getAcceptableLocale(final String language){
+		if(Objects.isNull(language)) return getDefaultLocale();
+		final Locale locale=Locale.forLanguageTag(language);
+		if(availableLocales.contains(locale)) return locale; 
+		return getDefaultLocale();
 	}
 	
 	public static void setLocale(final HttpServletRequest req,final Locale locale) {

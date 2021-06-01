@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import edu.practice.finalproject.controller.FCServlet;
 import edu.practice.finalproject.controller.Names;
+import edu.practice.finalproject.model.analysis.Inspector;
 import edu.practice.finalproject.model.dataaccess.EntityManager;
 import edu.practice.finalproject.model.entity.domain.Car;
 import edu.practice.finalproject.model.entity.domain.Car.Color;
@@ -49,10 +50,10 @@ public class ConfirmCarCriteriaAction extends ClientAction {
 		final String style=FCServlet.getParameterValue(req,Names.STYLE_PARAMETER);
 		
 		final Map<String,Object> keyPairs=new HashMap<>();
-		addFilterKeyValue(keyPairs,selectByManufacturer,"manufacturer",Utils.getByLabel(Manufacturer.class,manufacturer));
-		addFilterKeyValue(keyPairs,selectByQualityGrade,"qualityGrade",Utils.getByLabel(QualityGrade.class,qualityGrade));
-		addFilterKeyValue(keyPairs,selectByColor,"color",Utils.getByLabel(Color.class,color));
-		addFilterKeyValue(keyPairs,selectByStyle,"style",Utils.getByLabel(Style.class,style));
+		addFilterKeyValue(keyPairs,selectByManufacturer,"manufacturer",Inspector.getByLabel(Manufacturer.class,manufacturer));
+		addFilterKeyValue(keyPairs,selectByQualityGrade,"qualityGrade",Inspector.getByLabel(QualityGrade.class,qualityGrade));
+		addFilterKeyValue(keyPairs,selectByColor,"color",Inspector.getByLabel(Color.class,color));
+		addFilterKeyValue(keyPairs,selectByStyle,"style",Inspector.getByLabel(Style.class,style));
 		
 		final String orderByRentCost=FCServlet.getParameterValue(req,Names.ORDER_BY_RENT_COST_PARAMETER);
 		final String costSort=FCServlet.getParameterValue(req,Names.RENT_COST_ORDER_PARAMETER);

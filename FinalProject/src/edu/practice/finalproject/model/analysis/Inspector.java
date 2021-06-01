@@ -10,8 +10,9 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
-
 import edu.practice.finalproject.model.entity.Entity;
 
 public abstract class Inspector {
@@ -40,14 +41,6 @@ public abstract class Inspector {
 		} catch (ReflectiveOperationException e) {
 			throw new EntityException(e);
 		}
-	}
-	
-	public static <E extends Entity> List<Object> getValues(final E entity,final List<Method> getters) {
-		final List<Object> values=new ArrayList<>(getters.size());
-		for(final Method getter:getters) {
-			values.add(get(entity,getter));
-		}
-		return values;
 	}
 	
 	private static boolean isIDField(final Method method) {
@@ -133,6 +126,27 @@ public abstract class Inspector {
 		return sb.toString();
 	}
 
+	public static <E extends Entity> List<String> getCaptions(final Class<E> cl) {
+		final List<String> captions=new ArrayList<>();
+		final List<Method> getters=getGetters(cl);
+		for(final Method getter:getters) {
+			captions.add(Inspector.getFieldName(getter));
+		}
+		return captions;
+	}
+
+	public static <E extends Entity> List<Object> getValues(final E entity,final List<Method> getters) {
+		final List<Object> values=new ArrayList<>(getters.size());
+		for(final Method getter:getters) {
+			values.add(get(entity,getter));
+		}
+		return values;
+	}
+	
+	public static <E extends Entity> List<Object> getValues(final E entity) {
+		return getValues(entity,getGetters(entity.getClass()));
+	}
+
 	/**
 	 * Finds entity classes that are located within classpath and collects them in resulting set
 	 * @return set of entity classes
@@ -166,6 +180,23 @@ public abstract class Inspector {
 		final int index=path.getName().indexOf(".");
 		return packagePrefix+
 				(index!=-1?path.getName().substring(0,index):path.getName());
+	}
+
+	public static String[] getLabels(final Class<? extends Enum<?>> cl) {
+		final String[] labels=new String[cl.getEnumConstants().length];
+		int k=0;
+		for(final Enum<?> value:cl.getEnumConstants()) {
+			labels[k++]=value.toString();
+		}
+		return labels;
+	}
+
+	public static <V extends Enum<?>> Optional<V> getByLabel(final Class<V> cl,final String label){
+		if(Objects.isNull(label)) return Optional.empty();
+		for(final V value:cl.getEnumConstants()) {
+			if(label.equals(value.toString())) return Optional.of(value);
+		}
+		throw new IllegalArgumentException("incorrect label "+label+" for enum class "+cl.getName());
 	}
 
 }
