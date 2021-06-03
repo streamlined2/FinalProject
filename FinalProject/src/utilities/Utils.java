@@ -2,7 +2,10 @@ package utilities;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
@@ -55,13 +58,32 @@ public abstract class Utils {
 	public static boolean checkPassport(final String name) {
 		return Utils.checkPattern(name,Names.PASSPORT_PATTERN);
 	}
+	
+	public static boolean checkTime(final String dueTime) {
+		try {
+			LocalDateTime.parse(dueTime);
+			return true;
+		}catch(DateTimeParseException e) {
+			return false;
+		}
+	}
+	
+	public static Optional<LocalDateTime> getTime(final String time) {
+		try {
+			return Optional.of(LocalDateTime.parse(time));		
+		}catch(DateTimeParseException e) {
+			return Optional.empty();
+		}
+	}
 
-	public static void checkIfValid(final HttpServletRequest req,final String parameter,final Predicate<String> checker) {
-		if(parameter==null) throw new IllegalArgumentException("parameter "+parameter+" shouldn't be null");
+	public static boolean checkIfValid(final HttpServletRequest req,final String parameter,final Predicate<String> checker) {
+		if(Objects.isNull(parameter)) throw new IllegalArgumentException("parameter "+parameter+" shouldn't be null");
 		final String value=FCServlet.getParameterValue(req,parameter);
 		if(!checker.test(value)) {
-			throw new IllegalArgumentException(String.format("wrong value %s of parameter %s", value, parameter));
+			FCServlet.setError(req, String.format("wrong value %s of parameter %s", value, parameter));
+			return false;	
 		}
+		return true;
 	}
 
 	public static Class<? extends User> mapUserRoleToClass(final String name){

@@ -7,13 +7,13 @@ import edu.practice.finalproject.controller.admin.Manager;
 
 public class LeaseInvoice extends Invoice {
 	
-	private final Order order;
+	private final LeaseOrder order;
 	private final Manager manager;
 	private final LocalDateTime signTime;
 	private final Account account;
 	private final BigDecimal sum;
 	
-	public LeaseInvoice(Order order, Manager manager, LocalDateTime signTime, Account account, BigDecimal sum) {
+	public LeaseInvoice(LeaseOrder order, Manager manager, LocalDateTime signTime, Account account, BigDecimal sum) {
 		this.order = order;
 		this.manager = manager;
 		this.signTime = signTime;

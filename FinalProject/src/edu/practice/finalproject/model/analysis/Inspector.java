@@ -5,7 +5,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -15,7 +14,6 @@ import java.util.Optional;
 import java.util.Set;
 
 import edu.practice.finalproject.model.entity.Entity;
-import utilities.Utils;
 
 public final class Inspector {
 	
@@ -210,21 +208,6 @@ public final class Inspector {
 			if(label.equals(value.toString())) return Optional.of(value);
 		}
 		throw new IllegalArgumentException("incorrect label "+label+" for enum class "+cl.getName());
-	}
-
-	public static String mapObjectToString(final Object value) {
-		final StringBuilder sb=new StringBuilder();
-		final Class<?> cl=value.getClass();
-		if(cl.isEnum()) {
-			sb.append(((Enum<?>)value).ordinal());
-		}else if(cl==String.class) { 
-			sb.append("'").append(value).append("'");
-		}else if(cl.isArray() && cl.getComponentType()==byte.class){
-			sb.append("X'").append(Utils.byteArray2String((byte[])value)).append("'");
-		}else {
-			sb.append(value);
-		}
-		return sb.toString();
 	}
 
 }

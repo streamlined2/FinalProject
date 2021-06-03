@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -269,9 +270,8 @@ public final class EntityManager {
 		int k=1;
 		try {
 			for(final Method setter:setters) {
-				Class<?>[] paramTypes=setter.getParameterTypes();
-				Object value = rs.getObject(k++);
-				Object obj=mapValueToObject(paramTypes[0],value);
+				final Object value = rs.getObject(k++);
+				final Object obj=EntityManager.mapSQLValueToProperty(setter.getParameterTypes()[0],value);
 				Inspector.set(entity,setter,obj);
 			}
 		} catch (SQLException e) {
@@ -279,11 +279,19 @@ public final class EntityManager {
 		}
 	}
 
-	private static <V> V mapValueToObject(final Class<V> cl,final Object value) {
-		if(cl.isEnum()) {
+	private static <V> V mapSQLValueToProperty(final Class<V> cl,final Object value) {
+		if(Entity.class.isAssignableFrom(cl) && value instanceof Number) {
+			final long id = ((Number)value).longValue();
+			final Entity entity = Inspector.createEntity((Class<? extends Entity>)cl);
+			entity.setId(id);
+			return (V)entity;
+		}else if(cl.isEnum()) {
 			return (V)((Class<Enum<?>>)cl).getEnumConstants()[((Number)value).intValue()];
 		}else if(LocalDate.class.isAssignableFrom(cl)) {
 			return (V)((Date)value).toLocalDate();
+		}else if(LocalDateTime.class.isAssignableFrom(cl)){
+			final LocalDate date = ((Date)value).toLocalDate();
+			return (V)date.atStartOfDay();
 		}else {
 			return (V)value;
 		}

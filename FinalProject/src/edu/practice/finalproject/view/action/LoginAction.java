@@ -25,8 +25,8 @@ public class LoginAction extends Action {
 	@Override
 	public boolean execute(final HttpServletRequest req,final EntityManager entityManager) throws ServletException {
 		try {
-			Utils.checkIfValid(req,Names.USER_PARAMETER,Utils::checkLogin);
-			Utils.checkIfValid(req,Names.PASSWORD_PARAMETER,Utils::checkPassword);
+			if(!Utils.checkIfValid(req,Names.USER_PARAMETER,Utils::checkLogin)) return false;
+			if(!Utils.checkIfValid(req,Names.PASSWORD_PARAMETER,Utils::checkPassword)) return false;
 
 			final String role=FCServlet.getParameterValue(req,Names.ROLE_PARAMETER);
 			final String login=FCServlet.getParameterValue(req,Names.USER_PARAMETER);

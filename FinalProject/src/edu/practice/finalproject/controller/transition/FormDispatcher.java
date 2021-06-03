@@ -11,11 +11,13 @@ import edu.practice.finalproject.view.action.SwitchLocaleAction;
 import edu.practice.finalproject.view.action.LoginAction;
 import edu.practice.finalproject.view.action.LogoutAction;
 import edu.practice.finalproject.view.action.NextPageAction;
+import edu.practice.finalproject.view.action.OrderCarAction;
 import edu.practice.finalproject.view.action.PreviousPageAction;
 import edu.practice.finalproject.view.action.RegisterAction;
 import edu.practice.finalproject.view.action.RegisterNewAction;
 import edu.practice.finalproject.view.action.SelectCarAction;
 import edu.practice.finalproject.view.form.CarBrowsingForm;
+import edu.practice.finalproject.view.form.CarOrderStatusForm;
 import edu.practice.finalproject.view.form.CarSelectionCriteriaForm;
 import edu.practice.finalproject.view.form.Form;
 import edu.practice.finalproject.view.form.LoginForm;
@@ -29,8 +31,10 @@ public class FormDispatcher {
 	public FormDispatcher() {
 		transitions=new TransitionRuleMap();
 		//setup transition rule map
+		//stray user should be registered or logged in first
 		transitions.addRule(null, LOGIN_FORM, REGISTER_ACTION, REGISTER_FORM);
 		transitions.addRule(null, REGISTER_FORM, BACK_ACTION, LOGIN_FORM);
+		//rules for client role
 		transitions.addRule(Client.class, CAR_SELECTION_CRITERIA_FORM, CONFIRM_CAR_CRITERIA_ACTION, CAR_BROWSING_FORM);
 		transitions.addRule(Client.class, CAR_BROWSING_FORM, BACK_ACTION, CAR_SELECTION_CRITERIA_FORM);
 		transitions.addRule(Client.class, CAR_BROWSING_FORM, NEXT_PAGE_ACTION, CAR_BROWSING_FORM);
@@ -38,9 +42,13 @@ public class FormDispatcher {
 		transitions.addRule(Client.class, CAR_BROWSING_FORM, PREVIOUS_PAGE_ACTION, CAR_BROWSING_FORM);
 		transitions.addRule(Client.class, CAR_BROWSING_FORM, LAST_PAGE_ACTION, CAR_BROWSING_FORM);
 		transitions.addRule(Client.class, CAR_BROWSING_FORM, SELECT_CAR_ACTION, ORDER_FORM);
+		transitions.addRule(Client.class, ORDER_FORM, ORDER_CAR_ACTION, CAR_ORDER_STATUS_FORM);
+		transitions.addRule(Client.class, ORDER_FORM, BACK_ACTION, CAR_BROWSING_FORM);
+		transitions.addRule(Client.class, CAR_ORDER_STATUS_FORM, BACK_ACTION, CAR_SELECTION_CRITERIA_FORM);
 		//last rule for Client
 		transitions.addRule(Client.class, null, null, CAR_SELECTION_CRITERIA_FORM);
 		//TODO fill up rest of the transition rule map
+		//for manager and admin user roles
 	}
 	
 	public static final SwitchLocaleAction SWITCH_LOCALE_ACTION = new SwitchLocaleAction("change_locale");
@@ -55,12 +63,14 @@ public class FormDispatcher {
 	public static final FirstPageAction FIRST_PAGE_ACTION = new FirstPageAction("first_page");
 	public static final PreviousPageAction PREVIOUS_PAGE_ACTION = new PreviousPageAction("previous_page");
 	public static final LastPageAction LAST_PAGE_ACTION = new LastPageAction("last_page");
+	public static final OrderCarAction ORDER_CAR_ACTION = new OrderCarAction("order_car");
 
 	public static final LoginForm LOGIN_FORM = new LoginForm("/login.jsp");
 	public static final RegisterForm REGISTER_FORM = new RegisterForm("/register.jsp");
 	public static final CarSelectionCriteriaForm CAR_SELECTION_CRITERIA_FORM = new CarSelectionCriteriaForm("/car-selection.jsp");
 	public static final CarBrowsingForm CAR_BROWSING_FORM = new CarBrowsingForm("/car-browsing.jsp");
 	public static final OrderForm ORDER_FORM = new OrderForm("/order.jsp");
+	public static final CarOrderStatusForm CAR_ORDER_STATUS_FORM = new CarOrderStatusForm("/car-order-status.jsp");
 	
 	public Form getInitialForm() { return LOGIN_FORM;}
 

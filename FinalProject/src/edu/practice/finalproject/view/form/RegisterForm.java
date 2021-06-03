@@ -21,7 +21,6 @@ public class RegisterForm extends Form {
 		req.setAttribute(Names.LOGIN_PATTERN_ATTRIBUTE, Names.LOGIN_PATTERN);
 		req.setAttribute(Names.PASSWORD_PATTERN_ATTRIBUTE, Names.PASSWORD_PATTERN);
 		req.setAttribute(Names.NAME_PATTERN_ATTRIBUTE, Names.NAME_PATTERN);
-		req.setAttribute(Names.PASSPORT_PATTERN_ATTRIBUTE, Names.PASSPORT_PATTERN);
 	}
 	
 	@Override

@@ -4,9 +4,11 @@ import java.time.LocalDateTime;
 
 import edu.practice.finalproject.controller.admin.User;
 import edu.practice.finalproject.model.entity.Entity;
+import edu.practice.finalproject.model.entity.domain.Car;
 
-public class Order extends Entity {
+public class LeaseOrder extends Entity {
 	private User client;
+	private Car car;
 	private String passport;
 	private boolean driverPresent;
 	private LocalDateTime startTime;
@@ -14,6 +16,9 @@ public class Order extends Entity {
 
 	public User getClient() { return client;}
 	public void setClient(User client) { this.client = client;}
+	
+	public Car getCar() { return car;}
+	public void setCar(Car car) { this.car= car;}
 
 	public String getPassport() { return passport;}
 	public void setPassport(String passport) { this.passport = passport;}

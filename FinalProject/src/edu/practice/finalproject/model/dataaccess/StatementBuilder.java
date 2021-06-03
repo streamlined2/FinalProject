@@ -1,6 +1,9 @@
 package edu.practice.finalproject.model.dataaccess;
 
 import java.lang.reflect.Method;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +13,7 @@ import java.util.Objects;
 import edu.practice.finalproject.model.analysis.Inspector;
 import edu.practice.finalproject.model.entity.Entity;
 import edu.practice.finalproject.model.entity.NaturalKeyEntity;
+import utilities.Utils;
 
 public final class StatementBuilder {
 	
@@ -51,11 +55,11 @@ public final class StatementBuilder {
 		return cl.getSimpleName().toLowerCase()+"_"+Entity.ID_FIELD;
 	}
 	
-	public static StringBuilder getFieldList(final Iterable<Method> accessor,final String separator) {
+	private static StringBuilder getFieldList(final Iterable<Method> accessor,final String separator) {
 		return getFieldList(accessor,separator,"");
 	}
 	
-	public static StringBuilder getFieldList(final Iterable<Method> accessor,final String separator,final String prefix) {
+	private static StringBuilder getFieldList(final Iterable<Method> accessor,final String separator,final String prefix) {
 		final StringBuilder sb=new StringBuilder();
 		final Iterator<Method> i=accessor.iterator();
 		if(i.hasNext()) {
@@ -67,7 +71,7 @@ public final class StatementBuilder {
 		return sb;
 	}
 	
-	public static StringBuilder getOrderFieldList(final Map<String,Boolean> orderKeys) {
+	private static StringBuilder getOrderFieldList(final Map<String,Boolean> orderKeys) {
 		final StringBuilder sb=new StringBuilder();
 		Iterator<Entry<String, Boolean>> i=orderKeys.entrySet().iterator();
 		if(i.hasNext()) {
@@ -86,54 +90,51 @@ public final class StatementBuilder {
 		sb.append(orderKey).append(" ").append(ascending?"ASC":"DESC");
 	}
 	
-	public static StringBuilder getValueList(final Iterable<?> iterable,final String separator) {
-		final StringBuilder sb=new StringBuilder();
-		final Iterator<?> i=iterable.iterator();
-		if(i.hasNext()) {
-			sb.append(Inspector.mapObjectToString(i.next()));
-			while(i.hasNext()) {
-				sb.append(separator).append(Inspector.mapObjectToString(i.next()));
-			}
-		}
-		return sb;
-	}
-	
-	public static StringBuilder getValueList(final String separator,final Object... list) {
-		final StringBuilder sb=new StringBuilder();
-		int k=0;
-		if(k<list.length) {
-			sb.append(Inspector.mapObjectToString(list[k++]));
-			while(k<list.length) {
-				sb.append(separator).append(Inspector.mapObjectToString(list[k++]));
-			}
-		}
-		return sb;
-	}
-	
-	public static StringBuilder getFieldValueList(
+	private static StringBuilder getFieldValueList(
 			final Iterable<Method> fields,final Object[] values,final String separator) {
 		return getFieldValueList(fields,values,separator,"");
 	}
 	
-	public static StringBuilder getFieldValueList(
+	private static StringBuilder getFieldValueList(
 			final Iterable<Method> fields,final Object[] values,final String separator,final String prefix) {
 		final StringBuilder sb=new StringBuilder();
 		final Iterator<Method> fieldIterator=fields.iterator();
 		int k=0;
 		if(fieldIterator.hasNext() && k<values.length) {
-			sb.append(Inspector.getFieldName(prefix,fieldIterator.next())).append("=").append(Inspector.mapObjectToString(values[k++]));
+			sb.append(Inspector.getFieldName(prefix,fieldIterator.next())).append("=").append(StatementBuilder.mapObjectToString(values[k++]));
 			while(fieldIterator.hasNext() && k<values.length) {
 				sb.append(separator).
-				append(Inspector.getFieldName(prefix,fieldIterator.next())).append("=").append(Inspector.mapObjectToString(values[k++]));
+				append(Inspector.getFieldName(prefix,fieldIterator.next())).append("=").append(StatementBuilder.mapObjectToString(values[k++]));
 			}
 		}
 		return sb;
 	}
 	
+	private static StringBuilder getValueList(final String separator,final Object... list) {
+		final StringBuilder sb=new StringBuilder();
+		int k=0;
+		if(k<list.length) {
+			sb.append(list[k++]);
+			while(k<list.length) {
+				sb.append(separator).append(list[k++]);
+			}
+		}
+		return sb;
+	}
+	
+	private static <E extends Entity> Object[] getValues(final E entity,final List<Method> getters) {
+		final Object[] values=new Object[getters.size()];
+		int k=0;
+		for(final Method getter:getters) {
+			values[k++]=StatementBuilder.mapObjectToString(Inspector.get(entity,getter));
+		}
+		return values;
+	}
+	
 	public static <E extends Entity> StringBuilder getUpdateStatement(final E entity) {
 		final Class<E> cl=(Class<E>) entity.getClass();
 		final List<Method> getters=Inspector.getGetters(cl,true);
-		final Object[] values=Inspector.getValues(entity,getters);
+		final Object[] values=getValues(entity,getters);
 		
 		return new StringBuilder(UPDATE_CLAUSE).
 				append(StatementBuilder.getTableName(cl)).
@@ -142,7 +143,7 @@ public final class StatementBuilder {
 				append(WHERE_CLAUSE).
 				append(Entity.ID_FIELD).
 				append(IN_CLAUSE).
-				append(Inspector.mapObjectToString(entity.getId())).
+				append(StatementBuilder.mapObjectToString(entity.getId())).
 				append(" )");
 	}
 
@@ -155,7 +156,7 @@ public final class StatementBuilder {
 				append(WHERE_CLAUSE).
 				append(NaturalKeyEntity.keyFieldName(entity)).
 				append(IN_CLAUSE).
-				append(Inspector.mapObjectToString(key)).
+				append(StatementBuilder.mapObjectToString(key)).
 				append(" )");
 	}
 	
@@ -191,10 +192,10 @@ public final class StatementBuilder {
 		final Iterator<Entry<String,V>> i=entries.entrySet().iterator();
 		if(i.hasNext()) {
 			Map.Entry<String,V> entry=i.next();
-			sb.append(entry.getKey()).append("=").append(Inspector.mapObjectToString(entry.getValue()));
+			sb.append(entry.getKey()).append("=").append(StatementBuilder.mapObjectToString(entry.getValue()));
 			while(i.hasNext()) {
 				entry=i.next();
-				sb.append(AND_CLAUSE).append(entry.getKey()).append("=").append(Inspector.mapObjectToString(entry.getValue()));
+				sb.append(AND_CLAUSE).append(entry.getKey()).append("=").append(StatementBuilder.mapObjectToString(entry.getValue()));
 			}
 		}
 		return sb;
@@ -214,7 +215,7 @@ public final class StatementBuilder {
 				append(getTableName(cl)).append(" (").
 				append(getFieldList(getters,",")).
 				append(VALUES_CLAUSE).
-				append(getValueList(",",Inspector.getValues(entity,getters))).
+				append(getValueList(",",getValues(entity,getters))).
 				append(")");
 	}
 	
@@ -223,7 +224,7 @@ public final class StatementBuilder {
 				append(getLinkTableName((Class<M>)master.getClass(),slaveClass)).append(" (").
 				append(getLinkName(master)).append(",").append(getLinkName(slaveClass)).
 				append(VALUES_CLAUSE).
-				append(Inspector.mapObjectToString(master.getId())).append(",").append("?").
+				append(StatementBuilder.mapObjectToString(master.getId())).append(",").append("?").
 				append(")");
 	}
 	
@@ -238,7 +239,7 @@ public final class StatementBuilder {
 				append(WHERE_CLAUSE).
 				append(getQualifiedAttribute("A",getLinkName(master))).
 				append(IN_CLAUSE).
-				append(Inspector.mapObjectToString(master.getId())).
+				append(StatementBuilder.mapObjectToString(master.getId())).
 				append(" )");
 	}
 	
@@ -248,7 +249,7 @@ public final class StatementBuilder {
 			append(WHERE_CLAUSE).
 			append(Entity.ID_FIELD).
 			append(IN_CLAUSE).
-			append(Inspector.mapObjectToString(entity.getId())).
+			append(StatementBuilder.mapObjectToString(entity.getId())).
 			append(" )");
 	}
 	
@@ -258,7 +259,32 @@ public final class StatementBuilder {
 			append(WHERE_CLAUSE).
 			append(getLinkName(master)).
 			append(IN_CLAUSE).
-			append(Inspector.mapObjectToString(master.getId())).
+			append(StatementBuilder.mapObjectToString(master.getId())).
 			append(" )");
+	}
+
+	public static String mapObjectToString(final Object value) {
+		final StringBuilder sb=new StringBuilder();
+		final Class<?> cl=value.getClass();
+		if(Entity.class.isAssignableFrom(cl)) {
+			sb.append(((Entity)value).getId());
+		}else if(cl.isEnum()) {
+			sb.append(((Enum<?>)value).ordinal());
+		}else if(cl==String.class) { 
+			sb.append("'").append(value).append("'");
+		}else if(cl.isArray() && cl.getComponentType()==byte.class){
+			sb.append("X'").append(Utils.byteArray2String((byte[])value)).append("'");
+		}else if(LocalDateTime.class.isAssignableFrom(cl)){
+			final String rep=((LocalDateTime)value).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME).replace('T', ' ');
+			sb.append("'").append(rep).append("'");
+		}else if(LocalDate.class.isAssignableFrom(cl)){
+			sb.append("'").append(((LocalDate)value).format(DateTimeFormatter.ISO_LOCAL_DATE)).append("'");
+		}else if(cl==Boolean.class){
+			final boolean b=(Boolean)value; 
+			sb.append(b?1:0);
+		}else {
+			sb.append(value);
+		}
+		return sb.toString();
 	}
 }

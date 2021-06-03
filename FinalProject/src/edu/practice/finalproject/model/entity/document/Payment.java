@@ -7,11 +7,11 @@ import edu.practice.finalproject.model.entity.Entity;
 
 public class Payment extends Entity {
 	
-	private final Order order;
+	private final LeaseOrder order;
 	private final BigInteger number;
 	private final LocalDateTime payTime;
 
-	public Payment(Order order, BigInteger number, LocalDateTime payTime) {
+	public Payment(LeaseOrder order, BigInteger number, LocalDateTime payTime) {
 		this.order = order;
 		this.number = number;
 		this.payTime = payTime;
