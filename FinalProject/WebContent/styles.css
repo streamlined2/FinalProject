@@ -2,6 +2,6 @@
 .error { color:red; font-style: italic }
 .message { color: blue; font-style: italic }
 thead {vertical-align:bottom;}
-tbody {text-align:right;}
+tbody { text-align:right;}
 table { border: 1px solid black; font-family: verdana;}
 th { text-align: left;}

@@ -19,6 +19,7 @@ import edu.practice.finalproject.view.form.CarBrowsingForm;
 import edu.practice.finalproject.view.form.CarSelectionCriteriaForm;
 import edu.practice.finalproject.view.form.Form;
 import edu.practice.finalproject.view.form.LoginForm;
+import edu.practice.finalproject.view.form.OrderForm;
 import edu.practice.finalproject.view.form.RegisterForm;
 
 public class FormDispatcher {
@@ -36,7 +37,7 @@ public class FormDispatcher {
 		transitions.addRule(Client.class, CAR_BROWSING_FORM, FIRST_PAGE_ACTION, CAR_BROWSING_FORM);
 		transitions.addRule(Client.class, CAR_BROWSING_FORM, PREVIOUS_PAGE_ACTION, CAR_BROWSING_FORM);
 		transitions.addRule(Client.class, CAR_BROWSING_FORM, LAST_PAGE_ACTION, CAR_BROWSING_FORM);
-		transitions.addRule(Client.class, CAR_BROWSING_FORM, SELECT_CAR_ACTION, null);
+		transitions.addRule(Client.class, CAR_BROWSING_FORM, SELECT_CAR_ACTION, ORDER_FORM);
 		//last rule for Client
 		transitions.addRule(Client.class, null, null, CAR_SELECTION_CRITERIA_FORM);
 		//TODO fill up rest of the transition rule map
@@ -59,6 +60,7 @@ public class FormDispatcher {
 	public static final RegisterForm REGISTER_FORM = new RegisterForm("/register.jsp");
 	public static final CarSelectionCriteriaForm CAR_SELECTION_CRITERIA_FORM = new CarSelectionCriteriaForm("/car-selection.jsp");
 	public static final CarBrowsingForm CAR_BROWSING_FORM = new CarBrowsingForm("/car-browsing.jsp");
+	public static final OrderForm ORDER_FORM = new OrderForm("/order.jsp");
 	
 	public Form getInitialForm() { return LOGIN_FORM;}
 

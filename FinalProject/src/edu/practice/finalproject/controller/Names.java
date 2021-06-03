@@ -25,6 +25,7 @@ public final class Names {
 	public static final String FIRST_PAGE_ELEMENT_ATTRIBUTE = "firstPageElement";
 	public static final String LAST_PAGE_ELEMENT_ATTRIBUTE = "lastPageElement";
 	public static final String PAGE_ELEMENTS_NUMBER_ATTRIBUTE = "pageElementsNumber";
+	public static final String PAGE_CARS_ATTRIBUTE = "pageCars"; 
 
 	public static final String ACTION_PARAMETER = "action";
 	public static final String USER_PARAMETER = "user";
@@ -62,7 +63,9 @@ public final class Names {
 	public static final String NEXT_PAGE_PARAMETER = "nextPage"; 
 	public static final String PREVIOUS_PAGE_PARAMETER = "previousPage"; 
 	public static final String FIRST_PAGE_PARAMETER = "firstPage"; 
-	public static final String LAST_PAGE_PARAMETER = "lastPage"; 
+	public static final String LAST_PAGE_PARAMETER = "lastPage";
+	public static final String CAR_NUMBER_PARAMETER = "number";
+	public static final String SELECTED_CAR_ATTRIBUTE = "selected_car";
 	
 	public static final String LOGIN_PATTERN = "[0-9A-Za-zÀ-ßà-ÿ¨¸ªº²³¯¿]+";
 	public static final String PASSWORD_PATTERN = "[0-9A-Za-zÀ-ßà-ÿ¨¸ªº²³¯¿]+";

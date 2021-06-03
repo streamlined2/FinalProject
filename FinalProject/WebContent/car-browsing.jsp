@@ -1,5 +1,4 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="edu.practice.finalproject.model.analysis.Inspector" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html>
@@ -20,15 +19,17 @@
 				</c:forEach>
 			</tr></thead>
 			<tbody>
+				<c:set var="number" value="0"/>
 				<c:forEach items="${queryData}" var="entity">
 					<tr>
 						<td>
-							<input type="submit" value="Select" formaction="main?action=select_car" formmethod="post"/>
+							<input type="submit" value="Get" formaction="main?action=select_car&number=${number}" formmethod="post"/>
 						</td>
 						<c:forEach items="${entity}" var="value">
 							<td>${value}</td>
 						</c:forEach>
 					</tr>
+					<c:set var="number" value="${number+1}"/>
 				</c:forEach>
 			</tbody>
 		</table>
