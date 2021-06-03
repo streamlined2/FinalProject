@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
-
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -32,9 +30,6 @@ import utilities.Utils;
  * @author Serhii Pylypenko
  */
 public class FCServlet extends HttpServlet {
-	
-	private static final int NO_APPROPRIATE_FORM_MAPPING_CODE=1;
-	private static final String NO_APPROPRIATE_FORM_MAPPING_MSG="No appropriate mapping for given user,form and action!"; 
 	
 	private EntityManager entityManager;
 	private FormDispatcher formDispatcher;
@@ -61,12 +56,19 @@ public class FCServlet extends HttpServlet {
 					Utils.getDigest(getServletContext().getInitParameter("adminPassword").getBytes()));
 
 			getServletContext().setAttribute(Names.AVAILABLE_LOCALES_ATTRIBUTE,availableLocales);
+			
+			getServletContext().setAttribute(
+					Names.PAGE_ELEMENTS_NUMBER_ATTRIBUTE, 
+					Integer.parseInt(getServletContext().getInitParameter("pageElements")));
 
 		}catch(NamingException | NoSuchAlgorithmException e) {
 			throw new ServletException(e);
 		}
 	}
 
+	private static final int NO_APPROPRIATE_FORM_MAPPING_CODE=1;
+	private static final String NO_APPROPRIATE_FORM_MAPPING_MSG="No appropriate mapping for given user,form and action!"; 
+	
     private void process(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException {	
     	initLocale(req);
 		clearError(req);
@@ -77,7 +79,7 @@ public class FCServlet extends HttpServlet {
 		}else {
 			final Action action=currentForm.getAction(req.getParameterMap());
 			final boolean actionSucceeded=action.execute(req,entityManager);
-			currentForm.destroy();
+			currentForm.destroy(req);
 			final User user=getUser(req);
 			final Form nextForm=formDispatcher.getNextForm(user, currentForm, action, actionSucceeded);
 			if(nextForm!=null) {
@@ -92,7 +94,7 @@ public class FCServlet extends HttpServlet {
 			}
 		}
 		setForm(req, currentForm);
-		currentForm.init(req);
+		currentForm.init(req,entityManager);
 		try {
 			getServletContext().getRequestDispatcher(currentForm.getName()).forward(req,resp);
 		} catch (IOException e) {
@@ -190,6 +192,15 @@ public class FCServlet extends HttpServlet {
 			return session.getAttribute(name);
 		}
 		return null;
+	}
+	
+	public static Object getAttribute(final HttpServletRequest req,final String name,final Object defValue) {
+		final HttpSession session=req.getSession();
+		if(session!=null) {
+			final Object value=session.getAttribute(name);
+			if(value!=null) return value;
+		}
+		return defValue;
 	}
 	
 	public static void removeAttribute(final HttpServletRequest req,final String name) {

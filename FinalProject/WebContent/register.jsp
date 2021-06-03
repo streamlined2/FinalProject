@@ -51,9 +51,9 @@
 		</tr>
 		</table>
 		<hr>
-		<input type="submit" value="Register" formevent="main?action=register_new" formmethod="post"/>
+		<input type="submit" value="Register" formaction="main?action=register_new" formmethod="post"/>
 		<input type="reset" value="Clear" />
-		<input type="submit" value="Back" formevent="main?action=back" formmethod="post" formnovalidate/>
+		<input type="submit" value="Back" formaction="main?action=back" formmethod="post" formnovalidate/>
 	</fieldset>
 	</form>
 </body>

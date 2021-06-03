@@ -245,9 +245,9 @@ public final class EntityManager {
 		return Optional.empty();
 	}
 
-	public <E extends Entity,V> List<E> fetchByCompositeKeyOrdered(final Class<E> cl,final Map<String,V> keyPairs,final Map<String,Boolean> orderKeys) {
+	public <E extends Entity,V> List<E> fetchByCompositeKeyOrdered(final Class<E> cl,final Map<String,V> keyPairs,final Map<String,Boolean> orderKeys,final long startElement,final long endElement) {
 		final List<E> list=new LinkedList<>();
-		final StringBuilder clause=StatementBuilder.getSelectByKeyOrderedStatement(cl,keyPairs,orderKeys);
+		final StringBuilder clause=StatementBuilder.getSelectByKeyOrderedStatement(cl,keyPairs,orderKeys,startElement,endElement);
 		try (
 				final Connection conn=dataSource.getConnection();
 				final Statement statement=conn.createStatement();

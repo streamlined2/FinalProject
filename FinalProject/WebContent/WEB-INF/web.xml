@@ -19,6 +19,10 @@
     <param-name>adminPassword</param-name>
     <param-value>admin</param-value>
   </context-param>
+	<context-param>
+	<param-name>pageElements</param-name>
+	<param-value>5</param-value>
+	</context-param>
   <resource-ref>
     <description>DB connection</description>
     <res-ref-name>jdbc/autoleasing</res-ref-name>

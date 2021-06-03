@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import edu.practice.finalproject.controller.FCServlet;
 import edu.practice.finalproject.controller.Names;
 import edu.practice.finalproject.controller.transition.FormDispatcher;
+import edu.practice.finalproject.model.dataaccess.EntityManager;
 import edu.practice.finalproject.view.action.Action;
 
 /**
@@ -23,8 +24,8 @@ public abstract class Form {
 		this.name=name;
 	}
 	
-	public void init(HttpServletRequest req) {}
-	public void destroy() {}
+	public void init(HttpServletRequest req, final EntityManager entityManager) {}
+	public void destroy(HttpServletRequest req) {}
 	
 	public String getName() { return name;}
 	

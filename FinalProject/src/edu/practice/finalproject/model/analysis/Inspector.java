@@ -13,9 +13,11 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import edu.practice.finalproject.model.entity.Entity;
 
-public abstract class Inspector {
+import edu.practice.finalproject.model.entity.Entity;
+import utilities.Utils;
+
+public final class Inspector {
 	
 	private Inspector() {}
 	
@@ -126,27 +128,38 @@ public abstract class Inspector {
 		return sb.toString();
 	}
 
-	public static <E extends Entity> List<String> getCaptions(final Class<E> cl) {
-		final List<String> captions=new ArrayList<>();
-		final List<Method> getters=getGetters(cl);
+	public static <E extends Entity> String[] getCaptions(final Class<E> cl) {
+		final List<Method> getters=getGetters(cl,true);
+		final String[] captions=new String[getters.size()];
+		int k=0;
 		for(final Method getter:getters) {
-			captions.add(Inspector.getFieldName(getter));
+			captions[k++]=Inspector.getFieldName(getter);
 		}
 		return captions;
 	}
 
-	public static <E extends Entity> List<Object> getValues(final E entity,final List<Method> getters) {
-		final List<Object> values=new ArrayList<>(getters.size());
+	public static <E extends Entity> Object[] getValues(final E entity) {
+		return getValues(entity,getGetters(entity.getClass(),true));
+	}
+	
+	public static <E extends Entity> Object[] getValues(final E entity,final List<Method> getters) {
+		final Object[] values=new Object[getters.size()];
+		int k=0;
 		for(final Method getter:getters) {
-			values.add(get(entity,getter));
+			values[k++]=get(entity,getter).toString();
 		}
 		return values;
 	}
 	
-	public static <E extends Entity> List<Object> getValues(final E entity) {
-		return getValues(entity,getGetters(entity.getClass()));
+	public static <E extends Entity> List<Object> getValuesForEntities(final Class<E> cl,final Iterable<E> entities) {
+		final List<Method> getters=getGetters(cl,true);
+		final List<Object> values=new LinkedList<>();
+		for(final E entity:entities) {
+			values.add(getValues(entity,getters));
+		}
+		return values;
 	}
-
+	
 	/**
 	 * Finds entity classes that are located within classpath and collects them in resulting set
 	 * @return set of entity classes
@@ -197,6 +210,21 @@ public abstract class Inspector {
 			if(label.equals(value.toString())) return Optional.of(value);
 		}
 		throw new IllegalArgumentException("incorrect label "+label+" for enum class "+cl.getName());
+	}
+
+	public static String mapObjectToString(final Object value) {
+		final StringBuilder sb=new StringBuilder();
+		final Class<?> cl=value.getClass();
+		if(cl.isEnum()) {
+			sb.append(((Enum<?>)value).ordinal());
+		}else if(cl==String.class) { 
+			sb.append("'").append(value).append("'");
+		}else if(cl.isArray() && cl.getComponentType()==byte.class){
+			sb.append("X'").append(Utils.byteArray2String((byte[])value)).append("'");
+		}else {
+			sb.append(value);
+		}
+		return sb.toString();
 	}
 
 }

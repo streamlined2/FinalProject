@@ -13,17 +13,30 @@
 	
 	<form>
 		<table>
-			<c:forEach items="${query}" var="entity">
-				<tr>
-					<c:forEach items="${entity.iterator()}" var="value">
-						<td>${value}</td>
-					</c:forEach>
-				</tr>
-			</c:forEach>
+			<thead><tr>
+				<th>&nbsp;</th>
+				<c:forEach items="${queryHeader}" var="column">
+					<th>${column}</th>
+				</c:forEach>
+			</tr></thead>
+			<tbody>
+				<c:forEach items="${queryData}" var="entity">
+					<tr>
+						<td>
+							<input type="submit" value="Select" formaction="main?action=select_car" formmethod="post"/>
+						</td>
+						<c:forEach items="${entity}" var="value">
+							<td>${value}</td>
+						</c:forEach>
+					</tr>
+				</c:forEach>
+			</tbody>
 		</table>
 		<hr>
-		<input type="submit" value="Select" formaction="main?action=select_car" formmethod="post"/>
-		<input type="reset" value="Clear"/>
+		<input type="submit" value="Next" formaction="main?action=nextPage" formmethod="post"/>
+		<input type="submit" value="Previous" formaction="main?action=previousPage" formmethod="post"/>
+		<input type="submit" value="First" formaction="main?action=firstPage" formmethod="post"/>
+		<!-- <input type="submit" value="Last" formaction="main?action=lastPage" formmethod="post"/> -->
 		<input type="submit" value="Back" formaction="main?action=back" formmethod="post" formnovalidate/>
 	</form>
 </body>

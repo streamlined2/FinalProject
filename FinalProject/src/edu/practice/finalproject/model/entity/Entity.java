@@ -2,6 +2,7 @@ package edu.practice.finalproject.model.entity;
 
 import java.io.Serializable;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 
 import edu.practice.finalproject.model.analysis.Inspector;
@@ -38,14 +39,16 @@ public abstract class Entity implements Serializable, Iterable<Object> {
 	
 	public Iterator<Object> iterator() {
 		return new Iterator<Object>() {
-			private final Iterator<Object> i=Inspector.getValues(Entity.this).iterator();  
+			private final Object[] data=Inspector.getValues(Entity.this);
+			private int k=0;
 
 			@Override public boolean hasNext() {
-				return i.hasNext();
+				return k<data.length;
 			}
 
 			@Override public Object next() {
-				return i.next();
+				if(k>=data.length) throw new NoSuchElementException("iterator passed beyond last item");
+				return data[k++];
 			}
 		};
 	}

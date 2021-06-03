@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import edu.practice.finalproject.controller.FCServlet;
 import edu.practice.finalproject.controller.Names;
 import edu.practice.finalproject.controller.transition.FormDispatcher;
+import edu.practice.finalproject.model.dataaccess.EntityManager;
 import edu.practice.finalproject.view.action.Action;
 
 public class LoginForm extends Form {
@@ -16,7 +17,7 @@ public class LoginForm extends Form {
 	}
 	
 	@Override
-	public void init(final HttpServletRequest req) {
+	public void init(final HttpServletRequest req, final EntityManager entityManager) {
 		req.setAttribute(Names.LOGIN_PATTERN_ATTRIBUTE, Names.LOGIN_PATTERN);
 		req.setAttribute(Names.PASSWORD_PATTERN_ATTRIBUTE, Names.PASSWORD_PATTERN);
 	}

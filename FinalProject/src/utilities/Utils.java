@@ -72,5 +72,13 @@ public abstract class Utils {
 			default: throw new IllegalArgumentException("wrong user role");
 		}
 	}
+
+	public static String byteArray2String(final byte[] bytes) {
+		final StringBuilder sb=new StringBuilder();
+		for(final byte b:bytes) {
+			sb.append(String.format("%02X", b));
+		}
+		return sb.toString();
+	}
 	
 }

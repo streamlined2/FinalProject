@@ -11,7 +11,7 @@ import edu.practice.finalproject.model.analysis.Inspector;
 import edu.practice.finalproject.model.entity.Entity;
 import edu.practice.finalproject.model.entity.NaturalKeyEntity;
 
-public abstract class StatementBuilder {
+public final class StatementBuilder {
 	
 	private static final String DELETE_CLAUSE = "DELETE FROM ";
 	private static final String ON_CLAUSE = " ON ";
@@ -26,6 +26,7 @@ public abstract class StatementBuilder {
 	private static final String SELECT_CLAUSE = "SELECT ";
 	private static final String AND_CLAUSE = " AND ";
 	private static final String ORDER_BY_CLAUSE = " ORDER BY ";
+	private static final String LIMIT_CLAUSE = " LIMIT ";
 
 	private StatementBuilder() {}
 	
@@ -50,29 +51,6 @@ public abstract class StatementBuilder {
 		return cl.getSimpleName().toLowerCase()+"_"+Entity.ID_FIELD;
 	}
 	
-	public static String mapObjectToString(final Object value) {
-		final StringBuilder sb=new StringBuilder();
-		final Class<?> cl=value.getClass();
-		if(cl.isEnum()) {
-			sb.append(((Enum<?>)value).ordinal());
-		}else if(cl==String.class) { 
-			sb.append("'").append(value).append("'");
-		}else if(cl.isArray() && cl.getComponentType()==byte.class){
-			sb.append("X'").append(byteArray2String((byte[])value)).append("'");
-		}else {
-			sb.append(value);
-		}
-		return sb.toString();
-	}
-	
-    private static String byteArray2String(final byte[] bytes) {
-    	final StringBuilder sb=new StringBuilder();
-    	for(final byte b:bytes) {
-    		sb.append(String.format("%02X", b));
-    	}
-    	return sb.toString();
-    }
-
 	public static StringBuilder getFieldList(final Iterable<Method> accessor,final String separator) {
 		return getFieldList(accessor,separator,"");
 	}
@@ -112,29 +90,41 @@ public abstract class StatementBuilder {
 		final StringBuilder sb=new StringBuilder();
 		final Iterator<?> i=iterable.iterator();
 		if(i.hasNext()) {
-			sb.append(mapObjectToString(i.next()));
+			sb.append(Inspector.mapObjectToString(i.next()));
 			while(i.hasNext()) {
-				sb.append(separator).append(mapObjectToString(i.next()));
+				sb.append(separator).append(Inspector.mapObjectToString(i.next()));
+			}
+		}
+		return sb;
+	}
+	
+	public static StringBuilder getValueList(final String separator,final Object... list) {
+		final StringBuilder sb=new StringBuilder();
+		int k=0;
+		if(k<list.length) {
+			sb.append(Inspector.mapObjectToString(list[k++]));
+			while(k<list.length) {
+				sb.append(separator).append(Inspector.mapObjectToString(list[k++]));
 			}
 		}
 		return sb;
 	}
 	
 	public static StringBuilder getFieldValueList(
-			final Iterable<Method> fields,final Iterable<?> values,final String separator) {
+			final Iterable<Method> fields,final Object[] values,final String separator) {
 		return getFieldValueList(fields,values,separator,"");
 	}
 	
 	public static StringBuilder getFieldValueList(
-			final Iterable<Method> fields,final Iterable<?> values,final String separator,final String prefix) {
+			final Iterable<Method> fields,final Object[] values,final String separator,final String prefix) {
 		final StringBuilder sb=new StringBuilder();
 		final Iterator<Method> fieldIterator=fields.iterator();
-		final Iterator<?> valueIterator=values.iterator();
-		if(fieldIterator.hasNext() && valueIterator.hasNext()) {
-			sb.append(Inspector.getFieldName(prefix,fieldIterator.next())).append("=").append(mapObjectToString(valueIterator.next()));
-			while(fieldIterator.hasNext() && valueIterator.hasNext()) {
+		int k=0;
+		if(fieldIterator.hasNext() && k<values.length) {
+			sb.append(Inspector.getFieldName(prefix,fieldIterator.next())).append("=").append(Inspector.mapObjectToString(values[k++]));
+			while(fieldIterator.hasNext() && k<values.length) {
 				sb.append(separator).
-				append(Inspector.getFieldName(prefix,fieldIterator.next())).append("=").append(mapObjectToString(valueIterator.next()));
+				append(Inspector.getFieldName(prefix,fieldIterator.next())).append("=").append(Inspector.mapObjectToString(values[k++]));
 			}
 		}
 		return sb;
@@ -143,7 +133,7 @@ public abstract class StatementBuilder {
 	public static <E extends Entity> StringBuilder getUpdateStatement(final E entity) {
 		final Class<E> cl=(Class<E>) entity.getClass();
 		final List<Method> getters=Inspector.getGetters(cl,true);
-		final List<Object> values=Inspector.getValues(entity,getters);
+		final Object[] values=Inspector.getValues(entity,getters);
 		
 		return new StringBuilder(UPDATE_CLAUSE).
 				append(StatementBuilder.getTableName(cl)).
@@ -152,7 +142,7 @@ public abstract class StatementBuilder {
 				append(WHERE_CLAUSE).
 				append(Entity.ID_FIELD).
 				append(IN_CLAUSE).
-				append(StatementBuilder.mapObjectToString(entity.getId())).
+				append(Inspector.mapObjectToString(entity.getId())).
 				append(" )");
 	}
 
@@ -165,7 +155,7 @@ public abstract class StatementBuilder {
 				append(WHERE_CLAUSE).
 				append(NaturalKeyEntity.keyFieldName(entity)).
 				append(IN_CLAUSE).
-				append(mapObjectToString(key)).
+				append(Inspector.mapObjectToString(key)).
 				append(" )");
 	}
 	
@@ -173,6 +163,15 @@ public abstract class StatementBuilder {
 		return getSelectByKeyOrderedStatement(cl,keyPairs,null);
 	}
 	
+	public static <E extends Entity> StringBuilder getSelectByKeyOrderedStatement(final Class<E> cl,final Map<String,?> keyPairs,final Map<String,Boolean> orderKeys,final long startElement,final long endElement) {
+		final StringBuilder sb=getSelectByKeyOrderedStatement(cl,keyPairs,orderKeys);
+		final long count=Math.max(endElement-startElement+1,0L);
+		if(count>0) {
+			sb.append(LIMIT_CLAUSE).append(startElement).append(",").append(count);
+		}
+		return sb;
+	}
+
 	public static <E extends Entity> StringBuilder getSelectByKeyOrderedStatement(final Class<E> cl,final Map<String,?> keyPairs,final Map<String,Boolean> orderKeys) {
 		final StringBuilder sb=new StringBuilder(SELECT_CLAUSE).
 				append(getFieldList(Inspector.getSetters(cl,false),",")).
@@ -192,10 +191,10 @@ public abstract class StatementBuilder {
 		final Iterator<Entry<String,V>> i=entries.entrySet().iterator();
 		if(i.hasNext()) {
 			Map.Entry<String,V> entry=i.next();
-			sb.append(entry.getKey()).append("=").append(mapObjectToString(entry.getValue()));
+			sb.append(entry.getKey()).append("=").append(Inspector.mapObjectToString(entry.getValue()));
 			while(i.hasNext()) {
 				entry=i.next();
-				sb.append(AND_CLAUSE).append(entry.getKey()).append("=").append(mapObjectToString(entry.getValue()));
+				sb.append(AND_CLAUSE).append(entry.getKey()).append("=").append(Inspector.mapObjectToString(entry.getValue()));
 			}
 		}
 		return sb;
@@ -215,7 +214,7 @@ public abstract class StatementBuilder {
 				append(getTableName(cl)).append(" (").
 				append(getFieldList(getters,",")).
 				append(VALUES_CLAUSE).
-				append(getValueList(Inspector.getValues(entity,getters),",")).
+				append(getValueList(",",Inspector.getValues(entity,getters))).
 				append(")");
 	}
 	
@@ -224,7 +223,7 @@ public abstract class StatementBuilder {
 				append(getLinkTableName((Class<M>)master.getClass(),slaveClass)).append(" (").
 				append(getLinkName(master)).append(",").append(getLinkName(slaveClass)).
 				append(VALUES_CLAUSE).
-				append(mapObjectToString(master.getId())).append(",").append("?").
+				append(Inspector.mapObjectToString(master.getId())).append(",").append("?").
 				append(")");
 	}
 	
@@ -239,7 +238,7 @@ public abstract class StatementBuilder {
 				append(WHERE_CLAUSE).
 				append(getQualifiedAttribute("A",getLinkName(master))).
 				append(IN_CLAUSE).
-				append(mapObjectToString(master.getId())).
+				append(Inspector.mapObjectToString(master.getId())).
 				append(" )");
 	}
 	
@@ -249,7 +248,7 @@ public abstract class StatementBuilder {
 			append(WHERE_CLAUSE).
 			append(Entity.ID_FIELD).
 			append(IN_CLAUSE).
-			append(mapObjectToString(entity.getId())).
+			append(Inspector.mapObjectToString(entity.getId())).
 			append(" )");
 	}
 	
@@ -259,7 +258,7 @@ public abstract class StatementBuilder {
 			append(WHERE_CLAUSE).
 			append(getLinkName(master)).
 			append(IN_CLAUSE).
-			append(mapObjectToString(master.getId())).
+			append(Inspector.mapObjectToString(master.getId())).
 			append(" )");
 	}
 }

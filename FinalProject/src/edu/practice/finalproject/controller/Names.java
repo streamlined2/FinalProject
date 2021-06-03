@@ -1,6 +1,6 @@
 package edu.practice.finalproject.controller;
 
-public abstract class Names {
+public final class Names {
 	
 	private Names() {}
 
@@ -18,6 +18,13 @@ public abstract class Names {
 	public static final String QUALITY_GRADE_VALUES_ATTRIBUTE = "qualityGradeValues";
 	public static final String COLOR_VALUES_ATTRIBUTE = "colorValues";
 	public static final String STYLE_VALUES_ATTRIBUTE = "styleValues";
+	public static final String FILTER_KEY_PAIRS_ATTRIBUTE = "filterKeyPairs";
+	public static final String ORDER_KEYS_ATTRIBUTE = "orderKeys";
+	public static final String QUERY_DATA_ATTRIBUTE = "queryData";
+	public static final String QUERY_HEADER_ATTRIBUTE = "queryHeader";
+	public static final String FIRST_PAGE_ELEMENT_ATTRIBUTE = "firstPageElement";
+	public static final String LAST_PAGE_ELEMENT_ATTRIBUTE = "lastPageElement";
+	public static final String PAGE_ELEMENTS_NUMBER_ATTRIBUTE = "pageElementsNumber";
 
 	public static final String ACTION_PARAMETER = "action";
 	public static final String USER_PARAMETER = "user";
@@ -52,6 +59,10 @@ public abstract class Names {
 	public static final String MODEL_PARAMETER = "modelSort";
 	public static final String ORDER_BY_PRODUCTION_DATE = "orderByProductionDate";
 	public static final String PRODUCTION_DATE_PARAMETER = "productionDateSort";
+	public static final String NEXT_PAGE_PARAMETER = "nextPage"; 
+	public static final String PREVIOUS_PAGE_PARAMETER = "previousPage"; 
+	public static final String FIRST_PAGE_PARAMETER = "firstPage"; 
+	public static final String LAST_PAGE_PARAMETER = "lastPage"; 
 	
 	public static final String LOGIN_PATTERN = "[0-9A-Za-zÀ-ßà-ÿ¨¸ªº²³¯¿]+";
 	public static final String PASSWORD_PATTERN = "[0-9A-Za-zÀ-ßà-ÿ¨¸ªº²³¯¿]+";

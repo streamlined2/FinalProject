@@ -5,9 +5,13 @@ import edu.practice.finalproject.controller.admin.User;
 import edu.practice.finalproject.view.action.Action;
 import edu.practice.finalproject.view.action.BackAction;
 import edu.practice.finalproject.view.action.ConfirmCarCriteriaAction;
+import edu.practice.finalproject.view.action.FirstPageAction;
+import edu.practice.finalproject.view.action.LastPageAction;
 import edu.practice.finalproject.view.action.SwitchLocaleAction;
 import edu.practice.finalproject.view.action.LoginAction;
 import edu.practice.finalproject.view.action.LogoutAction;
+import edu.practice.finalproject.view.action.NextPageAction;
+import edu.practice.finalproject.view.action.PreviousPageAction;
 import edu.practice.finalproject.view.action.RegisterAction;
 import edu.practice.finalproject.view.action.RegisterNewAction;
 import edu.practice.finalproject.view.action.SelectCarAction;
@@ -28,6 +32,10 @@ public class FormDispatcher {
 		transitions.addRule(null, REGISTER_FORM, BACK_ACTION, LOGIN_FORM);
 		transitions.addRule(Client.class, CAR_SELECTION_CRITERIA_FORM, CONFIRM_CAR_CRITERIA_ACTION, CAR_BROWSING_FORM);
 		transitions.addRule(Client.class, CAR_BROWSING_FORM, BACK_ACTION, CAR_SELECTION_CRITERIA_FORM);
+		transitions.addRule(Client.class, CAR_BROWSING_FORM, NEXT_PAGE_ACTION, CAR_BROWSING_FORM);
+		transitions.addRule(Client.class, CAR_BROWSING_FORM, FIRST_PAGE_ACTION, CAR_BROWSING_FORM);
+		transitions.addRule(Client.class, CAR_BROWSING_FORM, PREVIOUS_PAGE_ACTION, CAR_BROWSING_FORM);
+		transitions.addRule(Client.class, CAR_BROWSING_FORM, LAST_PAGE_ACTION, CAR_BROWSING_FORM);
 		transitions.addRule(Client.class, CAR_BROWSING_FORM, SELECT_CAR_ACTION, null);
 		//last rule for Client
 		transitions.addRule(Client.class, null, null, CAR_SELECTION_CRITERIA_FORM);
@@ -42,6 +50,10 @@ public class FormDispatcher {
 	public static final BackAction BACK_ACTION = new BackAction("back");
 	public static final ConfirmCarCriteriaAction CONFIRM_CAR_CRITERIA_ACTION = new ConfirmCarCriteriaAction("confirm_car_criteria");
 	public static final SelectCarAction SELECT_CAR_ACTION = new SelectCarAction("select_car");
+	public static final NextPageAction NEXT_PAGE_ACTION = new NextPageAction("next_page");
+	public static final FirstPageAction FIRST_PAGE_ACTION = new FirstPageAction("first_page");
+	public static final PreviousPageAction PREVIOUS_PAGE_ACTION = new PreviousPageAction("previous_page");
+	public static final LastPageAction LAST_PAGE_ACTION = new LastPageAction("last_page");
 
 	public static final LoginForm LOGIN_FORM = new LoginForm("/login.jsp");
 	public static final RegisterForm REGISTER_FORM = new RegisterForm("/register.jsp");

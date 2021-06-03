@@ -1,7 +1,6 @@
 package edu.practice.finalproject.view.action;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -13,7 +12,6 @@ import edu.practice.finalproject.controller.FCServlet;
 import edu.practice.finalproject.controller.Names;
 import edu.practice.finalproject.model.analysis.Inspector;
 import edu.practice.finalproject.model.dataaccess.EntityManager;
-import edu.practice.finalproject.model.entity.domain.Car;
 import edu.practice.finalproject.model.entity.domain.Car.Color;
 import edu.practice.finalproject.model.entity.domain.Car.Manufacturer;
 import edu.practice.finalproject.model.entity.domain.Car.QualityGrade;
@@ -49,11 +47,11 @@ public class ConfirmCarCriteriaAction extends ClientAction {
 		final String selectByStyle=FCServlet.getParameterValue(req,Names.SELECT_BY_STYLE_PARAMETER);
 		final String style=FCServlet.getParameterValue(req,Names.STYLE_PARAMETER);
 		
-		final Map<String,Object> keyPairs=new HashMap<>();
-		addFilterKeyValue(keyPairs,selectByManufacturer,"manufacturer",Inspector.getByLabel(Manufacturer.class,manufacturer));
-		addFilterKeyValue(keyPairs,selectByQualityGrade,"qualityGrade",Inspector.getByLabel(QualityGrade.class,qualityGrade));
-		addFilterKeyValue(keyPairs,selectByColor,"color",Inspector.getByLabel(Color.class,color));
-		addFilterKeyValue(keyPairs,selectByStyle,"style",Inspector.getByLabel(Style.class,style));
+		final Map<String,Object> filterKeyPairs=new HashMap<>();
+		addFilterKeyValue(filterKeyPairs,selectByManufacturer,"manufacturer",Inspector.getByLabel(Manufacturer.class,manufacturer));
+		addFilterKeyValue(filterKeyPairs,selectByQualityGrade,"qualityGrade",Inspector.getByLabel(QualityGrade.class,qualityGrade));
+		addFilterKeyValue(filterKeyPairs,selectByColor,"color",Inspector.getByLabel(Color.class,color));
+		addFilterKeyValue(filterKeyPairs,selectByStyle,"style",Inspector.getByLabel(Style.class,style));
 		
 		final String orderByRentCost=FCServlet.getParameterValue(req,Names.ORDER_BY_RENT_COST_PARAMETER);
 		final String costSort=FCServlet.getParameterValue(req,Names.RENT_COST_ORDER_PARAMETER);
@@ -67,8 +65,12 @@ public class ConfirmCarCriteriaAction extends ClientAction {
 		addOrderKey(orderKeys,orderByModel,"model",Utils.isAscendingOrder(modelSort));
 		addOrderKey(orderKeys,orderByProductionDate,"productionDate",Utils.isAscendingOrder(productionDateSort));
 		
-		final List<Car> entities=entityManager.fetchByCompositeKeyOrdered(Car.class,keyPairs,orderKeys);
-		FCServlet.setAttribute(req, "query", entities);
+		FCServlet.setAttribute(req, Names.FILTER_KEY_PAIRS_ATTRIBUTE, filterKeyPairs);
+		FCServlet.setAttribute(req, Names.ORDER_KEYS_ATTRIBUTE, orderKeys);
+
+		final Integer numberOfElements=(Integer)FCServlet.getAttribute(req, Names.PAGE_ELEMENTS_NUMBER_ATTRIBUTE,5);
+		FCServlet.setAttribute(req, Names.FIRST_PAGE_ELEMENT_ATTRIBUTE,0L);
+		FCServlet.setAttribute(req, Names.LAST_PAGE_ELEMENT_ATTRIBUTE,Long.valueOf(numberOfElements-1));
 
 		return true;
 	}
