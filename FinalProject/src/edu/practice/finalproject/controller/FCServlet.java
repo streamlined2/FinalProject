@@ -61,6 +61,8 @@ public class FCServlet extends HttpServlet {
 					Names.PAGE_ELEMENTS_NUMBER_ATTRIBUTE, 
 					Integer.parseInt(getServletContext().getInitParameter("pageElements")));
 
+			Locale.setDefault(getDefaultLocale());
+			
 		}catch(NamingException | NoSuchAlgorithmException e) {
 			throw new ServletException(e);
 		}

@@ -1,9 +1,11 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-<%@ taglib  uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <!DOCTYPE html>
 <html>
 <body>
+	<fmt:setLocale value="${sessionScope.locale}"/>
+	<fmt:setBundle basename="resources.messages" var="localeBundle"/>
 	<table><th>
 		<td><c:if test="${!empty sessionScope.user}">
 		<form><button type="submit" width="24" height="24" formaction="main?action=logout" formmethod="post">
@@ -20,9 +22,6 @@
 					</c:choose>
 				</c:forEach>
 			</select>
-<!-- 		<button type="submit" width="24" height="24" formaction="main?action=locale" formmethod="post">
-				<img src="switchlocale.png">
-			</button> -->
 		</form></td>
 		<td><div class="message">${sessionScope.message}</div></td>
 		<td><div class="error">${sessionScope.error}</div></td>
