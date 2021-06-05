@@ -1,13 +1,13 @@
 package edu.practice.finalproject.view.action;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 import edu.practice.finalproject.controller.FCServlet;
 import edu.practice.finalproject.controller.Names;
-import edu.practice.finalproject.controller.admin.Client;
 import edu.practice.finalproject.controller.admin.User;
 import edu.practice.finalproject.model.analysis.Inspector;
 import edu.practice.finalproject.model.dataaccess.EntityManager;
@@ -19,9 +19,10 @@ public class RegisterNewAction extends Action {
 		super(name);
 	}
 	
-	private static final String ERROR_MSG = "Can't register new user";
-	private static final String DIFFERENT_PASSWORDS_ERROR = "Passwords should coincide!";
-	private static final String USER_SUCCESSFULLY_REGISTERED_MSG = "User successfully registered";
+	private static final String INTERNAL_ERROR = "Can't register new user";
+	private static final String DIFFERENT_PASSWORDS = "Passwords should coincide";
+	private static final String USER_SUCCESSFULLY_REGISTERED = "User successfully registered";
+	private static final String USER_ALREADY_REGISTERED = "This login has been taken already";
 
 	@Override
 	public boolean execute(final HttpServletRequest req, final EntityManager entityManager) throws ServletException {
@@ -40,24 +41,27 @@ public class RegisterNewAction extends Action {
 			final byte[] password2=FCServlet.getParameterValue(req,Names.PASSWORD2_PARAMETER).getBytes();
 			
 			if(!Arrays.equals(password, password2)) {
-				FCServlet.setError(req, DIFFERENT_PASSWORDS_ERROR);
+				FCServlet.setError(req, DIFFERENT_PASSWORDS);
+				return false;
+			}
+			
+			final Optional<? extends User> checkUser=entityManager.findByKey(Utils.mapUserRoleToClass(role),login);
+			if(checkUser.isPresent()) {
+				FCServlet.setError(req, USER_ALREADY_REGISTERED);
 				return false;
 			}
 			
 			final User user=Inspector.createEntity(Utils.mapUserRoleToClass(role));
 			user.setLogin(login);
 			user.setPasswordDigest(Utils.getDigest(password));
-			if(user instanceof Client) {
-				((Client)user).setFirstName(firstName);
-				((Client)user).setLastName(lastName);
-			}
+			user.setFirstName(firstName);
+			user.setLastName(lastName);
 			entityManager.persist(user);
 			FCServlet.setUser(req, user);
-			FCServlet.setMessage(req, USER_SUCCESSFULLY_REGISTERED_MSG);
+			FCServlet.setMessage(req, USER_SUCCESSFULLY_REGISTERED);
 			return true;
-		
 		}catch(Exception e) {
-			FCServlet.setError(req, String.format("%s: %s",ERROR_MSG,e.getMessage()));
+			FCServlet.setError(req, String.format("%s: %s",INTERNAL_ERROR,e.getMessage()));
 		}
 		return false;
 	}

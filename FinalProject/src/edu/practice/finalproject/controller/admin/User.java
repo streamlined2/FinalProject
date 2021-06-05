@@ -6,12 +6,16 @@ import edu.practice.finalproject.view.action.Action;
 public abstract class User extends NaturalKeyEntity<String> {
 	protected String login;
 	protected byte[] passwordDigest;
+	protected String firstName;
+	protected String lastName;
 	
 	protected User() {}
 	
-	protected User(final String login,final byte[] passwordDigest)  {
+	protected User(final String login,final byte[] passwordDigest, String firstName, String lastName)  {
 		this.login=login;
 		this.passwordDigest=passwordDigest;
+		this.firstName = firstName;
+		this.lastName = lastName;
 	}
 	
 	public String getLogin() { return login;}
@@ -47,7 +51,13 @@ public abstract class User extends NaturalKeyEntity<String> {
 	}
 	
 	@Override public String toString() {
-		return login;
+			return new StringBuilder(firstName).append(" ").append(lastName).toString();
 	}
+
+	public String getFirstName() { return firstName;}
+	public void setFirstName(final String firstName) { this.firstName=firstName;}
+
+	public String getLastName() { return lastName;}
+	public void setLastName(final String lastName) { this.lastName=lastName;}
 
 }

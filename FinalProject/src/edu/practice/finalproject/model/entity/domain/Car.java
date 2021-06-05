@@ -77,8 +77,6 @@ public class Car extends NaturalKeyEntity<String> {
 	private Color color;
 	private Style style;
 	
-	public Car() {}
-	
 	public String getModel() { return model;}
 	public void setModel(final String model) { this.model=model;}
 	

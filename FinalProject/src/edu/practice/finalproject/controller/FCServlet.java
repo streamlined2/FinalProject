@@ -53,7 +53,8 @@ public class FCServlet extends HttpServlet {
 			
 			admin=new Admin(
 					getServletContext().getInitParameter("adminUserName"),
-					Utils.getDigest(getServletContext().getInitParameter("adminPassword").getBytes()));
+					Utils.getDigest(getServletContext().getInitParameter("adminPassword").getBytes()),
+					"Primary","User");
 
 			getServletContext().setAttribute(Names.AVAILABLE_LOCALES_ATTRIBUTE,availableLocales);
 			
@@ -69,7 +70,7 @@ public class FCServlet extends HttpServlet {
 	}
 
 	private static final int NO_APPROPRIATE_FORM_MAPPING_CODE=1;
-	private static final String NO_APPROPRIATE_FORM_MAPPING_MSG="No appropriate mapping for given user,form and action!"; 
+	private static final String NO_APPROPRIATE_FORM_MAPPING_MSG="No appropriate mapping for given user, form and action!"; 
 	
     private void process(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException {	
     	initLocale(req);
@@ -218,7 +219,7 @@ public class FCServlet extends HttpServlet {
 
 	public static String getParameterValue(final HttpServletRequest req,final String parameter,final String defaultValue) {
 		final String value=getParameterValue(req.getParameterMap(),parameter);
-		return value==null?defaultValue:value;
+		return Objects.isNull(value)?defaultValue:value;
 	}
 
 	public static String getParameterValue(final Map<String,String[]> parameters,final String parameter) {
@@ -229,6 +230,11 @@ public class FCServlet extends HttpServlet {
 		return null;
 	}
 	
+	public static boolean ifParameterEquals(final Map<String,String[]> parameters,final String parameter,final String value) {
+		final String[] values=parameters.get(parameter);
+		return values!=null && Arrays.asList(values).contains(value); 
+	}
+
 	public static boolean isActionPresent(final Map<String,String[]> parameters,final String actionName) {
 		final String[] values=parameters.get(Names.ACTION_PARAMETER);
 		return values!=null && Arrays.asList(values).contains(actionName); 

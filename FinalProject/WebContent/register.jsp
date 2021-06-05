@@ -18,12 +18,12 @@
 		<tr>
 			<td><label for="firstname"><fmt:message key="user.firstname" bundle="${localeBundle}"/></label></td>
 			<fmt:message key="user.firstname.prompt" bundle="${localeBundle}" var="firstnamePrompt"/>
-			<td><input type="text" id="firstname" name="firstname" value="" placeholder="${firstnamePrompt}" size="50" pattern="${requestScope.namePattern}" title="${lettersPrompt}" required/></td>
+			<td><input type="text" id="firstname" name="firstname" value="${param.firstname}" placeholder="${firstnamePrompt}" size="50" pattern="${requestScope.namePattern}" title="${lettersPrompt}" required/></td>
 		</tr>
 		<tr>
 			<td><label for="lastname"><fmt:message key="user.lastname" bundle="${localeBundle}"/></label></td>
 			<fmt:message key="user.lastname.prompt" bundle="${localeBundle}" var="lastnamePrompt"/>
-			<td><input type="text" id="lastname" name="lastname" value="" placeholder="${lastnamePrompt}" size="50" pattern="${requestScope.namePattern}" title="${lettersPrompt}" required/></td>
+			<td><input type="text" id="lastname" name="lastname" value="${param.lastname}" placeholder="${lastnamePrompt}" size="50" pattern="${requestScope.namePattern}" title="${lettersPrompt}" required/></td>
 		</tr>
 		<tr>
 			<td><label for="role"><fmt:message key="user.role" bundle="${localeBundle}"/></label></td>

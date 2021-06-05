@@ -69,8 +69,11 @@ public final class Names {
 	public static final String CAR_NUMBER_PARAMETER = "number";
 	public static final String ORDER_CAR_PARAMETER = "order_car";
 	public static final String DRIVER_OPTION_PARAMETER = "driver";
-	public static final String DUE_TIME_PARAMETER = "returnTime";
+	public static final String LEASE_DUE_TIME_PARAMETER = "returnTime";
 	public static final String LEASE_START_TIME_PARAMETER = "startTime";
+	public static final String ORDER_APPROVEMENT_PARAMETER = "orderApprovement";
+	public static final String CAR_RECEPTION_PARAMETER = "carReception";
+	public static final String MANAGER_TASK_PARAMETER = "managerTask";
 	
 	public static final String LOGIN_PATTERN = "[0-9A-Za-zÀ-ßà-ÿ¨¸ªº²³¯¿]+";
 	public static final String PASSWORD_PATTERN = "[0-9A-Za-zÀ-ßà-ÿ¨¸ªº²³¯¿]+";

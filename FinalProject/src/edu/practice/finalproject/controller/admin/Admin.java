@@ -5,8 +5,8 @@ import edu.practice.finalproject.view.action.AdminAction;
 
 public class Admin extends User {
 
-	public Admin(final String login, final byte[] passwordDigest) {
-		super(login, passwordDigest);
+	public Admin(final String login,final byte[] passwordDigest, String firstName, String lastName)  {
+		super(login, passwordDigest, firstName, lastName);
 	}
 	
 	public Admin() {}

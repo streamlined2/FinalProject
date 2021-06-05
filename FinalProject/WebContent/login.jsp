@@ -12,13 +12,17 @@
 	<form>
 
 	<fieldset><legend><fmt:message key="user.credentials" bundle="${localeBundle}"/></legend>
-		<label for="client"><fmt:message key="user.client" bundle="${localeBundle}"/></label>
-		<input type="radio" id="client" name="role" value="client" checked/>
-		<label for="manager"><fmt:message key="user.manager" bundle="${localeBundle}"/></label>
-		<input type="radio" id="manager" name="role" value="manager"/>
-		<label for="admin"><fmt:message key="user.administrator" bundle="${localeBundle}"/></label>
-		<input type="radio" id="admin" name="role" value="admin"/>
 		<table>
+		<tr>
+			<td><label for="role"><fmt:message key="user.role" bundle="${localeBundle}"/></label></td>
+			<td>
+				<select name="role" id="role">
+					<option value="client"><fmt:message key="user.client" bundle="${localeBundle}"/></option>
+					<option value="manager"><fmt:message key="user.manager" bundle="${localeBundle}"/></option>
+					<option value="admin"><fmt:message key="user.administrator" bundle="${localeBundle}"/></option>
+				</select>
+			</td>
+		</tr>
 		<tr>
 			<td><label for="user"><fmt:message key="user.login" bundle="${localeBundle}"/></label></td>
 			<fmt:message key="user.login.prompt" bundle="${localeBundle}" var="userPrompt"/>
