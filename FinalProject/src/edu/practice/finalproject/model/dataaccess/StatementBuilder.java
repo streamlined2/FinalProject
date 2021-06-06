@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.Optional;
 
 import edu.practice.finalproject.model.analysis.Inspector;
 import edu.practice.finalproject.model.entity.Entity;
@@ -25,6 +26,7 @@ public final class StatementBuilder {
 	private static final String SET_CLAUSE = " SET ";
 	private static final String UPDATE_CLAUSE = "UPDATE ";
 	private static final String IN_CLAUSE = " IN ( ";
+	private static final String NOT_IN_CLAUSE = " NOT IN ( ";
 	private static final String WHERE_CLAUSE = " WHERE ";
 	private static final String FROM_CLAUSE = " FROM ";
 	private static final String SELECT_CLAUSE = "SELECT ";
@@ -147,6 +149,18 @@ public final class StatementBuilder {
 				append(" )");
 	}
 
+	public static <E extends Entity> StringBuilder getSelectByIdStatement(final Class<E> cl,final Long key) {
+		return new StringBuilder(SELECT_CLAUSE).
+				append(getFieldList(Inspector.getSetters(cl,false),",")).
+				append(FROM_CLAUSE).
+				append(getTableName(cl)).
+				append(WHERE_CLAUSE).
+				append(Entity.ID_FIELD).
+				append(IN_CLAUSE).
+				append(StatementBuilder.mapObjectToString(key)).
+				append(" )");
+	}
+	
 	public static <K extends Comparable<? super K>,E extends NaturalKeyEntity<K>> StringBuilder getSelectByNaturalKeyStatement(
 			final Class<E> cl,final E entity,final K key) {
 		return new StringBuilder(SELECT_CLAUSE).
@@ -166,11 +180,15 @@ public final class StatementBuilder {
 	
 	public static <E extends Entity> StringBuilder getSelectByKeyOrderedStatement(final Class<E> cl,final Map<String,?> keyPairs,final Map<String,Boolean> orderKeys,final long startElement,final long endElement) {
 		final StringBuilder sb=getSelectByKeyOrderedStatement(cl,keyPairs,orderKeys);
+		appendLimiters(sb, startElement, endElement);
+		return sb;
+	}
+
+	private static void appendLimiters(final StringBuilder sb, final long startElement, final long endElement) {
 		final long count=Math.max(endElement-startElement+1,0L);
 		if(count>0) {
 			sb.append(LIMIT_CLAUSE).append(startElement).append(",").append(count);
 		}
-		return sb;
 	}
 
 	public static <E extends Entity> StringBuilder getSelectByKeyOrderedStatement(final Class<E> cl,final Map<String,?> keyPairs,final Map<String,Boolean> orderKeys) {
@@ -241,6 +259,26 @@ public final class StatementBuilder {
 				append(IN_CLAUSE).
 				append(StatementBuilder.mapObjectToString(master.getId())).
 				append(" )");
+	}
+	
+	public static <M extends Entity,S extends Entity> StringBuilder getSelectMissingEntitiesStatement(
+			final Class<M> masterClass,final Class<S> slaveClass,final long startElement,final long endElement) {
+
+		final Optional<Method> foreignRef = Inspector.getForeignReference(masterClass,slaveClass);
+		final StringBuilder sb=new StringBuilder(SELECT_CLAUSE).
+				append(getFieldList(Inspector.getSetters(masterClass,false),",","B")).
+				append(FROM_CLAUSE).
+				append(getTableName(masterClass)).append(" B ").
+				append(WHERE_CLAUSE).
+				append(getQualifiedAttribute("B",Entity.ID_FIELD)).
+				append(NOT_IN_CLAUSE).
+					append(SELECT_CLAUSE).
+					append(getFieldList(List.of(foreignRef.get()),",","A")).
+					append(FROM_CLAUSE).
+					append(getTableName(slaveClass)).append(" A ").
+				append(" )");
+		appendLimiters(sb, startElement, endElement);
+		return sb;
 	}
 	
 	public static <E extends Entity> StringBuilder getDeleteStatement(final E entity) {

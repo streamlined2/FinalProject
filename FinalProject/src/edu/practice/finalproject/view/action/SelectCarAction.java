@@ -20,7 +20,7 @@ public class SelectCarAction extends ClientAction {
 
 	@Override
 	public boolean execute(HttpServletRequest req, EntityManager entityManager) throws ServletException {
-		final List<Car> queryData=(List<Car>)FCServlet.getAttribute(req, Names.PAGE_CARS_ATTRIBUTE);
+		final List<Car> queryData=(List<Car>)FCServlet.getAttribute(req, Names.PAGE_ITEMS_ATTRIBUTE);
 		final int number=Integer.parseInt(FCServlet.getParameterValue(req,Names.CAR_NUMBER_PARAMETER));
 		if(number>=0 && number<queryData.size()) {
 			FCServlet.setAttribute(req, Names.SELECTED_CAR_ATTRIBUTE, queryData.get(number));

@@ -38,7 +38,7 @@ public class OrderCarAction extends ClientAction {
 				return false;
 			}
 			
-			final User client = (User) user;
+			final Client client = (Client) user;
 
 			final Car car = (Car)FCServlet.getAttribute(req, Names.SELECTED_CAR_ATTRIBUTE);
 			if(Objects.isNull(car)) {

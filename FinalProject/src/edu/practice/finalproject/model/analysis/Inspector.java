@@ -1,17 +1,28 @@
 package edu.practice.finalproject.model.analysis;
 
 import java.io.File;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.BiFunction;
+import java.util.function.BiPredicate;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import edu.practice.finalproject.model.entity.Entity;
 
@@ -56,39 +67,67 @@ public final class Inspector {
 	}
 
 	public static List<Method> getGetters(final Class<? extends Entity> cl,final boolean skipID){
+		return getAccessors(cl, skipID, Inspector::isGetter);
+	}
+
+	public static <E extends Entity> List<Method> getSetters(final Class<E> cl,final boolean skipID){
+		return getAccessors(cl, skipID, Inspector::isSetter);
+	}
+
+	private static <E extends Entity> List<Method> getAccessors(final Class<E> cl, final boolean skipID,final BiPredicate<Method,Boolean> checker) {
 		final List<Method> list=new LinkedList<>();
-		final Method[] methods=cl.getMethods();
-		for(final Method method:methods) {
-			if(
-					Modifier.isPublic(method.getModifiers()) &&
-					!Modifier.isStatic(method.getModifiers()) &&
-					method.getName().startsWith("get") && 
-					method.getParameterCount()==0 && 
-					(!isIDField(method) || isIDField(method) && !skipID) &&
-					!isClass(method.getReturnType())) {
-				
-				list.add(method);
+		final Map<String,Method> methodMap = Arrays.stream(
+				cl.getMethods()).filter(method->checker.test(method,skipID)).collect(Collectors.toMap(Inspector::getFieldName,Function.identity()));
+
+		for(final Field field:cl.getDeclaredFields()) {
+			if(!Modifier.isTransient(field.getModifiers())) {
+				addAccessor(list, methodMap.remove(field.getName()), skipID, checker);
 			}
+		}
+		for(final Map.Entry<String,Method> entry:methodMap.entrySet()) {
+			addAccessor(list, entry.getValue(), skipID, checker);
 		}
 		return list;
 	}
-	
-	public static <E extends Entity> List<Method> getSetters(final Class<E> cl,final boolean skipID){
-		final List<Method> list=new LinkedList<>();
-		final Method[] methods=cl.getMethods();
-		for(final Method method:methods) {
-			if(
-					Modifier.isPublic(method.getModifiers()) &&
-					!Modifier.isStatic(method.getModifiers()) &&
-					method.getName().startsWith("set") && 
-					method.getParameterCount()==1 && 
-					(!isIDField(method) || isIDField(method) && !skipID) &&
-					method.getReturnType()==void.class) {
-				
-				list.add(method);
-			}
+
+	private static void addAccessor(final List<Method> list, final Method method, final boolean skipID, BiPredicate<Method, Boolean> check) {
+		if(check.test(method, skipID)) {
+			list.add(method);
 		}
-		return list;
+	}
+
+	public static boolean isGetter(final Method method, final boolean skipID) {
+		return 
+				method!=null &&
+				Modifier.isPublic(method.getModifiers()) &&
+				!Modifier.isStatic(method.getModifiers()) &&
+				method.getName().startsWith("get") && 
+				method.getParameterCount()==0 && 
+				(!isIDField(method) || isIDField(method) && !skipID) &&
+				!isClass(method.getReturnType());
+	}
+	
+	public static boolean isSetter(final Method method, final boolean skipID) {
+		return 
+				method!=null &&
+				Modifier.isPublic(method.getModifiers()) &&
+				!Modifier.isStatic(method.getModifiers()) &&
+				method.getName().startsWith("set") && 
+				method.getParameterCount()==1 && 
+				(!isIDField(method) || isIDField(method) && !skipID) &&
+				method.getReturnType()==void.class;
+	}
+	
+	private static String getSetterName(final Field field) {
+		return "set"+field.getName().substring(0,1).toUpperCase()+field.getName().substring(1);
+	}
+	
+	public static <M extends Entity,S extends Entity> Optional<Method> getForeignReference(final Class<M> masterClass,final Class<S> slaveClass) {
+		final List<Method> getters=getGetters(slaveClass,true);
+		for(final Method getter:getters) {
+			if(masterClass.isAssignableFrom(getter.getReturnType())) return Optional.of(getter);
+		}
+		return Optional.empty();
 	}
 	
 	public static String getFieldName(final Method accessor) {
@@ -106,8 +145,9 @@ public final class Inspector {
 	public static String getFieldName(final String prefix,final String accessorName) {
 		final StringBuilder sb=new StringBuilder(prefix);
 		if(!prefix.isEmpty()) sb.append(".");
-		sb.append(accessorName.substring(3));
-		return sb.toString().toUpperCase();
+		sb.append(accessorName.substring(3,4).toString().toLowerCase());
+		sb.append(accessorName.substring(4));
+		return sb.toString();
 	}
 	
 	public static <E extends Entity> String toString(final E entity) {
@@ -131,9 +171,24 @@ public final class Inspector {
 		final String[] captions=new String[getters.size()];
 		int k=0;
 		for(final Method getter:getters) {
-			captions[k++]=Inspector.getFieldName(getter);
+			captions[k++]=getCaption(getter);
 		}
 		return captions;
+	}
+	
+	private static String getCaption(final Method method) {
+		final String str=Inspector.getFieldName(method);
+		final StringBuilder sb=new StringBuilder();
+		for(int k=0;k<str.length();k++) {
+			if(k==0) {
+				sb.append(Character.toUpperCase(str.charAt(k)));
+			}else if(Character.isLowerCase(str.charAt(k-1)) && Character.isUpperCase(str.charAt(k))) {
+				sb.append(" ").append(Character.toLowerCase(str.charAt(k)));
+			}else {
+				sb.append(str.charAt(k));
+			}
+		}
+		return sb.toString();
 	}
 
 	public static <E extends Entity> Object[] getValues(final E entity) {
@@ -144,9 +199,16 @@ public final class Inspector {
 		final Object[] values=new Object[getters.size()];
 		int k=0;
 		for(final Method getter:getters) {
-			values[k++]=get(entity,getter).toString();
+			values[k++]=getEncodedValue(getter.getReturnType(),get(entity,getter));
 		}
 		return values;
+	}
+	
+	private static String getEncodedValue(final Class<?> type,final Object value) {
+		if(type==Boolean.class || type==boolean.class) 	return Character.toString('\u2716');
+		if(type==LocalDate.class) return ((LocalDate)value).format(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT)); 	
+		if(type==LocalDateTime.class) return ((LocalDateTime)value).format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT));
+		return value.toString();
 	}
 	
 	public static <E extends Entity> List<Object> getValuesForEntities(final Class<E> cl,final Iterable<E> entities) {

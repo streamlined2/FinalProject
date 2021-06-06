@@ -98,6 +98,10 @@ public class Car extends NaturalKeyEntity<String> {
 	public Style getStyle() { return style;}
 	public void setStyle(final Style style) { this.style=style;}
 	
+	@Override public String toString() {
+		return new StringBuilder(manufacturer.toString()).append(" ").append(model).toString();
+}
+
 	@Override protected String getKey() { return getModel();}
 	@Override protected String keyFieldGetter() { return "getModel";}
 }

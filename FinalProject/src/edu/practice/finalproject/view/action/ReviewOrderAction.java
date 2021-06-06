@@ -4,9 +4,9 @@ import javax.servlet.http.HttpServletRequest;
 
 import edu.practice.finalproject.model.dataaccess.EntityManager;
 
-public class ApproveOrderAction extends ManagerAction {
+public class ReviewOrderAction extends ManagerAction {
 
-	public ApproveOrderAction(String name) {
+	public ReviewOrderAction(String name) {
 		super(name);
 	}
 

@@ -60,27 +60,6 @@ public final class EntityManager {
 		return fetchEntities(cl,false);
 	}
 	
-	public <E extends Entity> List<E> fetchEntities(final Class<E> cl,final boolean skipID) {
-		final List<E> entities=new ArrayList<>();
-		final StringBuilder clause=StatementBuilder.getFetchEntitiesStatement(cl,skipID);
-
-		try (
-				final Connection conn=dataSource.getConnection();
-				final Statement statement=conn.createStatement();
-				final ResultSet rs=statement.executeQuery(clause.toString())){
-			
-			final List<Method> setters=Inspector.getSetters(cl,skipID);
-			while(rs.next()) {
-				final E entity=Inspector.createEntity(cl);
-				fillEntityValues(entity,setters,rs);
-				entities.add(entity);
-			}
-		} catch (SQLException e) {
-			throw new DataAccessException(e);
-		}
-		return entities;
-	}
-	
 	public <E extends Entity> boolean persist(final E entity) {
 		final StringBuilder clause=StatementBuilder.getInsertStatement(entity);
 		
@@ -107,27 +86,6 @@ public final class EntityManager {
 		}
 	}
 	
-    public <M extends Entity,S extends Entity> List<S> fetchLinks(final M master,final Class<S> slaveClass) {
-		final List<S> entities=new ArrayList<>();
-		final StringBuilder clause=StatementBuilder.getFetchSlaveEntitiesStatement(master,slaveClass);
-
-		try (
-				final Connection conn=dataSource.getConnection();
-				final Statement statement=conn.createStatement();
-				final ResultSet rs=statement.executeQuery(clause.toString())){
-			
-			final List<Method> setters=Inspector.getSetters(slaveClass,false);
-			while(rs.next()) {
-				final S entity=Inspector.createEntity(slaveClass);
-				fillEntityValues(entity,setters,rs);
-				entities.add(entity);
-			}
-		} catch (SQLException e) {
-			throw new DataAccessException(e);
-		}
-		return entities;
-    }
-
 	public <M extends Entity,S extends Entity> boolean persistLinks(final M masterEntity,final S... slaveEntities) {
 		final StringBuilder clause=StatementBuilder.getInsertLinksStatement(masterEntity,(Class<S>)slaveEntities.getClass().getComponentType());
 
@@ -208,6 +166,25 @@ public final class EntityManager {
 		return false;
 	}
 	
+	public <E extends Entity> Optional<E> find(final Class<E> cl,final Long key) {
+		final StringBuilder clause=StatementBuilder.getSelectByIdStatement(cl,key);
+
+		try (
+				final Connection conn=dataSource.getConnection();
+				final Statement statement=conn.createStatement();
+				final ResultSet rs=statement.executeQuery(clause.toString())){
+		
+			if(rs.next()) {
+				final E entity=Inspector.createEntity(cl);
+				fillEntityValues(entity, Inspector.getSetters(cl,false), rs);
+				return Optional.of(entity);
+			}
+		} catch (SQLException e) {
+			throw new DataAccessException(e);
+		}
+		return Optional.empty();
+	}
+
 	public <K extends Comparable<? super K>,E extends NaturalKeyEntity<K>> Optional<E> findByKey(final Class<E> cl,final K key) {
 		
 		final E entity=Inspector.createEntity(cl);
@@ -254,24 +231,76 @@ public final class EntityManager {
 				final Statement statement=conn.createStatement();
 				final ResultSet rs=statement.executeQuery(clause.toString())){
 		
-			while(rs.next()) {
-				final E entity=Inspector.createEntity(cl);
-				fillEntityValues(entity, Inspector.getSetters(cl,false), rs);
-				list.add(entity);
-			}
+			composeEntityListFromResultSet(cl, list, rs, false);
 		} catch (SQLException e) {
 			throw new DataAccessException(e);
 		}
 		return list;
 	}
 
+	private <E extends Entity> void composeEntityListFromResultSet(final Class<E> cl, final List<E> list, final ResultSet rs,final boolean skipID) throws SQLException {
+		final List<Method> setters = Inspector.getSetters(cl,skipID);
+		while(rs.next()) {
+			final E entity=Inspector.createEntity(cl);
+			fillEntityValues(entity, setters, rs);
+			list.add(entity);
+		}
+	}
+
+    public <M extends Entity,S extends Entity> List<S> fetchLinks(final M master,final Class<S> slaveClass) {
+		final List<S> entities=new ArrayList<>();
+		final StringBuilder clause=StatementBuilder.getFetchSlaveEntitiesStatement(master,slaveClass);
+
+		try (
+				final Connection conn=dataSource.getConnection();
+				final Statement statement=conn.createStatement();
+				final ResultSet rs=statement.executeQuery(clause.toString())){
+			
+			composeEntityListFromResultSet(slaveClass, entities, rs, false);
+		} catch (SQLException e) {
+			throw new DataAccessException(e);
+		}
+		return entities;
+    }
+
+	public <E extends Entity> List<E> fetchEntities(final Class<E> cl,final boolean skipID) {
+		final List<E> entities=new ArrayList<>();
+		final StringBuilder clause=StatementBuilder.getFetchEntitiesStatement(cl,skipID);
+
+		try (
+				final Connection conn=dataSource.getConnection();
+				final Statement statement=conn.createStatement();
+				final ResultSet rs=statement.executeQuery(clause.toString())){
+			
+			composeEntityListFromResultSet(cl, entities, rs, skipID);
+		} catch (SQLException e) {
+			throw new DataAccessException(e);
+		}
+		return entities;
+	}
+	
+	public <M extends Entity,S extends Entity> List<M> fetchMissingEntities(final Class<M> masterClass,Class<S> slaveClass,final long startElement,final long endElement){
+		final List<M> list=new ArrayList<>();
+		final StringBuilder clause=StatementBuilder.getSelectMissingEntitiesStatement(masterClass,slaveClass,startElement,endElement);
+		try (
+				final Connection conn=dataSource.getConnection();
+				final Statement statement=conn.createStatement();
+				final ResultSet rs=statement.executeQuery(clause.toString())){
+		
+			composeEntityListFromResultSet(masterClass, list, rs, false);
+		} catch (SQLException e) {
+			throw new DataAccessException(e);
+		}
+		return list;
+	}
+	
 	private <E extends Entity> void fillEntityValues(
 			final E entity, final List<Method> setters, final ResultSet rs) {
 		int k=1;
 		try {
 			for(final Method setter:setters) {
 				final Object value = rs.getObject(k++);
-				final Object obj=EntityManager.mapSQLValueToProperty(setter.getParameterTypes()[0],value);
+				final Object obj=mapSQLValueToProperty(setter.getParameterTypes()[0],value);
 				Inspector.set(entity,setter,obj);
 			}
 		} catch (SQLException e) {
@@ -279,21 +308,31 @@ public final class EntityManager {
 		}
 	}
 
-	private static <V> V mapSQLValueToProperty(final Class<V> cl,final Object value) {
+	private Object mapSQLValueToProperty(final Class<?> cl,final Object value) {
 		if(Entity.class.isAssignableFrom(cl) && value instanceof Number) {
 			final long id = ((Number)value).longValue();
-			final Entity entity = Inspector.createEntity((Class<? extends Entity>)cl);
-			entity.setId(id);
-			return (V)entity;
+			final Optional<Entity> entity = find((Class<Entity>)cl,id);
+			if(entity.isEmpty()) {
+				Entity e = Inspector.createEntity((Class<? extends Entity>)cl);
+				e.setId(id);
+				return e;
+			}else return entity.get();
 		}else if(cl.isEnum()) {
-			return (V)((Class<Enum<?>>)cl).getEnumConstants()[((Number)value).intValue()];
+			return ((Class<Enum<?>>)cl).getEnumConstants()[((Number)value).intValue()];
+		}else if(LocalDate.class.isAssignableFrom(value.getClass())) {
+			return value;
+		}else if(LocalDateTime.class.isAssignableFrom(value.getClass())) {
+			return value;
 		}else if(LocalDate.class.isAssignableFrom(cl)) {
-			return (V)((Date)value).toLocalDate();
+			return ((Date)value).toLocalDate();
 		}else if(LocalDateTime.class.isAssignableFrom(cl)){
 			final LocalDate date = ((Date)value).toLocalDate();
-			return (V)date.atStartOfDay();
+			return date.atStartOfDay();
+		}else if((cl==boolean.class || cl==Boolean.class) && value instanceof Number){
+			final long id = ((Number)value).longValue();
+			return Boolean.valueOf(id>0);
 		}else {
-			return (V)value;
+			return value;
 		}
 	}
 	

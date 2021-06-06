@@ -35,7 +35,7 @@
 		</tr>
 		</table>
 		<hr>
-		<input type="submit" value="Order" formaction="main?action=order_car" formmethod="post"/>
+		<input type="submit" value="Order" formaction="main?action=orderCar" formmethod="post"/>
 		<input type="reset" value="Clear" />
 		<input type="submit" value="Back" formaction="main?action=back" formmethod="post" formnovalidate/>
 	</fieldset>

@@ -10,18 +10,19 @@ import edu.practice.finalproject.controller.Names;
 import edu.practice.finalproject.controller.transition.FormDispatcher;
 import edu.practice.finalproject.model.analysis.Inspector;
 import edu.practice.finalproject.model.dataaccess.EntityManager;
-import edu.practice.finalproject.model.entity.domain.Car;
+import edu.practice.finalproject.model.entity.document.LeaseOrder;
+import edu.practice.finalproject.model.entity.document.OrderReview;
 import edu.practice.finalproject.view.action.Action;
 
-public class CarBrowsingForm extends Form {
+public class ReviewOrderForm extends Form {
 
-	public CarBrowsingForm(String name) {
+	public ReviewOrderForm(String name) {
 		super(name);
 	}
 
 	@Override
 	public Action getAction(final Map<String,String[]> parameters) {
-		if(FCServlet.isActionPresent(parameters,Names.SELECT_CAR_PARAMETER)) return FormDispatcher.SELECT_CAR_ACTION;
+		if(FCServlet.isActionPresent(parameters,Names.REVIEW_ORDER_PARAMETER)) return FormDispatcher.CHECK_ORDER_ACTION;
 		if(FCServlet.isActionPresent(parameters,Names.NEXT_PAGE_PARAMETER)) return FormDispatcher.NEXT_PAGE_ACTION;
 		if(FCServlet.isActionPresent(parameters,Names.PREVIOUS_PAGE_PARAMETER)) return FormDispatcher.PREVIOUS_PAGE_ACTION;
 		if(FCServlet.isActionPresent(parameters,Names.FIRST_PAGE_PARAMETER)) return FormDispatcher.FIRST_PAGE_ACTION;
@@ -33,27 +34,24 @@ public class CarBrowsingForm extends Form {
 	public Action getDefaultAction() {
 		return FormDispatcher.BACK_ACTION;
 	}
-	
+
 	@Override
-	public void init(final HttpServletRequest req, final EntityManager entityManager) {
-		final Map<String,Object> filterKeyPairs = (Map<String, Object>) FCServlet.getAttribute(req, Names.FILTER_KEY_PAIRS_ATTRIBUTE);
-		final Map<String,Boolean> orderKeys=(Map<String, Boolean>) FCServlet.getAttribute(req, Names.ORDER_KEYS_ATTRIBUTE);
-		
+	public void init(HttpServletRequest req, EntityManager entityManager) {
 		final Integer pageElements=(Integer)FCServlet.getAttribute(req, Names.PAGE_ELEMENTS_NUMBER_ATTRIBUTE,5);
 		final Long firstElement=(Long)FCServlet.getAttribute(req, Names.FIRST_PAGE_ELEMENT_ATTRIBUTE,0L);
 		final Long lastElement=(Long)FCServlet.getAttribute(req, Names.LAST_PAGE_ELEMENT_ATTRIBUTE,firstElement+pageElements-1);
 
-		final List<Car> queryData=entityManager.fetchByCompositeKeyOrdered(Car.class,filterKeyPairs,orderKeys,firstElement,lastElement);
+		final List<LeaseOrder> queryData=entityManager.fetchMissingEntities(LeaseOrder.class,OrderReview.class,firstElement,lastElement);
 
 		FCServlet.setAttribute(req, Names.PAGE_ITEMS_ATTRIBUTE,queryData);
-		FCServlet.setAttribute(req, Names.QUERY_DATA_ATTRIBUTE, Inspector.getValuesForEntities(Car.class, queryData));
-		FCServlet.setAttribute(req, Names.QUERY_HEADER_ATTRIBUTE, Inspector.getCaptions(Car.class));
+		FCServlet.setAttribute(req, Names.QUERY_DATA_ATTRIBUTE, Inspector.getValuesForEntities(LeaseOrder.class, queryData));
+		FCServlet.setAttribute(req, Names.QUERY_HEADER_ATTRIBUTE, Inspector.getCaptions(LeaseOrder.class));
 		
 		super.init(req,entityManager);
 	}
 
 	@Override
-	public void destroy(final HttpServletRequest req) {
+	public void destroy(HttpServletRequest req) {
 		FCServlet.removeAttribute(req, Names.PAGE_ITEMS_ATTRIBUTE);
 		FCServlet.removeAttribute(req, Names.QUERY_DATA_ATTRIBUTE);
 		FCServlet.removeAttribute(req, Names.QUERY_HEADER_ATTRIBUTE);
