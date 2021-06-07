@@ -1,9 +1,14 @@
 package edu.practice.finalproject.controller.admin;
 
+import java.lang.reflect.Method;
+import java.util.List;
+
+import edu.practice.finalproject.model.analysis.EntityException;
 import edu.practice.finalproject.model.entity.NaturalKeyEntity;
+import edu.practice.finalproject.model.entity.domain.Car;
 import edu.practice.finalproject.view.action.Action;
 
-public abstract class User extends NaturalKeyEntity<String> {
+public abstract class User extends NaturalKeyEntity {
 	protected String login;
 	protected byte[] passwordDigest;
 	protected String firstName;
@@ -24,6 +29,12 @@ public abstract class User extends NaturalKeyEntity<String> {
 	public byte[] getPasswordDigest() { return passwordDigest;}
 	public void setPasswordDigest(final byte[] passwordDigest) { this.passwordDigest=passwordDigest;}
 
+	public String getFirstName() { return firstName;}
+	public void setFirstName(final String firstName) { this.firstName=firstName;}
+
+	public String getLastName() { return lastName;}
+	public void setLastName(final String lastName) { this.lastName=lastName;}
+
 	@Override
 	public boolean equals(final Object o) {
 		if(o instanceof User) {
@@ -40,24 +51,16 @@ public abstract class User extends NaturalKeyEntity<String> {
 	
 	public abstract void checkPermission(final Action action) throws SecurityException;
 
-	@Override
-	protected String getKey() {
-		return getLogin();
-	}
-
-	@Override
-	protected String keyFieldGetter() {
-		return "getLogin";
-	}
-	
 	@Override public String toString() {
 			return new StringBuilder(firstName).append(" ").append(lastName).toString();
 	}
 
-	public String getFirstName() { return firstName;}
-	public void setFirstName(final String firstName) { this.firstName=firstName;}
-
-	public String getLastName() { return lastName;}
-	public void setLastName(final String lastName) { this.lastName=lastName;}
-
+	@Override
+	public List<Method> keyGetters() {
+		try {
+			return List.of(User.class.getMethod("getLogin"));
+		} catch (NoSuchMethodException | SecurityException e) {
+			throw new EntityException(e);
+		}
+	}
 }

@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Function;
 
 import edu.practice.finalproject.model.analysis.Inspector;
 import edu.practice.finalproject.model.entity.Entity;
@@ -110,13 +111,13 @@ public final class StatementBuilder {
 		return sb;
 	}
 	
-	private static StringBuilder getValueList(final String separator,final Object... list) {
+	private static StringBuilder getValueList(final String separator,final String prefix,final Function<Object,String> mapper,final Object... list) {
 		final StringBuilder sb=new StringBuilder();
 		int k=0;
 		if(k<list.length) {
-			sb.append(list[k++]);
+			sb.append(mapper.apply(list[k++]));
 			while(k<list.length) {
-				sb.append(separator).append(list[k++]);
+				sb.append(separator).append(prefix.isBlank()?"":prefix+".").append(mapper.apply(list[k++]));
 			}
 		}
 		return sb;
@@ -158,17 +159,15 @@ public final class StatementBuilder {
 				append(" )");
 	}
 	
-	public static <K extends Comparable<? super K>,E extends NaturalKeyEntity<K>> 
-		StringBuilder getSelectByNaturalKeyStatement(final Class<E> cl,final E entity,final K key) {
-
+	public static <E extends NaturalKeyEntity> StringBuilder getSelectByNaturalKeyStatement(final Class<E> cl,final E entity,final Object...keys) {
 		return new StringBuilder(SELECT_CLAUSE).
-				append(getFieldList(Inspector.getSetters(cl,false),",")).
+				append(getFieldList(Inspector.getSetters(cl,false),",","B")).
 				append(FROM_CLAUSE).
-				append(getTableName(cl)).
+				append(getTableName(cl)).append(" B ").
 				append(WHERE_CLAUSE).
-				append(NaturalKeyEntity.keyFieldName(entity)).
+				append("(").append(getFieldList(entity.keyGetters(),",","B")).append(")").
 				append(IN_CLAUSE).
-				append(StatementBuilder.mapObjectToString(key)).
+				append(getValueList(",","A",StatementBuilder::mapObjectToString,keys)).
 				append(" )");
 	}
 	
@@ -230,7 +229,7 @@ public final class StatementBuilder {
 				append(getTableName(entity.getClass())).append(" (").
 				append(getFieldList(getters,",")).
 				append(VALUES_CLAUSE).
-				append(getValueList(",",getValues(entity,getters))).
+				append(getValueList(",","",Object::toString,getValues(entity,getters))).
 				append(")");
 	}
 	

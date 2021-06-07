@@ -1,11 +1,14 @@
 package edu.practice.finalproject.model.entity.domain;
 
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
+import edu.practice.finalproject.model.analysis.EntityException;
 import edu.practice.finalproject.model.entity.NaturalKeyEntity;
 
-public class Car extends NaturalKeyEntity<String> {
+public class Car extends NaturalKeyEntity {
 	public enum Manufacturer { 
 		BMW("BMW"), 
 		DAIMLER("Daimler"), 
@@ -100,8 +103,15 @@ public class Car extends NaturalKeyEntity<String> {
 	
 	@Override public String toString() {
 		return new StringBuilder(manufacturer.toString()).append(" ").append(model).toString();
-}
+	}
 
-	@Override protected String getKey() { return getModel();}
-	@Override protected String keyFieldGetter() { return "getModel";}
+	@Override public List<Method> keyGetters() { 
+		try {
+			return List.of(
+					Car.class.getMethod("getModel"),
+					Car.class.getMethod("getManufacturer"));
+		} catch (NoSuchMethodException | SecurityException e) {
+			throw new EntityException(e);
+		}
+	}
 }

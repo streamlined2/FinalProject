@@ -184,7 +184,7 @@ public final class EntityManager {
 		return Optional.empty();
 	}
 
-	public <K extends Comparable<? super K>,E extends NaturalKeyEntity<K>> Optional<E> findByKey(final Class<E> cl,final K key) {
+	public <E extends NaturalKeyEntity> Optional<E> findByKey(final Class<E> cl,final Object... key) {
 		
 		final E entity=Inspector.createEntity(cl);
 		final StringBuilder clause=StatementBuilder.getSelectByNaturalKeyStatement(cl,entity,key);
