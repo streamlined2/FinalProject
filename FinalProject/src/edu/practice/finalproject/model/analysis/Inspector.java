@@ -19,7 +19,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -38,7 +37,7 @@ public final class Inspector {
 		}
 	}
 	
-	public static <E extends Entity> Object get(final E entity,final Method method) {
+	public static Object get(final Entity entity,final Method method) {
 		try {
 			return method.invoke(entity);
 		} catch (ReflectiveOperationException e) {
@@ -46,7 +45,7 @@ public final class Inspector {
 		}
 	}
 	
-	public static <E extends Entity> void set(final E entity,final Method setter,final Object value) {
+	public static void set(final Entity entity,final Method setter,final Object value) {
 		try {
 			setter.invoke(entity, value);
 		} catch (ReflectiveOperationException e) {
@@ -62,7 +61,7 @@ public final class Inspector {
 		return Class.class.isAssignableFrom(type);
 	}
 	
-	public static <E extends Entity> List<Method> getGetters(final Class<E> cl){
+	public static List<Method> getGetters(final Class<? extends Entity> cl){
 		return getGetters(cl,false);
 	}
 
@@ -70,14 +69,15 @@ public final class Inspector {
 		return getAccessors(cl, skipID, Inspector::isGetter);
 	}
 
-	public static <E extends Entity> List<Method> getSetters(final Class<E> cl,final boolean skipID){
+	public static List<Method> getSetters(final Class<? extends Entity> cl,final boolean skipID){
 		return getAccessors(cl, skipID, Inspector::isSetter);
 	}
 
-	private static <E extends Entity> List<Method> getAccessors(final Class<E> cl, final boolean skipID,final BiPredicate<Method,Boolean> checker) {
+	private static List<Method> getAccessors(final Class<? extends Entity> cl, final boolean skipID,final BiPredicate<Method,Boolean> checker) {
 		final List<Method> list=new LinkedList<>();
 		final Map<String,Method> methodMap = Arrays.stream(
-				cl.getMethods()).filter(method->checker.test(method,skipID)).collect(Collectors.toMap(Inspector::getFieldName,Function.identity()));
+				cl.getMethods()).filter(method->checker.test(method,skipID)).
+				collect(Collectors.toMap(Inspector::getFieldName,Function.identity()));
 
 		for(final Field field:cl.getDeclaredFields()) {
 			if(!Modifier.isTransient(field.getModifiers())) {
@@ -90,7 +90,7 @@ public final class Inspector {
 		return list;
 	}
 
-	private static void addAccessor(final List<Method> list, final Method method, final boolean skipID, BiPredicate<Method, Boolean> check) {
+	private static void addAccessor(final List<Method> list, final Method method, final boolean skipID, final BiPredicate<Method, Boolean> check) {
 		if(check.test(method, skipID)) {
 			list.add(method);
 		}
@@ -122,7 +122,7 @@ public final class Inspector {
 		return "set"+field.getName().substring(0,1).toUpperCase()+field.getName().substring(1);
 	}
 	
-	public static <M extends Entity,S extends Entity> Optional<Method> getForeignReference(final Class<M> masterClass,final Class<S> slaveClass) {
+	public static Optional<Method> getForeignReference(final Class<? extends Entity> masterClass,final Class<? extends Entity> slaveClass) {
 		final List<Method> getters=getGetters(slaveClass,true);
 		for(final Method getter:getters) {
 			if(masterClass.isAssignableFrom(getter.getReturnType())) return Optional.of(getter);
@@ -150,7 +150,7 @@ public final class Inspector {
 		return sb.toString();
 	}
 	
-	public static <E extends Entity> String toString(final E entity) {
+	public static String toString(final Entity entity) {
 		final StringBuilder sb=new StringBuilder("[");
 		final Iterator<Method> i=getGetters(entity.getClass()).iterator();
 		if(i.hasNext()) {
@@ -166,7 +166,7 @@ public final class Inspector {
 		return sb.toString();
 	}
 
-	public static <E extends Entity> String[] getCaptions(final Class<E> cl) {
+	public static String[] getCaptions(final Class<? extends Entity> cl) {
 		final List<Method> getters=getGetters(cl,true);
 		final String[] captions=new String[getters.size()];
 		int k=0;
@@ -191,11 +191,11 @@ public final class Inspector {
 		return sb.toString();
 	}
 
-	public static <E extends Entity> Object[] getValues(final E entity) {
+	public static Object[] getValues(final Entity entity) {
 		return getValues(entity,getGetters(entity.getClass(),true));
 	}
 	
-	public static <E extends Entity> Object[] getValues(final E entity,final List<Method> getters) {
+	public static Object[] getValues(final Entity entity,final List<Method> getters) {
 		final Object[] values=new Object[getters.size()];
 		int k=0;
 		for(final Method getter:getters) {
@@ -220,6 +220,23 @@ public final class Inspector {
 		return values;
 	}
 	
+	public static String[] getLabels(final Class<? extends Enum<?>> cl) {
+		final String[] labels=new String[cl.getEnumConstants().length];
+		int k=0;
+		for(final Enum<?> value:cl.getEnumConstants()) {
+			labels[k++]=value.toString();
+		}
+		return labels;
+	}
+
+	public static <V extends Enum<?>> Optional<V> getByLabel(final Class<V> cl,final String label){
+		if(Objects.isNull(label)) return Optional.empty();
+		for(final V value:cl.getEnumConstants()) {
+			if(label.equals(value.toString())) return Optional.of(value);
+		}
+		throw new IllegalArgumentException("incorrect label "+label+" for enum class "+cl.getName());
+	}
+
 	/**
 	 * Finds entity classes that are located within classpath and collects them in resulting set
 	 * @return set of entity classes
@@ -254,22 +271,4 @@ public final class Inspector {
 		return packagePrefix+
 				(index!=-1?path.getName().substring(0,index):path.getName());
 	}
-
-	public static String[] getLabels(final Class<? extends Enum<?>> cl) {
-		final String[] labels=new String[cl.getEnumConstants().length];
-		int k=0;
-		for(final Enum<?> value:cl.getEnumConstants()) {
-			labels[k++]=value.toString();
-		}
-		return labels;
-	}
-
-	public static <V extends Enum<?>> Optional<V> getByLabel(final Class<V> cl,final String label){
-		if(Objects.isNull(label)) return Optional.empty();
-		for(final V value:cl.getEnumConstants()) {
-			if(label.equals(value.toString())) return Optional.of(value);
-		}
-		throw new IllegalArgumentException("incorrect label "+label+" for enum class "+cl.getName());
-	}
-
 }

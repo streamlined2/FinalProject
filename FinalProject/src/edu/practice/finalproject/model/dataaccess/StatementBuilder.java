@@ -49,8 +49,8 @@ public final class StatementBuilder {
 		return getTableName(master)+"_"+getTableName(slave);
 	}
 	
-	public static <E extends Entity> String getLinkName(final E entity) {
-		return getLinkName((Class<E>)entity.getClass());
+	public static String getLinkName(final Entity entity) {
+		return getLinkName(entity.getClass());
 	}
 	
 	public static <E extends Entity> String getLinkName(final Class<E> cl) {
@@ -75,7 +75,7 @@ public final class StatementBuilder {
 	
 	private static StringBuilder getOrderFieldList(final Map<String,Boolean> orderKeys) {
 		final StringBuilder sb=new StringBuilder();
-		Iterator<Entry<String, Boolean>> i=orderKeys.entrySet().iterator();
+		final Iterator<Entry<String, Boolean>> i=orderKeys.entrySet().iterator();
 		if(i.hasNext()) {
 			Entry<String, Boolean> entry=i.next();
 			addOrderItem(sb,entry.getKey(),entry.getValue());
@@ -92,13 +92,11 @@ public final class StatementBuilder {
 		sb.append(orderKey).append(" ").append(ascending?"ASC":"DESC");
 	}
 	
-	private static StringBuilder getFieldValueList(
-			final Iterable<Method> fields,final Object[] values,final String separator) {
+	private static StringBuilder getFieldValueList(final Iterable<Method> fields,final Object[] values,final String separator) {
 		return getFieldValueList(fields,values,separator,"");
 	}
 	
-	private static StringBuilder getFieldValueList(
-			final Iterable<Method> fields,final Object[] values,final String separator,final String prefix) {
+	private static StringBuilder getFieldValueList(final Iterable<Method> fields,final Object[] values,final String separator,final String prefix) {
 		final StringBuilder sb=new StringBuilder();
 		final Iterator<Method> fieldIterator=fields.iterator();
 		int k=0;
@@ -124,7 +122,7 @@ public final class StatementBuilder {
 		return sb;
 	}
 	
-	private static <E extends Entity> Object[] getValues(final E entity,final List<Method> getters) {
+	private static Object[] getValues(final Entity entity,final List<Method> getters) {
 		final Object[] values=new Object[getters.size()];
 		int k=0;
 		for(final Method getter:getters) {
@@ -133,13 +131,12 @@ public final class StatementBuilder {
 		return values;
 	}
 	
-	public static <E extends Entity> StringBuilder getUpdateStatement(final E entity) {
-		final Class<E> cl=(Class<E>) entity.getClass();
-		final List<Method> getters=Inspector.getGetters(cl,true);
+	public static StringBuilder getUpdateStatement(final Entity entity) {
+		final List<Method> getters=Inspector.getGetters(entity.getClass(),true);
 		final Object[] values=getValues(entity,getters);
 		
 		return new StringBuilder(UPDATE_CLAUSE).
-				append(StatementBuilder.getTableName(cl)).
+				append(StatementBuilder.getTableName(entity.getClass())).
 				append(SET_CLAUSE).
 				append(StatementBuilder.getFieldValueList(getters,values,",")).
 				append(WHERE_CLAUSE).
@@ -149,7 +146,7 @@ public final class StatementBuilder {
 				append(" )");
 	}
 
-	public static <E extends Entity> StringBuilder getSelectByIdStatement(final Class<E> cl,final Long key) {
+	public static StringBuilder getSelectByIdStatement(final Class<? extends Entity> cl,final Long key) {
 		return new StringBuilder(SELECT_CLAUSE).
 				append(getFieldList(Inspector.getSetters(cl,false),",")).
 				append(FROM_CLAUSE).
@@ -161,8 +158,9 @@ public final class StatementBuilder {
 				append(" )");
 	}
 	
-	public static <K extends Comparable<? super K>,E extends NaturalKeyEntity<K>> StringBuilder getSelectByNaturalKeyStatement(
-			final Class<E> cl,final E entity,final K key) {
+	public static <K extends Comparable<? super K>,E extends NaturalKeyEntity<K>> 
+		StringBuilder getSelectByNaturalKeyStatement(final Class<E> cl,final E entity,final K key) {
+
 		return new StringBuilder(SELECT_CLAUSE).
 				append(getFieldList(Inspector.getSetters(cl,false),",")).
 				append(FROM_CLAUSE).
@@ -174,11 +172,11 @@ public final class StatementBuilder {
 				append(" )");
 	}
 	
-	public static <E extends Entity> StringBuilder getSelectByKeyStatement(final Class<E> cl,final Map<String,?> keyPairs) {
+	public static StringBuilder getSelectByKeyStatement(final Class<? extends Entity> cl,final Map<String,?> keyPairs) {
 		return getSelectByKeyOrderedStatement(cl,keyPairs,null);
 	}
 	
-	public static <E extends Entity> StringBuilder getSelectByKeyOrderedStatement(final Class<E> cl,final Map<String,?> keyPairs,final Map<String,Boolean> orderKeys,final long startElement,final long endElement) {
+	public static StringBuilder getSelectByKeyOrderedStatement(final Class<? extends Entity> cl,final Map<String,?> keyPairs,final Map<String,Boolean> orderKeys,final long startElement,final long endElement) {
 		final StringBuilder sb=getSelectByKeyOrderedStatement(cl,keyPairs,orderKeys);
 		appendLimiters(sb, startElement, endElement);
 		return sb;
@@ -191,7 +189,7 @@ public final class StatementBuilder {
 		}
 	}
 
-	public static <E extends Entity> StringBuilder getSelectByKeyOrderedStatement(final Class<E> cl,final Map<String,?> keyPairs,final Map<String,Boolean> orderKeys) {
+	public static StringBuilder getSelectByKeyOrderedStatement(final Class<? extends Entity> cl,final Map<String,?> keyPairs,final Map<String,Boolean> orderKeys) {
 		final StringBuilder sb=new StringBuilder(SELECT_CLAUSE).
 				append(getFieldList(Inspector.getSetters(cl,false),",")).
 				append(FROM_CLAUSE).
@@ -219,38 +217,37 @@ public final class StatementBuilder {
 		return sb;
 	}
 	
-	public static <E extends Entity> StringBuilder getFetchEntitiesStatement(final Class<E> cl,final boolean skipID) {
+	public static StringBuilder getFetchEntitiesStatement(final Class<? extends Entity> cl,final boolean skipID) {
 		return new StringBuilder(SELECT_CLAUSE).
 				append(getFieldList(Inspector.getSetters(cl,skipID),",")).
 				append(FROM_CLAUSE).
 				append(getTableName(cl));
 	}
 	
-	public static <E extends Entity> StringBuilder getInsertStatement(final E entity) {
-		final Class<E> cl=(Class<E>) entity.getClass();
-		final List<Method> getters=Inspector.getGetters(cl,true);
+	public static StringBuilder getInsertStatement(final Entity entity) {
+		final List<Method> getters=Inspector.getGetters(entity.getClass(),true);
 		return new StringBuilder(INSERT_CLAUSE).
-				append(getTableName(cl)).append(" (").
+				append(getTableName(entity.getClass())).append(" (").
 				append(getFieldList(getters,",")).
 				append(VALUES_CLAUSE).
 				append(getValueList(",",getValues(entity,getters))).
 				append(")");
 	}
 	
-	public static <M extends Entity,S extends Entity> StringBuilder getInsertLinksStatement(final M master,final Class<S> slaveClass) {
+	public static StringBuilder getInsertLinksStatement(final Entity master,final Class<? extends Entity> slaveClass) {
 		return new StringBuilder(INSERT_CLAUSE).
-				append(getLinkTableName((Class<M>)master.getClass(),slaveClass)).append(" (").
+				append(getLinkTableName(master.getClass(),slaveClass)).append(" (").
 				append(getLinkName(master)).append(",").append(getLinkName(slaveClass)).
 				append(VALUES_CLAUSE).
 				append(StatementBuilder.mapObjectToString(master.getId())).append(",").append("?").
 				append(")");
 	}
 	
-	public static <M extends Entity,S extends Entity> StringBuilder getFetchSlaveEntitiesStatement(	final M master,final Class<S> slaveClass) {
+	public static StringBuilder getFetchSlaveEntitiesStatement(final Entity master,final Class<? extends Entity> slaveClass) {
 		return new StringBuilder(SELECT_CLAUSE).
 				append(getFieldList(Inspector.getSetters(slaveClass,false),",","B")).
 				append(FROM_CLAUSE).
-				append(getLinkTableName((Class<M>)master.getClass(),slaveClass)).append(" A ").
+				append(getLinkTableName(master.getClass(),slaveClass)).append(" A ").
 				append(JOIN_CLAUSE).
 				append(getTableName(slaveClass)).append(" B ").
 				append(ON_CLAUSE).append(getQualifiedAttribute("A",getLinkName(slaveClass))).append("=").append(getQualifiedAttribute("B",Entity.ID_FIELD)).
@@ -261,29 +258,31 @@ public final class StatementBuilder {
 				append(" )");
 	}
 	
-	public static <M extends Entity,S extends Entity> StringBuilder getSelectMissingEntitiesStatement(
-			final Class<M> masterClass,final Class<S> slaveClass,final long startElement,final long endElement) {
+	public static StringBuilder getSelectMissingEntitiesStatement(
+			final Class<? extends Entity> masterClass,final Class<? extends Entity> slaveClass,final long startElement,final long endElement) {
 
 		final Optional<Method> foreignRef = Inspector.getForeignReference(masterClass,slaveClass);
-		final StringBuilder sb=new StringBuilder(SELECT_CLAUSE).
-				append(getFieldList(Inspector.getSetters(masterClass,false),",","B")).
-				append(FROM_CLAUSE).
-				append(getTableName(masterClass)).append(" B ").
-				append(WHERE_CLAUSE).
-				append(getQualifiedAttribute("B",Entity.ID_FIELD)).
-				append(NOT_IN_CLAUSE).
-					append(SELECT_CLAUSE).
-					append(getFieldList(List.of(foreignRef.get()),",","A")).
+		if(foreignRef.isPresent()) {
+			final StringBuilder sb=new StringBuilder(SELECT_CLAUSE).
+					append(getFieldList(Inspector.getSetters(masterClass,false),",","B")).
 					append(FROM_CLAUSE).
-					append(getTableName(slaveClass)).append(" A ").
-				append(" )");
-		appendLimiters(sb, startElement, endElement);
-		return sb;
+					append(getTableName(masterClass)).append(" B ").
+					append(WHERE_CLAUSE).
+					append(getQualifiedAttribute("B",Entity.ID_FIELD)).
+					append(NOT_IN_CLAUSE).
+						append(SELECT_CLAUSE).
+						append(getFieldList(List.of(foreignRef.get()),",","A")).
+						append(FROM_CLAUSE).
+						append(getTableName(slaveClass)).append(" A ").
+					append(" )");
+			appendLimiters(sb, startElement, endElement);
+			return sb;
+		}else throw new DataAccessException(String.format("can't find foreign reference from slave class %s to master class %s",masterClass,slaveClass));
 	}
 	
-	public static <E extends Entity> StringBuilder getDeleteStatement(final E entity) {
+	public static StringBuilder getDeleteStatement(final Entity entity) {
 		return new StringBuilder(DELETE_CLAUSE).
-			append(getTableName((Class<E>) entity.getClass())).
+			append(getTableName(entity.getClass())).
 			append(WHERE_CLAUSE).
 			append(Entity.ID_FIELD).
 			append(IN_CLAUSE).
@@ -291,9 +290,9 @@ public final class StatementBuilder {
 			append(" )");
 	}
 	
-	public static <M extends Entity,S extends Entity> StringBuilder getDeleteLinkStatement(final M master,final Class<S> slaveClass) {
+	public static StringBuilder getDeleteLinkStatement(final Entity master,final Class<? extends Entity> slaveClass) {
 		return new StringBuilder(DELETE_CLAUSE).
-			append(getLinkTableName((Class<M>)master.getClass(),slaveClass)).
+			append(getLinkTableName(master.getClass(),slaveClass)).
 			append(WHERE_CLAUSE).
 			append(getLinkName(master)).
 			append(IN_CLAUSE).

@@ -6,8 +6,11 @@ public class DataAccessException extends RuntimeException {
 		super(cause);
 	}
 
+	public DataAccessException(final String message) {
+		super(message);
+	}
+
 	public DataAccessException(final String message, final Exception cause) {
 		super(message, cause);
 	}
-
 }

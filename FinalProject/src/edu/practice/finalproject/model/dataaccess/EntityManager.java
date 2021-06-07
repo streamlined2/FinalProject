@@ -60,7 +60,7 @@ public final class EntityManager {
 		return fetchEntities(cl,false);
 	}
 	
-	public <E extends Entity> boolean persist(final E entity) {
+	public boolean persist(final Entity entity) {
 		final StringBuilder clause=StatementBuilder.getInsertStatement(entity);
 		
 		try(final Connection conn=dataSource.getConnection()){
@@ -86,7 +86,7 @@ public final class EntityManager {
 		}
 	}
 	
-	public <M extends Entity,S extends Entity> boolean persistLinks(final M masterEntity,final S... slaveEntities) {
+	public <S extends Entity> boolean persistLinks(final Entity masterEntity,final S... slaveEntities) {
 		final StringBuilder clause=StatementBuilder.getInsertLinksStatement(masterEntity,(Class<S>)slaveEntities.getClass().getComponentType());
 
 		try(final Connection conn=dataSource.getConnection()){
@@ -113,7 +113,7 @@ public final class EntityManager {
 		return false;
 	}
 	
-	public <E extends Entity> boolean remove(final E entity) {
+	public boolean remove(final Entity entity) {
 		final StringBuilder clause=StatementBuilder.getDeleteStatement(entity);
 		
 		try(final Connection conn=dataSource.getConnection()){
@@ -126,7 +126,7 @@ public final class EntityManager {
 		}
 	}
 
-	public <E extends Entity> boolean merge(final E entity) {
+	public boolean merge(final Entity entity) {
 		final StringBuilder clause=StatementBuilder.getUpdateStatement(entity);
 
 		try(final Connection conn=dataSource.getConnection()){
@@ -139,7 +139,7 @@ public final class EntityManager {
 		}
 	}
 	
-	public <M extends Entity,S extends Entity> boolean removeLinks(final M master,final Class<S> slaveClass) {
+	public boolean removeLinks(final Entity master,final Class<? extends Entity> slaveClass) {
 		final StringBuilder clause=StatementBuilder.getDeleteLinkStatement(master,slaveClass);
 		
 		try(final Connection conn=dataSource.getConnection()){
@@ -152,8 +152,7 @@ public final class EntityManager {
 		}
 	}
 
-	private <K extends Comparable<? super K>> boolean performUpdate(final StringBuilder clause, final Connection conn, final Statement statement, final IntPredicate condition)
-			throws SQLException {
+	private boolean performUpdate(final StringBuilder clause, final Connection conn, final Statement statement, final IntPredicate condition) throws SQLException {
 		try {
 			final int count=statement.executeUpdate(clause.toString());
 			if(condition.test(count)) {
@@ -205,7 +204,7 @@ public final class EntityManager {
 		return Optional.empty();
 	}
 
-	public <E extends Entity,V> Optional<E>findByCompositeKey(final Class<E> cl,final Map<String,V> keyPairs) {
+	public <E extends Entity> Optional<E>findByCompositeKey(final Class<E> cl,final Map<String,?> keyPairs) {
 		final StringBuilder clause=StatementBuilder.getSelectByKeyStatement(cl,keyPairs);
 		try (
 				final Connection conn=dataSource.getConnection();				
@@ -223,7 +222,7 @@ public final class EntityManager {
 		return Optional.empty();
 	}
 
-	public <E extends Entity,V> List<E> fetchByCompositeKeyOrdered(final Class<E> cl,final Map<String,V> keyPairs,final Map<String,Boolean> orderKeys,final long startElement,final long endElement) {
+	public <E extends Entity> List<E> fetchByCompositeKeyOrdered(final Class<E> cl,final Map<String,?> keyPairs,final Map<String,Boolean> orderKeys,final long startElement,final long endElement) {
 		final List<E> list=new LinkedList<>();
 		final StringBuilder clause=StatementBuilder.getSelectByKeyOrderedStatement(cl,keyPairs,orderKeys,startElement,endElement);
 		try (
@@ -247,7 +246,7 @@ public final class EntityManager {
 		}
 	}
 
-    public <M extends Entity,S extends Entity> List<S> fetchLinks(final M master,final Class<S> slaveClass) {
+    public <S extends Entity> List<S> fetchLinks(final Entity master,final Class<S> slaveClass) {
 		final List<S> entities=new ArrayList<>();
 		final StringBuilder clause=StatementBuilder.getFetchSlaveEntitiesStatement(master,slaveClass);
 
@@ -279,7 +278,7 @@ public final class EntityManager {
 		return entities;
 	}
 	
-	public <M extends Entity,S extends Entity> List<M> fetchMissingEntities(final Class<M> masterClass,Class<S> slaveClass,final long startElement,final long endElement){
+	public <M extends Entity> List<M> fetchMissingEntities(final Class<M> masterClass,Class<? extends Entity> slaveClass,final long startElement,final long endElement){
 		final List<M> list=new ArrayList<>();
 		final StringBuilder clause=StatementBuilder.getSelectMissingEntitiesStatement(masterClass,slaveClass,startElement,endElement);
 		try (
@@ -294,13 +293,11 @@ public final class EntityManager {
 		return list;
 	}
 	
-	private <E extends Entity> void fillEntityValues(
-			final E entity, final List<Method> setters, final ResultSet rs) {
+	private void fillEntityValues(final Entity entity, final List<Method> setters, final ResultSet rs) {
 		int k=1;
 		try {
 			for(final Method setter:setters) {
-				final Object value = rs.getObject(k++);
-				final Object obj=mapSQLValueToProperty(setter.getParameterTypes()[0],value);
+				final Object obj=mapSQLValueToProperty(setter.getParameterTypes()[0],rs.getObject(k++));
 				Inspector.set(entity,setter,obj);
 			}
 		} catch (SQLException e) {
@@ -335,5 +332,4 @@ public final class EntityManager {
 			return value;
 		}
 	}
-	
 }
