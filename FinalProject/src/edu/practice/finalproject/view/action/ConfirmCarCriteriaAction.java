@@ -37,7 +37,7 @@ public class ConfirmCarCriteriaAction extends ClientAction {
 	}
 
 	@Override
-	public boolean execute(final HttpServletRequest req, final EntityManager entityManager) throws ServletException {
+	public boolean execute(final HttpServletRequest req, final EntityManager entityManager) {
 		final String selectByManufacturer=FCServlet.getParameterValue(req,Names.SELECT_BY_MANUFACTURER_PARAMETER);
 		final String manufacturer=FCServlet.getParameterValue(req,Names.MANUFACTURER_PARAMETER);		
 		final String selectByQualityGrade=FCServlet.getParameterValue(req,Names.SELECT_BY_QUALITY_GRADE_PARAMETER);

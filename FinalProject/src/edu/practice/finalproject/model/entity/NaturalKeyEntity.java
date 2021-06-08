@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.StringJoiner;
 
 import edu.practice.finalproject.model.analysis.EntityException;
 import edu.practice.finalproject.model.analysis.Inspector;
@@ -43,5 +44,13 @@ public abstract class NaturalKeyEntity extends Entity {
 		} catch (SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 			throw new EntityException(e);
 		}
+	}
+	
+	@Override public String toString() {
+		final StringJoiner join=new StringJoiner(": ", "[", "]");
+		for(final Object value:naturalKeyValues()) {
+			join.add(Inspector.getReadableValue(value.getClass(),value));
+		}
+		return join.toString();
 	}
 }

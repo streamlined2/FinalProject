@@ -25,7 +25,7 @@ public class RegisterNewAction extends Action {
 	private static final String USER_ALREADY_REGISTERED = "This login has been taken already";
 
 	@Override
-	public boolean execute(final HttpServletRequest req, final EntityManager entityManager) throws ServletException {
+	public boolean execute(final HttpServletRequest req, final EntityManager entityManager) {
 		try {
 			if(!Utils.checkIfValid(req,Names.FIRSTNAME_PARAMETER,Utils::checkName)) return false;
 			if(!Utils.checkIfValid(req,Names.LASTNAME_PARAMETER,Utils::checkName)) return false;

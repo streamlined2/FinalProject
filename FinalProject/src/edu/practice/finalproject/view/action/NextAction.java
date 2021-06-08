@@ -12,7 +12,7 @@ public class NextAction extends Action {
 	}
 
 	@Override
-	public boolean execute(HttpServletRequest req, EntityManager entityManager) throws ServletException {
+	public boolean execute(HttpServletRequest req, EntityManager entityManager) {
 		return true;
 	}
 

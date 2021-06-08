@@ -19,7 +19,7 @@ public class SelectCarAction extends ClientAction {
 	}
 
 	@Override
-	public boolean execute(HttpServletRequest req, EntityManager entityManager) throws ServletException {
+	public boolean execute(HttpServletRequest req, EntityManager entityManager) {
 		final List<Car> queryData=(List<Car>)FCServlet.getAttribute(req, Names.PAGE_ITEMS_ATTRIBUTE);
 		final int number=Integer.parseInt(FCServlet.getParameterValue(req,Names.CAR_NUMBER_PARAMETER));
 		if(number>=0 && number<queryData.size()) {
@@ -29,5 +29,4 @@ public class SelectCarAction extends ClientAction {
 		FCServlet.setError(req, INCORRECT_CAR_MSG);
 		return false;
 	}
-
 }

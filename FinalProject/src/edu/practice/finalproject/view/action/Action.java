@@ -17,7 +17,7 @@ public abstract class Action {
 	
 	public String getName() { return name;}
 	
-	public abstract boolean execute(HttpServletRequest req,EntityManager entityManager) throws ServletException;
+	public abstract boolean execute(HttpServletRequest req,EntityManager entityManager);
 
 	@Override
 	public boolean equals(final Object o) {

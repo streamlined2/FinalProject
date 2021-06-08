@@ -73,7 +73,7 @@ public final class Inspector {
 		return getAccessors(cl, skipID, Inspector::isSetter);
 	}
 
-	private static List<Method> getAccessors(final Class<? extends Entity> cl, final boolean skipID,final BiPredicate<Method,Boolean> checker) {
+	private static List<Method> getAccessors(final Class<? extends Entity> cl, final boolean skipID, final BiPredicate<Method,Boolean> checker) {
 		final List<Method> list=new LinkedList<>();
 		final Map<String,Method> methodMap = Arrays.stream(
 				cl.getMethods()).filter(method->checker.test(method,skipID)).
@@ -199,12 +199,12 @@ public final class Inspector {
 		final Object[] values=new Object[getters.size()];
 		int k=0;
 		for(final Method getter:getters) {
-			values[k++]=getEncodedValue(getter.getReturnType(),get(entity,getter));
+			values[k++]=getReadableValue(getter.getReturnType(),get(entity,getter));
 		}
 		return values;
 	}
 	
-	private static String getEncodedValue(final Class<?> type,final Object value) {
+	public static String getReadableValue(final Class<?> type,final Object value) {
 		if(type==Boolean.class || type==boolean.class) 	return Character.toString('\u2716');
 		if(type==LocalDate.class) return ((LocalDate)value).format(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT)); 	
 		if(type==LocalDateTime.class) return ((LocalDateTime)value).format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT));

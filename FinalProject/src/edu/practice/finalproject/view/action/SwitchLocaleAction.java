@@ -16,7 +16,7 @@ public class SwitchLocaleAction extends Action {
 	}
 
 	@Override
-	public boolean execute(HttpServletRequest req, EntityManager entityManager) throws ServletException {
+	public boolean execute(HttpServletRequest req, EntityManager entityManager) {
 		final String language=FCServlet.getParameterValue(req,Names.LOCALE_PARAMETER);
 		final Locale locale = FCServlet.getAcceptableLocale(language);
 		Locale.setDefault(locale);

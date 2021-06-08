@@ -23,7 +23,7 @@
 				<c:forEach items="${queryData}" var="entity">
 					<tr>
 						<td>
-							<input type="submit" value="Get" formaction="main?action=select_car&number=${number}" formmethod="post"/>
+							<input type="submit" value="Get" formaction="main?action=select_car&carNumber=${number}" formmethod="post"/>
 						</td>
 						<c:forEach items="${entity}" var="value">
 							<td>${value}</td>

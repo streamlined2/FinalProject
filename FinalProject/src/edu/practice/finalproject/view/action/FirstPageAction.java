@@ -14,7 +14,7 @@ public class FirstPageAction extends PageNavigationAction {
 	}
 
 	@Override
-	public boolean execute(final HttpServletRequest req, final EntityManager entityManager) throws ServletException {
+	public boolean execute(final HttpServletRequest req, final EntityManager entityManager) {
 		final Integer numberOfElements=(Integer)FCServlet.getAttribute(req, Names.PAGE_ELEMENTS_NUMBER_ATTRIBUTE,5);
 		FCServlet.setAttribute(req, Names.FIRST_PAGE_ELEMENT_ATTRIBUTE,0L);
 		FCServlet.setAttribute(req, Names.LAST_PAGE_ELEMENT_ATTRIBUTE,Long.valueOf(numberOfElements-1));

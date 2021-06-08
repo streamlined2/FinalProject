@@ -23,7 +23,7 @@ public class LoginAction extends Action {
 	private static final String ERROR_MSG="Error occured while trying to login. Please try again";
 	
 	@Override
-	public boolean execute(final HttpServletRequest req,final EntityManager entityManager) throws ServletException {
+	public boolean execute(final HttpServletRequest req,final EntityManager entityManager) {
 		try {
 			if(!Utils.checkIfValid(req,Names.USER_PARAMETER,Utils::checkLogin)) return false;
 			if(!Utils.checkIfValid(req,Names.PASSWORD_PARAMETER,Utils::checkPassword)) return false;

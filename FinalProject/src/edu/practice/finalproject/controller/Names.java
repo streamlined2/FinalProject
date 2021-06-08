@@ -27,6 +27,7 @@ public final class Names {
 	public static final String PAGE_ELEMENTS_NUMBER_ATTRIBUTE = "pageElementsNumber";
 	public static final String PAGE_ITEMS_ATTRIBUTE = "pageCars"; 
 	public static final String SELECTED_CAR_ATTRIBUTE = "selected_car";
+	public static final String SELECTED_ORDER_ATTRIBUTE = "selected_order";
 
 	public static final String ACTION_PARAMETER = "action";
 	public static final String USER_PARAMETER = "user";
@@ -66,7 +67,7 @@ public final class Names {
 	public static final String PREVIOUS_PAGE_PARAMETER = "previousPage"; 
 	public static final String FIRST_PAGE_PARAMETER = "firstPage"; 
 	public static final String LAST_PAGE_PARAMETER = "lastPage";
-	public static final String CAR_NUMBER_PARAMETER = "number";
+	public static final String CAR_NUMBER_PARAMETER = "carNumber";
 	public static final String ORDER_CAR_PARAMETER = "orderCar";
 	public static final String DRIVER_OPTION_PARAMETER = "driver";
 	public static final String LEASE_DUE_TIME_PARAMETER = "returnTime";
@@ -75,6 +76,10 @@ public final class Names {
 	public static final String CAR_RECEPTION_PARAMETER = "carReception";
 	public static final String MANAGER_TASK_PARAMETER = "managerTask";
 	public static final String REVIEW_ORDER_PARAMETER = "reviewOrder";
+	public static final String ACCEPT_ORDER_PARAMETER = "acceptOrder";
+	public static final String REJECT_ORDER_PARAMETER = "rejectOrder";
+	public static final String ORDER_NUMBER_PARAMETER = "orderNumber";
+	public static final String REJECTION_REASON_PARAMETER = "rejectionReason";
 	
 	public static final String LOGIN_PATTERN = "[0-9A-Za-zÀ-ßà-ÿ¨¸ªº²³¯¿]+";
 	public static final String PASSWORD_PATTERN = "[0-9A-Za-zÀ-ßà-ÿ¨¸ªº²³¯¿]+";

@@ -30,7 +30,7 @@ public class OrderCarAction extends ClientAction {
 	private static final String INTERNAL_ERROR = "Can't save the order";
 
 	@Override
-	public boolean execute(HttpServletRequest req, EntityManager entityManager) throws ServletException {
+	public boolean execute(HttpServletRequest req, EntityManager entityManager) {
 		try {
 			final User user=FCServlet.getUser(req);
 			if(!(user instanceof Client)) {

@@ -8,6 +8,7 @@ import edu.practice.finalproject.view.action.ReviewOrderAction;
 import edu.practice.finalproject.view.action.BackAction;
 import edu.practice.finalproject.view.action.CheckOrderAction;
 import edu.practice.finalproject.view.action.ConfirmCarCriteriaAction;
+import edu.practice.finalproject.view.action.CreateLeaseInvoiceAction;
 import edu.practice.finalproject.view.action.FirstPageAction;
 import edu.practice.finalproject.view.action.LastPageAction;
 import edu.practice.finalproject.view.action.SwitchLocaleAction;
@@ -20,6 +21,7 @@ import edu.practice.finalproject.view.action.PreviousPageAction;
 import edu.practice.finalproject.view.action.ReceiveCarAction;
 import edu.practice.finalproject.view.action.RegisterAction;
 import edu.practice.finalproject.view.action.RegisterNewAction;
+import edu.practice.finalproject.view.action.RejectOrderAction;
 import edu.practice.finalproject.view.action.SelectCarAction;
 import edu.practice.finalproject.view.form.CarBrowsingForm;
 import edu.practice.finalproject.view.form.CarOrderStatusForm;
@@ -30,6 +32,7 @@ import edu.practice.finalproject.view.form.ManagerTaskSelectionForm;
 import edu.practice.finalproject.view.form.OrderForm;
 import edu.practice.finalproject.view.form.RegisterForm;
 import edu.practice.finalproject.view.form.ReviewOrderForm;
+import edu.practice.finalproject.view.form.BrowserOrderListForm;
 
 public class FormDispatcher {
 
@@ -54,13 +57,16 @@ public class FormDispatcher {
 		transitions.addRule(Client.class, null, null, CAR_SELECTION_CRITERIA_FORM);//always should be last rule for Client
 
 		//rules for manager role
-		transitions.addRule(Manager.class, MANAGER_TASK_SELECTION_FORM, REVIEW_ORDER_ACTION, REVIEW_ORDER_FORM);
-		transitions.addRule(Manager.class, REVIEW_ORDER_FORM, BACK_ACTION, MANAGER_TASK_SELECTION_FORM);
-		transitions.addRule(Manager.class, REVIEW_ORDER_FORM, NEXT_PAGE_ACTION, REVIEW_ORDER_FORM);
-		transitions.addRule(Manager.class, REVIEW_ORDER_FORM, FIRST_PAGE_ACTION, REVIEW_ORDER_FORM);
-		transitions.addRule(Manager.class, REVIEW_ORDER_FORM, PREVIOUS_PAGE_ACTION, REVIEW_ORDER_FORM);
-		transitions.addRule(Manager.class, REVIEW_ORDER_FORM, LAST_PAGE_ACTION, REVIEW_ORDER_FORM);
-		transitions.addRule(Manager.class, REVIEW_ORDER_FORM, CHECK_ORDER_ACTION, null);
+		transitions.addRule(Manager.class, MANAGER_TASK_SELECTION_FORM, REVIEW_ORDER_ACTION, BROWSE_ORDER_LIST_FORM);
+		transitions.addRule(Manager.class, BROWSE_ORDER_LIST_FORM, BACK_ACTION, MANAGER_TASK_SELECTION_FORM);
+		transitions.addRule(Manager.class, BROWSE_ORDER_LIST_FORM, NEXT_PAGE_ACTION, BROWSE_ORDER_LIST_FORM);
+		transitions.addRule(Manager.class, BROWSE_ORDER_LIST_FORM, FIRST_PAGE_ACTION, BROWSE_ORDER_LIST_FORM);
+		transitions.addRule(Manager.class, BROWSE_ORDER_LIST_FORM, PREVIOUS_PAGE_ACTION, BROWSE_ORDER_LIST_FORM);
+		transitions.addRule(Manager.class, BROWSE_ORDER_LIST_FORM, LAST_PAGE_ACTION, BROWSE_ORDER_LIST_FORM);
+		transitions.addRule(Manager.class, BROWSE_ORDER_LIST_FORM, CHECK_ORDER_ACTION, REVIEW_ORDER_FORM);
+		transitions.addRule(Manager.class, REVIEW_ORDER_FORM, CREATE_LEASE_INVOICE_ACTION, null);
+		transitions.addRule(Manager.class, REVIEW_ORDER_FORM, REJECT_ORDER_ACTION, null);
+		transitions.addRule(Manager.class, REVIEW_ORDER_FORM, BACK_ACTION, BROWSE_ORDER_LIST_FORM);
 		transitions.addRule(Manager.class, MANAGER_TASK_SELECTION_FORM, RECEIVE_CAR_ACTION, null);
 		transitions.addRule(Manager.class, null, null, MANAGER_TASK_SELECTION_FORM);//always should be last rule for Manager
 		//TODO fill up rest of the transition rule map
@@ -84,6 +90,8 @@ public class FormDispatcher {
 	public static final ReviewOrderAction REVIEW_ORDER_ACTION = new ReviewOrderAction("review_order");
 	public static final ReceiveCarAction RECEIVE_CAR_ACTION = new ReceiveCarAction("receive_car");
 	public static final CheckOrderAction CHECK_ORDER_ACTION = new CheckOrderAction("check_order");
+	public static final CreateLeaseInvoiceAction CREATE_LEASE_INVOICE_ACTION = new CreateLeaseInvoiceAction("create_lease_invoice");
+	public static final RejectOrderAction REJECT_ORDER_ACTION = new RejectOrderAction("reject_order");
 
 	public static final LoginForm LOGIN_FORM = new LoginForm("/login.jsp");
 	public static final RegisterForm REGISTER_FORM = new RegisterForm("/register.jsp");
@@ -92,7 +100,8 @@ public class FormDispatcher {
 	public static final OrderForm ORDER_FORM = new OrderForm("/order.jsp");
 	public static final CarOrderStatusForm CAR_ORDER_STATUS_FORM = new CarOrderStatusForm("/car-order-status.jsp");
 	public static final ManagerTaskSelectionForm MANAGER_TASK_SELECTION_FORM = new ManagerTaskSelectionForm("/manager-start-form.jsp");
-	public static final ReviewOrderForm REVIEW_ORDER_FORM = new ReviewOrderForm("/review-order.jsp"); 
+	public static final BrowserOrderListForm BROWSE_ORDER_LIST_FORM = new BrowserOrderListForm("/browse-order-list.jsp");
+	public static final ReviewOrderForm REVIEW_ORDER_FORM = new ReviewOrderForm("/review.jsp");
 	
 	public Form getInitialForm() { return LOGIN_FORM;}
 

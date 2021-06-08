@@ -13,7 +13,7 @@ public class LogoutAction extends Action {
 	}
 
 	@Override
-	public boolean execute(HttpServletRequest req, EntityManager entityManager) throws ServletException {
+	public boolean execute(HttpServletRequest req, EntityManager entityManager) {
 		FCServlet.clearUser(req);
 		FCServlet.clearForm(req);
 		return true;
