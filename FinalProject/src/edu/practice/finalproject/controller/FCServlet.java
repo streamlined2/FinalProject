@@ -100,6 +100,7 @@ public class FCServlet extends HttpServlet {
 		currentForm.init(req,entityManager);
 		try {
 			getServletContext().getRequestDispatcher(currentForm.getName()).forward(req,resp);
+			//resp.sendRedirect(getServletContext().getContextPath()+currentForm.getName());
 		} catch (IOException e) {
 			throw new ServletException(e);
 		}
@@ -238,5 +239,12 @@ public class FCServlet extends HttpServlet {
 	public static boolean isActionPresent(final Map<String,String[]> parameters,final String actionName) {
 		final String[] values=parameters.get(Names.ACTION_PARAMETER);
 		return values!=null && Arrays.asList(values).contains(actionName); 
+	}
+	
+	public static void invalidateSession(final HttpServletRequest req) {
+		final HttpSession session=req.getSession(false);
+		if(session!=null) {
+			session.invalidate();
+		}
 	}
 }

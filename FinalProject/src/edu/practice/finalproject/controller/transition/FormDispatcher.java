@@ -27,10 +27,12 @@ import edu.practice.finalproject.view.form.CarBrowsingForm;
 import edu.practice.finalproject.view.form.CarOrderStatusForm;
 import edu.practice.finalproject.view.form.CarSelectionCriteriaForm;
 import edu.practice.finalproject.view.form.Form;
+import edu.practice.finalproject.view.form.LeaseInvoiceDemoForm;
 import edu.practice.finalproject.view.form.LoginForm;
 import edu.practice.finalproject.view.form.ManagerTaskSelectionForm;
 import edu.practice.finalproject.view.form.OrderForm;
 import edu.practice.finalproject.view.form.RegisterForm;
+import edu.practice.finalproject.view.form.RejectionNotificationForm;
 import edu.practice.finalproject.view.form.ReviewOrderForm;
 import edu.practice.finalproject.view.form.BrowserOrderListForm;
 
@@ -54,7 +56,7 @@ public class FormDispatcher {
 		transitions.addRule(Client.class, ORDER_FORM, ORDER_CAR_ACTION, CAR_ORDER_STATUS_FORM);
 		transitions.addRule(Client.class, ORDER_FORM, BACK_ACTION, CAR_BROWSING_FORM);
 		transitions.addRule(Client.class, CAR_ORDER_STATUS_FORM, BACK_ACTION, CAR_SELECTION_CRITERIA_FORM);
-		transitions.addRule(Client.class, null, null, CAR_SELECTION_CRITERIA_FORM);//always should be last rule for Client
+		transitions.addRule(Client.class, null, null, CAR_SELECTION_CRITERIA_FORM);//should always be last rule for Client
 
 		//rules for manager role
 		transitions.addRule(Manager.class, MANAGER_TASK_SELECTION_FORM, REVIEW_ORDER_ACTION, BROWSE_ORDER_LIST_FORM);
@@ -64,11 +66,11 @@ public class FormDispatcher {
 		transitions.addRule(Manager.class, BROWSE_ORDER_LIST_FORM, PREVIOUS_PAGE_ACTION, BROWSE_ORDER_LIST_FORM);
 		transitions.addRule(Manager.class, BROWSE_ORDER_LIST_FORM, LAST_PAGE_ACTION, BROWSE_ORDER_LIST_FORM);
 		transitions.addRule(Manager.class, BROWSE_ORDER_LIST_FORM, CHECK_ORDER_ACTION, REVIEW_ORDER_FORM);
-		transitions.addRule(Manager.class, REVIEW_ORDER_FORM, CREATE_LEASE_INVOICE_ACTION, null);
-		transitions.addRule(Manager.class, REVIEW_ORDER_FORM, REJECT_ORDER_ACTION, null);
+		transitions.addRule(Manager.class, REVIEW_ORDER_FORM, CREATE_LEASE_INVOICE_ACTION, LEASE_INVOICE_DEMO_FORM);
+		transitions.addRule(Manager.class, REVIEW_ORDER_FORM, REJECT_ORDER_ACTION, REJECTION_NOTIFICATION_FORM);
 		transitions.addRule(Manager.class, REVIEW_ORDER_FORM, BACK_ACTION, BROWSE_ORDER_LIST_FORM);
 		transitions.addRule(Manager.class, MANAGER_TASK_SELECTION_FORM, RECEIVE_CAR_ACTION, null);
-		transitions.addRule(Manager.class, null, null, MANAGER_TASK_SELECTION_FORM);//always should be last rule for Manager
+		transitions.addRule(Manager.class, null, null, MANAGER_TASK_SELECTION_FORM);//should always be last rule for Manager
 		//TODO fill up rest of the transition rule map
 		//for manager and admin user roles
 	}
@@ -102,6 +104,8 @@ public class FormDispatcher {
 	public static final ManagerTaskSelectionForm MANAGER_TASK_SELECTION_FORM = new ManagerTaskSelectionForm("/manager-start-form.jsp");
 	public static final BrowserOrderListForm BROWSE_ORDER_LIST_FORM = new BrowserOrderListForm("/browse-order-list.jsp");
 	public static final ReviewOrderForm REVIEW_ORDER_FORM = new ReviewOrderForm("/review.jsp");
+	public static final LeaseInvoiceDemoForm LEASE_INVOICE_DEMO_FORM = new LeaseInvoiceDemoForm("/lease-invoice-demo.jsp");
+	public static final RejectionNotificationForm REJECTION_NOTIFICATION_FORM = new RejectionNotificationForm("/rejection-notification.jsp");
 	
 	public Form getInitialForm() { return LOGIN_FORM;}
 

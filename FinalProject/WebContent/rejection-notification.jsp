@@ -11,7 +11,7 @@
 	<%@include file="common-controls.jsp" %>
 	<form>
 	<fieldset>
-		<legend>Review order</legend>
+		<legend>Rejection notification form</legend>
 		<table>
 		<tr>
 			<td><label for="selected_order">Selected order</label></td>
@@ -19,13 +19,10 @@
 		</tr>
 		<tr>
 			<td><label for="reason">Reason for rejection</label></td>
-			<td><textarea id="reason" name="rejectionReason" rows="6" cols="60" placeholder="Please enter reason for rejection here"  wrap="soft" value="" required></textarea></td>
+			<td><textarea id="reason" name="rejectionReason" rows="6" cols="60" placeholder="Please enter reason for rejection here"  wrap="soft" value="" readonly></textarea></td>
 		</tr>
 		</table>
 		<hr>
-		<input type="submit" value="Accept" formaction="main?action=acceptOrder" formmethod="post"/>
-		<input type="submit" value="Reject" formaction="main?action=rejectOrder" formmethod="post"/>
-		<input type="reset" value="Clear" />
 		<input type="submit" value="Back" formaction="main?action=back" formmethod="post" formnovalidate/>
 	</fieldset>
 	</form>

@@ -1,6 +1,5 @@
 package edu.practice.finalproject.view.action;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 import edu.practice.finalproject.controller.FCServlet;
@@ -16,6 +15,7 @@ public class LogoutAction extends Action {
 	public boolean execute(HttpServletRequest req, EntityManager entityManager) {
 		FCServlet.clearUser(req);
 		FCServlet.clearForm(req);
+		FCServlet.invalidateSession(req);
 		return true;
 	}
 
