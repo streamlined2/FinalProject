@@ -4,6 +4,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAmount;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -39,7 +41,7 @@ public abstract class Utils {
 	}
 
 	public static boolean checkPattern(final String value, final String pattern) {
-		if(value==null || pattern==null) return false;
+		if(Objects.isNull(value) || Objects.isNull(pattern)) return false;
 		return Pattern.matches(pattern, value);
 	}
 	
@@ -57,6 +59,10 @@ public abstract class Utils {
 
 	public static boolean checkPassport(final String name) {
 		return Utils.checkPattern(name,Names.PASSPORT_PATTERN);
+	}
+	
+	public static boolean checkAccount(final String name) {
+		return Utils.checkPattern(name,Names.ACCOUNT_PATTERN);
 	}
 	
 	public static boolean checkTime(final String dueTime) {

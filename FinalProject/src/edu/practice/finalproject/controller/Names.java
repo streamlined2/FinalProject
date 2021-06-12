@@ -26,8 +26,13 @@ public final class Names {
 	public static final String LAST_PAGE_ELEMENT_ATTRIBUTE = "lastPageElement";
 	public static final String PAGE_ELEMENTS_NUMBER_ATTRIBUTE = "pageElementsNumber";
 	public static final String PAGE_ITEMS_ATTRIBUTE = "pageCars"; 
-	public static final String SELECTED_CAR_ATTRIBUTE = "selected_car";
-	public static final String SELECTED_ORDER_ATTRIBUTE = "selected_order";
+	public static final String SELECTED_CAR_ATTRIBUTE = "selectedCar";
+	public static final String SELECTED_ORDER_ATTRIBUTE = "selectedOrder";
+	public static final String ORDER_REVIEW_ATTRIBUTE = "orderReview";
+	public static final String ACCOUNT_PATTERN_ATTRIBUTE = "accountPattern";
+	public static final String INVOICE_SUM_ATTRIBUTE = "initialInvoiceSum";
+	public static final String LEASE_INVOICE_ATTRIBUTE = "leaseInvoice";
+	public static final String MAINTENANCE_INVOICE_ATTRIBUTE = "maintenanceInvoice";
 
 	public static final String ACTION_PARAMETER = "action";
 	public static final String USER_PARAMETER = "user";
@@ -80,10 +85,19 @@ public final class Names {
 	public static final String REJECT_ORDER_PARAMETER = "rejectOrder";
 	public static final String ORDER_NUMBER_PARAMETER = "orderNumber";
 	public static final String REJECTION_REASON_PARAMETER = "rejectionReason";
+	public static final String SEND_LEASE_INVOICE_PARAMETER = "sendLeaseInvoice";
+	public static final String ACCOUNT_PARAMETER = "account";
+	public static final String INVOICE_SUM_PARAMETER = "invoiceSum";
+	public static final String CAR_INSPECTION_RESULT_PARAMETER = "carEvaluationResult";
+	public static final String CAR_IN_PERFECT_CONDITION_PARAMETER = "perfectCondition";
+	public static final String CAR_NEEDS_MAINTENANCE_PARAMETER = "needsMaintenance";
+	public static final String SEND_MAINTENANCE_INVOICE_PARAMETER = "sendMaintenanceInvoice";
+	public static final String REPAIRS_PARAMETER = "repairs";
 	
 	public static final String LOGIN_PATTERN = "[0-9A-Za-zÀ-ßà-ÿ¨¸ªº²³¯¿]+";
 	public static final String PASSWORD_PATTERN = "[0-9A-Za-zÀ-ßà-ÿ¨¸ªº²³¯¿]+";
 	public static final String NAME_PATTERN = "[0-9A-Za-zÀ-ßà-ÿ¨¸ªº²³¯¿]+";
 	public static final String PASSPORT_PATTERN = "[ 0-9A-Za-zÀ-ßà-ÿ¨¸ªº²³¯¿]+";
+	public static final String ACCOUNT_PATTERN = "[A-Z]{2}[0-9]{2}[0-9]{1,30}";
 
 }

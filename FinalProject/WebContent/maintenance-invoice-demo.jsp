@@ -5,25 +5,29 @@
 <head>
 	<meta charset="UTF-8">
 	<link rel="stylesheet" href="styles.css">
-	<title>Lease invoice form</title>
+	<title>Maintenance invoice form</title>
 </head>
 <body>
 	<%@include file="common-controls.jsp" %>
 	<form>
 	<fieldset>
-		<legend>Lease invoice</legend>
+		<legend>Maintenance invoice</legend>
 		<table>
 		<tr>
-			<td>Order ${leaseInvoice.leaseOrder}</td>
+			<td>Order ${maintenanceInvoice.leaseOrder}</td>
 		</tr>
 		<tr>
-			<td>Signed on ${leaseInvoice.signTime} by ${leaseInvoice.manager}</td>
+			<td>Signed on ${maintenanceInvoice.signTime} by ${maintenanceInvoice.manager}</td>
 		</tr>
 		<tr>
-			<td>Bank account ${leaseInvoice.account}</td>
+			<td>Bank account ${maintenanceInvoice.account}</td>
 		</tr>
 		<tr>
-			<td>Due sum ${leaseInvoice.sum}</td>
+			<td>Due sum ${maintenanceInvoice.sum}</td>
+		</tr>
+		<tr>
+			<td><label>List of repairs</label></td>
+			<td><textarea name="repairs" rows="6" cols="60" wrap="soft" value="${maintenanceInvoice.repairs}" readonly></textarea></td>
 		</tr>
 		</table>
 		<hr>

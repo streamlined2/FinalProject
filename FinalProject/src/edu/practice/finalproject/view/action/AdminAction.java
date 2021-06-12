@@ -6,7 +6,7 @@ import edu.practice.finalproject.model.dataaccess.EntityManager;
 
 public abstract class AdminAction extends Action {
 	
-	public AdminAction(final String name) {
+	protected AdminAction(final String name) {
 		super(name);
 	}
 

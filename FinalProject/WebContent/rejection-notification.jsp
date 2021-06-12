@@ -5,22 +5,19 @@
 <head>
 	<meta charset="UTF-8">
 	<link rel="stylesheet" href="styles.css">
-	<title>Review form</title>
+	<title>Notification of rejection</title>
 </head>
 <body>
 	<%@include file="common-controls.jsp" %>
 	<form>
 	<fieldset>
-		<legend>Rejection notification form</legend>
+		<legend>Notification of rejection </legend>
 		<table>
-		<tr>
-			<td><label for="selected_order">Selected order</label></td>
-			<td>${requestScope.selected_order}</td>
-		</tr>
-		<tr>
-			<td><label for="reason">Reason for rejection</label></td>
-			<td><textarea id="reason" name="rejectionReason" rows="6" cols="60" placeholder="Please enter reason for rejection here"  wrap="soft" value="" readonly></textarea></td>
-		</tr>
+		<tr><td><h2>Order ${orderReview.leaseOrder} has been cancelled</h2></td>	</tr>
+		<tr><td>by ${orderReview.manager}</td></tr>
+		<tr><td>on ${orderReview.reviewTime}</td></tr>
+		<tr><td>because of this given reason:</td></tr>
+		<tr><td>${orderReview.reasonNote}</td></tr>
 		</table>
 		<hr>
 		<input type="submit" value="Back" formaction="main?action=back" formmethod="post" formnovalidate/>

@@ -10,7 +10,7 @@ public abstract class Invoice extends NaturalKeyEntity {
 
 	protected Manager manager;
 	protected LocalDateTime signTime;
-	protected Account account;
+	protected String account;
 	protected BigDecimal sum;
 	
 	protected Invoice() {}
@@ -21,8 +21,8 @@ public abstract class Invoice extends NaturalKeyEntity {
 	public LocalDateTime getSignTime() { return signTime;}
 	public void setSignTime(LocalDateTime signTime) { this.signTime = signTime;}
 
-	public Account getAccount() { return account;}
-	public void setAccount(Account account) {this.account = account;}
+	public String getAccount() { return account;}
+	public void setAccount(String account) { this.account = account;}
 
 	public BigDecimal getSum() { return sum;}
 	public void setSum(BigDecimal sum) { this.sum = sum;}

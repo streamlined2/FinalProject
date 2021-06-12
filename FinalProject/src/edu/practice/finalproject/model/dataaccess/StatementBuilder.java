@@ -34,6 +34,7 @@ public final class StatementBuilder {
 	private static final String AND_CLAUSE = " AND ";
 	private static final String ORDER_BY_CLAUSE = " ORDER BY ";
 	private static final String LIMIT_CLAUSE = " LIMIT ";
+	private static final String INNER_JOIN_CLAUSE = " INNER JOIN ";
 
 	private StatementBuilder() {}
 	
@@ -203,14 +204,19 @@ public final class StatementBuilder {
 	}
 	
 	private static <V> StringBuilder getKeyPairWhereClause(final Map<String,V> entries) {
+		return getKeyPairWhereClause(entries,null);
+	}
+	
+	private static <V> StringBuilder getKeyPairWhereClause(final Map<String,V> entries,final Character alias) {
+		final String prefix = Objects.isNull(alias)?"":alias+".";
 		final StringBuilder sb=new StringBuilder();
 		final Iterator<Entry<String,V>> i=entries.entrySet().iterator();
 		if(i.hasNext()) {
 			Map.Entry<String,V> entry=i.next();
-			sb.append(entry.getKey()).append("=").append(StatementBuilder.mapObjectToString(entry.getValue()));
+			sb.append(prefix).append(entry.getKey()).append("=").append(StatementBuilder.mapObjectToString(entry.getValue()));
 			while(i.hasNext()) {
 				entry=i.next();
-				sb.append(AND_CLAUSE).append(entry.getKey()).append("=").append(StatementBuilder.mapObjectToString(entry.getValue()));
+				sb.append(AND_CLAUSE).append(prefix).append(entry.getKey()).append("=").append(StatementBuilder.mapObjectToString(entry.getValue()));
 			}
 		}
 		return sb;
@@ -274,6 +280,28 @@ public final class StatementBuilder {
 						append(FROM_CLAUSE).
 						append(getTableName(slaveClass)).append(" A ").
 					append(" )");
+			appendLimiters(sb, startElement, endElement);
+			return sb;
+		}else throw new DataAccessException(String.format("can't find foreign reference from slave class %s to master class %s",masterClass,slaveClass));
+	}
+	
+	public static StringBuilder getSelectLinkedEntitiesStatement(
+			final Class<? extends Entity> masterClass,final Class<? extends Entity> slaveClass,final Map<String,?> keyPairs,final long startElement,final long endElement) {
+
+		final Optional<Method> foreignRef = Inspector.getForeignReference(masterClass,slaveClass);
+		if(foreignRef.isPresent()) {
+			final StringBuilder sb=new StringBuilder(SELECT_CLAUSE).
+					append(getFieldList(Inspector.getSetters(masterClass,false),",","B")).
+					append(FROM_CLAUSE).
+					append(getTableName(masterClass)).append(" B ").
+					append(INNER_JOIN_CLAUSE).
+					append(getTableName(slaveClass)).append(" A ").
+					append(ON_CLAUSE).
+					append(getQualifiedAttribute("B",Entity.ID_FIELD)).append("=").
+					append(getFieldList(List.of(foreignRef.get()),",","A"));
+			if(Objects.nonNull(keyPairs) && !keyPairs.isEmpty()) {
+			    sb.append(WHERE_CLAUSE).append(getKeyPairWhereClause(keyPairs,'A'));
+			}
 			appendLimiters(sb, startElement, endElement);
 			return sb;
 		}else throw new DataAccessException(String.format("can't find foreign reference from slave class %s to master class %s",masterClass,slaveClass));

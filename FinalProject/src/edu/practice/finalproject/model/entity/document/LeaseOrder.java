@@ -3,6 +3,7 @@ package edu.practice.finalproject.model.entity.document;
 import java.lang.reflect.Method;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.StringJoiner;
 
 import edu.practice.finalproject.controller.admin.Client;
 import edu.practice.finalproject.model.analysis.EntityException;
@@ -34,6 +35,13 @@ public class LeaseOrder extends NaturalKeyEntity {
 
 	public LocalDateTime getEndTime() { return endTime;}
 	public void setEndTime(LocalDateTime endTime) { this.endTime = endTime;}
+	
+	@Override
+	public String toString() {
+		return new StringJoiner(",","[","]").
+				add(client.toString()).add(car.toString()).add(startTime.toString()).
+				toString();
+	}
 	
 	@Override
 	public List<Method> keyGetters() {

@@ -14,8 +14,8 @@
 		<legend>Order</legend>
 		<table>
 		<tr>
-			<td><label for="selected_car">Selected car</label></td>
-			<td>${sessionScope.selected_car.model}</td>
+			<td><label>Selected car</label></td>
+			<td>${sessionScope.selectedCar.model}</td>
 		</tr>
 		<tr>
 			<td><label for="passport">Passport</label></td>

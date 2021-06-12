@@ -1,6 +1,5 @@
 package edu.practice.finalproject.view.action;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 import edu.practice.finalproject.controller.FCServlet;
@@ -16,8 +15,8 @@ public class FirstPageAction extends PageNavigationAction {
 	@Override
 	public boolean execute(final HttpServletRequest req, final EntityManager entityManager) {
 		final Integer numberOfElements=(Integer)FCServlet.getAttribute(req, Names.PAGE_ELEMENTS_NUMBER_ATTRIBUTE,5);
-		FCServlet.setAttribute(req, Names.FIRST_PAGE_ELEMENT_ATTRIBUTE,0L);
-		FCServlet.setAttribute(req, Names.LAST_PAGE_ELEMENT_ATTRIBUTE,Long.valueOf(numberOfElements-1));
+		FCServlet.setAttribute(req, Names.FIRST_PAGE_ELEMENT_ATTRIBUTE, 0L);
+		FCServlet.setAttribute(req, Names.LAST_PAGE_ELEMENT_ATTRIBUTE, Long.valueOf(numberOfElements-1));
 		return true;
 	}
 

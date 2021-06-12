@@ -293,6 +293,21 @@ public final class EntityManager {
 		return list;
 	}
 	
+	public <M extends Entity> List<M> fetchLinkedEntities(final Class<M> masterClass,Class<? extends Entity> slaveClass,final Map<String,?> keyPairs,final long startElement,final long endElement){
+		final List<M> list=new ArrayList<>();
+		final StringBuilder clause=StatementBuilder.getSelectLinkedEntitiesStatement(masterClass,slaveClass,keyPairs,startElement,endElement);
+		try (
+				final Connection conn=dataSource.getConnection();
+				final Statement statement=conn.createStatement();
+				final ResultSet rs=statement.executeQuery(clause.toString())){
+		
+			composeEntityListFromResultSet(masterClass, list, rs, false);
+		} catch (SQLException e) {
+			throw new DataAccessException(e);
+		}
+		return list;
+	}
+	
 	private void fillEntityValues(final Entity entity, final List<Method> setters, final ResultSet rs) {
 		int k=1;
 		try {

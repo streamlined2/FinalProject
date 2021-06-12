@@ -8,12 +8,14 @@ import edu.practice.finalproject.view.action.ReviewOrderAction;
 import edu.practice.finalproject.view.action.BackAction;
 import edu.practice.finalproject.view.action.CheckOrderAction;
 import edu.practice.finalproject.view.action.ConfirmCarCriteriaAction;
-import edu.practice.finalproject.view.action.CreateLeaseInvoiceAction;
+import edu.practice.finalproject.view.action.AcceptOrderAction;
 import edu.practice.finalproject.view.action.FirstPageAction;
 import edu.practice.finalproject.view.action.LastPageAction;
+import edu.practice.finalproject.view.action.LeaseInvoiceSubmitAction;
 import edu.practice.finalproject.view.action.SwitchLocaleAction;
 import edu.practice.finalproject.view.action.LoginAction;
 import edu.practice.finalproject.view.action.LogoutAction;
+import edu.practice.finalproject.view.action.MaintenanceInvoiceSubmitAction;
 import edu.practice.finalproject.view.action.NextAction;
 import edu.practice.finalproject.view.action.NextPageAction;
 import edu.practice.finalproject.view.action.OrderCarAction;
@@ -23,18 +25,24 @@ import edu.practice.finalproject.view.action.RegisterAction;
 import edu.practice.finalproject.view.action.RegisterNewAction;
 import edu.practice.finalproject.view.action.RejectOrderAction;
 import edu.practice.finalproject.view.action.SelectCarAction;
+import edu.practice.finalproject.view.action.SelectLeaseOrderAction;
 import edu.practice.finalproject.view.form.CarBrowsingForm;
+import edu.practice.finalproject.view.form.CarInspectionForm;
 import edu.practice.finalproject.view.form.CarOrderStatusForm;
 import edu.practice.finalproject.view.form.CarSelectionCriteriaForm;
+import edu.practice.finalproject.view.form.MaintenanceChargeForm;
 import edu.practice.finalproject.view.form.Form;
 import edu.practice.finalproject.view.form.LeaseInvoiceDemoForm;
+import edu.practice.finalproject.view.form.LeaseOrderSelectionForm;
+import edu.practice.finalproject.view.form.NewLeaseInvoiceForm;
 import edu.practice.finalproject.view.form.LoginForm;
+import edu.practice.finalproject.view.form.MaintenanceInvoiceDemoForm;
 import edu.practice.finalproject.view.form.ManagerTaskSelectionForm;
 import edu.practice.finalproject.view.form.OrderForm;
 import edu.practice.finalproject.view.form.RegisterForm;
 import edu.practice.finalproject.view.form.RejectionNotificationForm;
 import edu.practice.finalproject.view.form.ReviewOrderForm;
-import edu.practice.finalproject.view.form.BrowserOrderListForm;
+import edu.practice.finalproject.view.form.BrowseOrderListForm;
 
 public class FormDispatcher {
 
@@ -66,13 +74,29 @@ public class FormDispatcher {
 		transitions.addRule(Manager.class, BROWSE_ORDER_LIST_FORM, PREVIOUS_PAGE_ACTION, BROWSE_ORDER_LIST_FORM);
 		transitions.addRule(Manager.class, BROWSE_ORDER_LIST_FORM, LAST_PAGE_ACTION, BROWSE_ORDER_LIST_FORM);
 		transitions.addRule(Manager.class, BROWSE_ORDER_LIST_FORM, CHECK_ORDER_ACTION, REVIEW_ORDER_FORM);
-		transitions.addRule(Manager.class, REVIEW_ORDER_FORM, CREATE_LEASE_INVOICE_ACTION, LEASE_INVOICE_DEMO_FORM);
+		transitions.addRule(Manager.class, REVIEW_ORDER_FORM, ACCEPT_ORDER_ACTION, NEW_LEASE_INVOICE_FORM);
+		transitions.addRule(Manager.class, NEW_LEASE_INVOICE_FORM, LEASE_INVOICE_SUBMISSION_ACTION, LEASE_INVOICE_DEMO_FORM);
+		transitions.addRule(Manager.class, LEASE_INVOICE_DEMO_FORM, BACK_ACTION, BROWSE_ORDER_LIST_FORM);
+		transitions.addRule(Manager.class, NEW_LEASE_INVOICE_FORM, BACK_ACTION, REVIEW_ORDER_FORM);
 		transitions.addRule(Manager.class, REVIEW_ORDER_FORM, REJECT_ORDER_ACTION, REJECTION_NOTIFICATION_FORM);
 		transitions.addRule(Manager.class, REVIEW_ORDER_FORM, BACK_ACTION, BROWSE_ORDER_LIST_FORM);
-		transitions.addRule(Manager.class, MANAGER_TASK_SELECTION_FORM, RECEIVE_CAR_ACTION, null);
+		transitions.addRule(Manager.class, REJECTION_NOTIFICATION_FORM, BACK_ACTION, BROWSE_ORDER_LIST_FORM);
+		transitions.addRule(Manager.class, MANAGER_TASK_SELECTION_FORM, RECEIVE_CAR_ACTION, CAR_INSPECTION_FORM);
+		transitions.addRule(Manager.class, CAR_INSPECTION_FORM, BACK_ACTION, MANAGER_TASK_SELECTION_FORM);
+		transitions.addRule(Manager.class, CAR_INSPECTION_FORM, NEXT_ACTION, LEASE_ORDER_SELECTION_FORM);
+		transitions.addRule(Manager.class, LEASE_ORDER_SELECTION_FORM, SELECT_LEASE_ORDER_ACTION, MAINTENANCE_CHARGE_FORM);
+		transitions.addRule(Manager.class, LEASE_ORDER_SELECTION_FORM, BACK_ACTION, CAR_INSPECTION_FORM);
+		transitions.addRule(Manager.class, LEASE_ORDER_SELECTION_FORM, NEXT_PAGE_ACTION, LEASE_ORDER_SELECTION_FORM);
+		transitions.addRule(Manager.class, LEASE_ORDER_SELECTION_FORM, FIRST_PAGE_ACTION, LEASE_ORDER_SELECTION_FORM);
+		transitions.addRule(Manager.class, LEASE_ORDER_SELECTION_FORM, PREVIOUS_PAGE_ACTION, LEASE_ORDER_SELECTION_FORM);
+		transitions.addRule(Manager.class, LEASE_ORDER_SELECTION_FORM, LAST_PAGE_ACTION, LEASE_ORDER_SELECTION_FORM);
+		transitions.addRule(Manager.class, MAINTENANCE_CHARGE_FORM, MAINTENANCE_INVOICE_SUBMIT_ACTION, MAINTENANCE_INVOICE_DEMO_FORM);
+		transitions.addRule(Manager.class, MAINTENANCE_CHARGE_FORM, BACK_ACTION, LEASE_ORDER_SELECTION_FORM);
+		transitions.addRule(Manager.class, MAINTENANCE_INVOICE_DEMO_FORM, BACK_ACTION, MANAGER_TASK_SELECTION_FORM);
 		transitions.addRule(Manager.class, null, null, MANAGER_TASK_SELECTION_FORM);//should always be last rule for Manager
-		//TODO fill up rest of the transition rule map
-		//for manager and admin user roles
+
+		//rules for admin role
+		
 	}
 	
 	public static final SwitchLocaleAction SWITCH_LOCALE_ACTION = new SwitchLocaleAction("change_locale");
@@ -92,9 +116,12 @@ public class FormDispatcher {
 	public static final ReviewOrderAction REVIEW_ORDER_ACTION = new ReviewOrderAction("review_order");
 	public static final ReceiveCarAction RECEIVE_CAR_ACTION = new ReceiveCarAction("receive_car");
 	public static final CheckOrderAction CHECK_ORDER_ACTION = new CheckOrderAction("check_order");
-	public static final CreateLeaseInvoiceAction CREATE_LEASE_INVOICE_ACTION = new CreateLeaseInvoiceAction("create_lease_invoice");
+	public static final AcceptOrderAction ACCEPT_ORDER_ACTION = new AcceptOrderAction("accept_order");
 	public static final RejectOrderAction REJECT_ORDER_ACTION = new RejectOrderAction("reject_order");
-
+	public static final LeaseInvoiceSubmitAction LEASE_INVOICE_SUBMISSION_ACTION = new LeaseInvoiceSubmitAction("lease_invoice_submission");
+	public static final MaintenanceInvoiceSubmitAction MAINTENANCE_INVOICE_SUBMIT_ACTION = new MaintenanceInvoiceSubmitAction("maintenance_invoice_submission");
+	public static final SelectLeaseOrderAction SELECT_LEASE_ORDER_ACTION = new SelectLeaseOrderAction("select_lease_order");
+	
 	public static final LoginForm LOGIN_FORM = new LoginForm("/login.jsp");
 	public static final RegisterForm REGISTER_FORM = new RegisterForm("/register.jsp");
 	public static final CarSelectionCriteriaForm CAR_SELECTION_CRITERIA_FORM = new CarSelectionCriteriaForm("/car-selection.jsp");
@@ -102,10 +129,15 @@ public class FormDispatcher {
 	public static final OrderForm ORDER_FORM = new OrderForm("/order.jsp");
 	public static final CarOrderStatusForm CAR_ORDER_STATUS_FORM = new CarOrderStatusForm("/car-order-status.jsp");
 	public static final ManagerTaskSelectionForm MANAGER_TASK_SELECTION_FORM = new ManagerTaskSelectionForm("/manager-start-form.jsp");
-	public static final BrowserOrderListForm BROWSE_ORDER_LIST_FORM = new BrowserOrderListForm("/browse-order-list.jsp");
-	public static final ReviewOrderForm REVIEW_ORDER_FORM = new ReviewOrderForm("/review.jsp");
-	public static final LeaseInvoiceDemoForm LEASE_INVOICE_DEMO_FORM = new LeaseInvoiceDemoForm("/lease-invoice-demo.jsp");
+	public static final BrowseOrderListForm BROWSE_ORDER_LIST_FORM = new BrowseOrderListForm("/browse-order-list.jsp");
+	public static final ReviewOrderForm REVIEW_ORDER_FORM = new ReviewOrderForm("/order-review.jsp");
+	public static final NewLeaseInvoiceForm NEW_LEASE_INVOICE_FORM = new NewLeaseInvoiceForm("/new-lease-invoice.jsp");
 	public static final RejectionNotificationForm REJECTION_NOTIFICATION_FORM = new RejectionNotificationForm("/rejection-notification.jsp");
+	public static final LeaseInvoiceDemoForm LEASE_INVOICE_DEMO_FORM = new LeaseInvoiceDemoForm("/lease-invoice-demo.jsp");
+	public static final CarInspectionForm CAR_INSPECTION_FORM = new CarInspectionForm("/car-inspection.jsp");
+	public static final MaintenanceChargeForm MAINTENANCE_CHARGE_FORM = new MaintenanceChargeForm("/maintenance-charge.jsp");
+	public static final MaintenanceInvoiceDemoForm MAINTENANCE_INVOICE_DEMO_FORM = new MaintenanceInvoiceDemoForm("/maintenance-invoice-demo.jsp");
+	public static final LeaseOrderSelectionForm LEASE_ORDER_SELECTION_FORM = new LeaseOrderSelectionForm("/lease-order-selection.jsp");
 	
 	public Form getInitialForm() { return LOGIN_FORM;}
 

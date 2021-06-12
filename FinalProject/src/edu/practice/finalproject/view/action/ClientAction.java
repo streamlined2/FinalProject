@@ -6,7 +6,7 @@ import edu.practice.finalproject.model.dataaccess.EntityManager;
 
 public abstract class ClientAction extends Action {
 
-	public ClientAction(final String name) {
+	protected ClientAction(final String name) {
 		super(name);
 	}
 

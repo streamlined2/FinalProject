@@ -14,8 +14,8 @@
 		<legend>Review order</legend>
 		<table>
 		<tr>
-			<td><label for="selected_order">Selected order</label></td>
-			<td>${requestScope.selected_order}</td>
+			<td><label>Selected order</label></td>
+			<td>${selectedOrder}</td>
 		</tr>
 		<tr>
 			<td><label for="reason">Reason for rejection</label></td>

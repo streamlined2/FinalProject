@@ -7,21 +7,21 @@ import edu.practice.finalproject.controller.Names;
 import edu.practice.finalproject.controller.transition.FormDispatcher;
 import edu.practice.finalproject.view.action.Action;
 
-public class ReviewOrderForm extends Form {
+public class CarInspectionForm extends Form {
 
-	public ReviewOrderForm(String name) {
+	public CarInspectionForm(String name) {
 		super(name);
 	}
 
 	@Override
 	public Action getAction(final Map<String,String[]> parameters) {
-		if(FCServlet.isActionPresent(parameters,Names.ACCEPT_ORDER_PARAMETER)) return FormDispatcher.ACCEPT_ORDER_ACTION;
-		if(FCServlet.isActionPresent(parameters,Names.REJECT_ORDER_PARAMETER)) return FormDispatcher.REJECT_ORDER_ACTION;
+		if(FCServlet.ifParameterEquals(parameters,Names.CAR_INSPECTION_RESULT_PARAMETER,Names.CAR_IN_PERFECT_CONDITION_PARAMETER)) return FormDispatcher.BACK_ACTION;
+		if(FCServlet.ifParameterEquals(parameters,Names.CAR_INSPECTION_RESULT_PARAMETER,Names.CAR_NEEDS_MAINTENANCE_PARAMETER)) return FormDispatcher.NEXT_ACTION;
 		return super.getAction(parameters);
 	}
 
 	@Override
 	public Action getDefaultAction() {
-		return FormDispatcher.BACK_ACTION;
+		return FormDispatcher.NEXT_ACTION;
 	}
 }

@@ -13,9 +13,9 @@ import edu.practice.finalproject.model.entity.document.LeaseOrder;
 import edu.practice.finalproject.model.entity.document.OrderReview;
 import edu.practice.finalproject.model.entity.document.OrderReview.OrderStatus;
 
-public class CreateLeaseInvoiceAction extends ManagerAction {
+public class AcceptOrderAction extends ManagerAction {
 
-	public CreateLeaseInvoiceAction(String name) {
+	public AcceptOrderAction(String name) {
 		super(name);
 	}
 
@@ -30,6 +30,8 @@ public class CreateLeaseInvoiceAction extends ManagerAction {
 		orderReview.setReviewTime(LocalDateTime.now());
 		orderReview.setOrderStatus(OrderStatus.APPROVED);
 		entityManager.persist(leaseOrder);
+
+		FCServlet.setAttribute(req, Names.ORDER_REVIEW_ATTRIBUTE, orderReview);
 		return true;
 	}
 }

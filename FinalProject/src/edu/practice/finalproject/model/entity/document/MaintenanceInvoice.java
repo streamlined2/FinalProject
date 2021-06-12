@@ -9,13 +9,14 @@ import java.util.StringJoiner;
 import edu.practice.finalproject.controller.admin.Manager;
 import edu.practice.finalproject.model.analysis.EntityException;
 
-public class LeaseInvoice extends Invoice {
+public class MaintenanceInvoice extends Invoice {
 	
 	private LeaseOrder leaseOrder;
+	private String repairs;
 	
-	public LeaseInvoice() {}
-	
-	public LeaseInvoice(LeaseOrder leaseOrder, Manager manager, LocalDateTime signTime, String account, BigDecimal sum) {
+	public MaintenanceInvoice() {}
+
+	public MaintenanceInvoice(LeaseOrder leaseOrder, Manager manager, LocalDateTime signTime, String account, BigDecimal sum) {
 		this.leaseOrder = leaseOrder;
 		this.manager = manager;
 		this.signTime = signTime;
@@ -25,6 +26,9 @@ public class LeaseInvoice extends Invoice {
 
 	public LeaseOrder getLeaseOrder() { return leaseOrder;}
 	public void setLeaseOrder(LeaseOrder leaseOrder) { this.leaseOrder = leaseOrder;}
+	
+	public String getRepairs() { return repairs;}
+	public void setRepairs(String repairs) { this.repairs = repairs;}
 
 	@Override
 	public String toString() {
