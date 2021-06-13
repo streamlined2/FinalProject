@@ -14,6 +14,7 @@ public abstract class User extends NaturalKeyEntity {
 	protected byte[] passwordDigest;
 	protected String firstName;
 	protected String lastName;
+	protected boolean blocked = false;
 	
 	protected User() {}
 	
@@ -35,6 +36,9 @@ public abstract class User extends NaturalKeyEntity {
 
 	public String getLastName() { return lastName;}
 	public void setLastName(final String lastName) { this.lastName=lastName;}
+	
+	public boolean getBlocked() { return blocked;}
+	public void setBlocked(final boolean blocked) { this.blocked = blocked;}
 
 	@Override
 	public boolean equals(final Object o) {

@@ -23,6 +23,7 @@ public class LoginAction extends Action {
 	private static final String HELLO_EN = "Hello";
 	private static final String HELLO_UK = "Добрий день";
 	private static final String ERROR_MSG="Error occured while trying to login. Please try again";
+	private static final String USER_BLOCKED_MSG = "Please talk to administrator to resolve login issue";
 	
 	@Override
 	public boolean execute(final HttpServletRequest req,final EntityManager entityManager) {
@@ -46,6 +47,10 @@ public class LoginAction extends Action {
 			}
 			
 			if(!user.isEmpty()) {
+				if(user.get().getBlocked()) {
+					FCServlet.setError(req, USER_BLOCKED_MSG);
+					return false;
+				}
 				FCServlet.setUser(req, user.get());
 				FCServlet.setMessage(req, String.format("%s, %s!", FCServlet.getLocale(req)==Locale.ENGLISH?HELLO_EN:HELLO_UK,user.get().toString()));
 				return true;
@@ -57,5 +62,4 @@ public class LoginAction extends Action {
 		}
 		return false;
 	}
-
 }
