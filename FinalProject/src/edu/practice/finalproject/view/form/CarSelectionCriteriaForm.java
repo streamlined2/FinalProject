@@ -29,8 +29,7 @@ public class CarSelectionCriteriaForm extends Form {
 
 	@Override
 	public Action getAction(final Map<String,String[]> parameters) {
-		if(FCServlet.isActionPresent(parameters,Names.CONFIRM_CAR_CRITERIA_PARAMETER))
-			return FormDispatcher.CONFIRM_CAR_CRITERIA_ACTION;
+		if(FCServlet.isActionPresent(parameters,Names.CONFIRM_CAR_CRITERIA_PARAMETER)) return FormDispatcher.CONFIRM_CAR_CRITERIA_ACTION;
 		return super.getAction(parameters);
 	}
 

@@ -65,6 +65,10 @@ public abstract class Utils {
 		return Utils.checkPattern(name,Names.ACCOUNT_PATTERN);
 	}
 	
+	public static boolean checkCarModel(final String name) {
+		return Utils.checkPattern(name,Names.CAR_MODEL_PATTERN);
+	}
+	
 	public static boolean checkTime(final String dueTime) {
 		try {
 			LocalDateTime.parse(dueTime);

@@ -23,15 +23,35 @@ public class RegisterNewAction extends Action {
 	private static final String DIFFERENT_PASSWORDS = "Passwords should coincide";
 	private static final String USER_SUCCESSFULLY_REGISTERED = "User successfully registered";
 	private static final String USER_ALREADY_REGISTERED = "This login has been taken already";
+	private static final String WRONG_FIRSTNAME_MSG = "Wrong first name";
+	private static final String WRONG_LASTNAME_MSG = "Wrong last name";
+	private static final String WRONG_USER_MSG = "Wrong user name";
+	private static final String WRONG_PASSWORD_MSG = "Wrong first password";
+	private static final String WRONG_PASSWORD2_MSG = "Wrong second password";
 
 	@Override
 	public boolean execute(final HttpServletRequest req, final EntityManager entityManager) {
 		try {
-			if(!Utils.checkIfValid(req,Names.FIRSTNAME_PARAMETER,Utils::checkName)) return false;
-			if(!Utils.checkIfValid(req,Names.LASTNAME_PARAMETER,Utils::checkName)) return false;
-			if(!Utils.checkIfValid(req,Names.USER_PARAMETER,Utils::checkLogin)) return false;
-			if(!Utils.checkIfValid(req,Names.PASSWORD_PARAMETER,Utils::checkPassword)) return false;
-			if(!Utils.checkIfValid(req,Names.PASSWORD2_PARAMETER,Utils::checkPassword)) return false;
+			if(!Utils.checkIfValid(req,Names.FIRSTNAME_PARAMETER,Utils::checkName)) {
+				FCServlet.setError(req, WRONG_FIRSTNAME_MSG);
+				return false;
+			}
+			if(!Utils.checkIfValid(req,Names.LASTNAME_PARAMETER,Utils::checkName)) {
+				FCServlet.setError(req, WRONG_LASTNAME_MSG);
+				return false;
+			}
+			if(!Utils.checkIfValid(req,Names.USER_PARAMETER,Utils::checkLogin)) {
+				FCServlet.setError(req, WRONG_USER_MSG);
+				return false;
+			}
+			if(!Utils.checkIfValid(req,Names.PASSWORD_PARAMETER,Utils::checkPassword)) {
+				FCServlet.setError(req, WRONG_PASSWORD_MSG);
+				return false;
+			}
+			if(!Utils.checkIfValid(req,Names.PASSWORD2_PARAMETER,Utils::checkPassword)) {
+				FCServlet.setError(req, WRONG_PASSWORD2_MSG);
+				return false;
+			}
 
 			final String firstName=FCServlet.getParameterValue(req,Names.FIRSTNAME_PARAMETER);
 			final String lastName=FCServlet.getParameterValue(req,Names.LASTNAME_PARAMETER);
@@ -57,6 +77,7 @@ public class RegisterNewAction extends Action {
 			user.setFirstName(firstName);
 			user.setLastName(lastName);
 			entityManager.persist(user);
+			
 			FCServlet.setUser(req, user);
 			FCServlet.setMessage(req, USER_SUCCESSFULLY_REGISTERED);
 			return true;

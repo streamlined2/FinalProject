@@ -15,6 +15,7 @@ public final class Names {
 	public static final String PASSWORD_PATTERN_ATTRIBUTE = "passwordPattern"; 
 	public static final String NAME_PATTERN_ATTRIBUTE = "namePattern"; 
 	public static final String PASSPORT_PATTERN_ATTRIBUTE = "passportPattern";
+	public static final String CAR_MODEL_PATTERN_ATTRIBUTE = "carModelPattern";
 	public static final String AVAILABLE_LOCALES_ATTRIBUTE = "availableLocales";
 	public static final String MANUFACTURER_VALUES_ATTRIBUTE = "manufacturerValues";
 	public static final String QUALITY_GRADE_VALUES_ATTRIBUTE = "qualityGradeValues";
@@ -35,6 +36,7 @@ public final class Names {
 	public static final String INVOICE_SUM_ATTRIBUTE = "initialInvoiceSum";
 	public static final String LEASE_INVOICE_ATTRIBUTE = "leaseInvoice";
 	public static final String MAINTENANCE_INVOICE_ATTRIBUTE = "maintenanceInvoice";
+	public static final String NEW_CAR_ATTRIBUTE = "createCar";
 
 	public static final String ACTION_PARAMETER = "action";
 	public static final String USER_PARAMETER = "user";
@@ -102,11 +104,16 @@ public final class Names {
 	public static final String DELETE_CAR_PARAMETER = "deleteCar";
 	public static final String NEW_CAR_PARAMETER = "newCar";
 	public static final String CAR_NUMBER_PARAMETER = "carNumber";
+	public static final String CREATE_MODIFY_CAR_PARAMETER = "createModifyCar";
+	public static final String CAR_MODEL_PARAMETER = "model";
+	public static final String CAR_RENT_COST_PARAMETER = "cost";
+	public static final String CAR_PRODUCTION_DATE_PARAMETER = "productionDate";
 	
 	public static final String LOGIN_PATTERN = "[0-9A-Za-zÀ-ßà-ÿ¨¸ªº²³¯¿]+";
 	public static final String PASSWORD_PATTERN = "[0-9A-Za-zÀ-ßà-ÿ¨¸ªº²³¯¿]+";
 	public static final String NAME_PATTERN = "[0-9A-Za-zÀ-ßà-ÿ¨¸ªº²³¯¿]+";
 	public static final String PASSPORT_PATTERN = "[ 0-9A-Za-zÀ-ßà-ÿ¨¸ªº²³¯¿]+";
+	public static final String CAR_MODEL_PATTERN = "[0-9A-Za-zÀ-ßà-ÿ¨¸ªº²³¯¿]+";
 	public static final String ACCOUNT_PATTERN = "[A-Z]{2}[0-9]{2}[0-9]{1,30}";
 
 }

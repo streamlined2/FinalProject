@@ -130,6 +130,10 @@ public class FCServlet extends HttpServlet {
 		removeAttribute(req, Names.FORM_ATTRIBUTE);
 	}
 
+	public static EntityManager getEntityManager(final HttpServletRequest req) {
+		return (EntityManager)req.getServletContext().getAttribute(Names.ENTITY_MANAGER_ATTRIBUTE);
+	}
+	
 	public static User getUser(final HttpServletRequest req) {
 		return (User)getAttribute(req,Names.USER_ATTRIBUTE);
 	}

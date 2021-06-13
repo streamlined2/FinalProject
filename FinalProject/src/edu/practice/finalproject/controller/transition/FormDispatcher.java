@@ -7,6 +7,7 @@ import edu.practice.finalproject.controller.admin.User;
 import edu.practice.finalproject.view.action.Action;
 import edu.practice.finalproject.view.action.AddCarAction;
 import edu.practice.finalproject.view.action.ReviewOrderAction;
+import edu.practice.finalproject.view.action.SaveCarAction;
 import edu.practice.finalproject.view.action.BackAction;
 import edu.practice.finalproject.view.action.CarManagementAction;
 import edu.practice.finalproject.view.action.CheckOrderAction;
@@ -38,7 +39,6 @@ import edu.practice.finalproject.view.form.CarInspectionForm;
 import edu.practice.finalproject.view.form.CarManagementForm;
 import edu.practice.finalproject.view.form.CarOrderStatusForm;
 import edu.practice.finalproject.view.form.CarSelectionCriteriaForm;
-import edu.practice.finalproject.view.form.EditCarForm;
 import edu.practice.finalproject.view.form.MaintenanceChargeForm;
 import edu.practice.finalproject.view.form.Form;
 import edu.practice.finalproject.view.form.LeaseInvoiceDemoForm;
@@ -48,7 +48,7 @@ import edu.practice.finalproject.view.form.LoginForm;
 import edu.practice.finalproject.view.form.MaintenanceInvoiceDemoForm;
 import edu.practice.finalproject.view.form.ManagerRegistrationForm;
 import edu.practice.finalproject.view.form.ManagerTaskSelectionForm;
-import edu.practice.finalproject.view.form.NewCarForm;
+import edu.practice.finalproject.view.form.NewEditCarForm;
 import edu.practice.finalproject.view.form.OrderForm;
 import edu.practice.finalproject.view.form.RegisterForm;
 import edu.practice.finalproject.view.form.RejectionNotificationForm;
@@ -117,9 +117,11 @@ public class FormDispatcher {
 		transitions.addRule(Admin.class, CAR_MANAGEMENT_FORM, FIRST_PAGE_ACTION, CAR_MANAGEMENT_FORM);
 		transitions.addRule(Admin.class, CAR_MANAGEMENT_FORM, PREVIOUS_PAGE_ACTION, CAR_MANAGEMENT_FORM);
 		transitions.addRule(Admin.class, CAR_MANAGEMENT_FORM, LAST_PAGE_ACTION, CAR_MANAGEMENT_FORM);
-		transitions.addRule(Admin.class, CAR_MANAGEMENT_FORM, ADD_CAR_ACTION, NEW_CAR_FORM);
-		transitions.addRule(Admin.class, CAR_MANAGEMENT_FORM, MODIFY_CAR_ACTION, EDIT_CAR_FORM);
+		transitions.addRule(Admin.class, CAR_MANAGEMENT_FORM, ADD_CAR_ACTION, NEW_EDIT_CAR_FORM);
+		transitions.addRule(Admin.class, CAR_MANAGEMENT_FORM, MODIFY_CAR_ACTION, NEW_EDIT_CAR_FORM);
 		transitions.addRule(Admin.class, CAR_MANAGEMENT_FORM, DROP_CAR_ACTION, CAR_MANAGEMENT_FORM);
+		transitions.addRule(Admin.class, NEW_EDIT_CAR_FORM, BACK_ACTION, CAR_MANAGEMENT_FORM);
+		transitions.addRule(Admin.class, NEW_EDIT_CAR_FORM, SAVE_CAR_ACTION, CAR_MANAGEMENT_FORM);
 
 		transitions.addRule(Admin.class, null, null, ADMIN_TASK_SELECTION_FORM);//should always be last rule for Manager
 		
@@ -153,6 +155,7 @@ public class FormDispatcher {
 	public static final AddCarAction ADD_CAR_ACTION = new AddCarAction("add_car");
 	public static final ModifyCarAction MODIFY_CAR_ACTION = new ModifyCarAction("modify_car");
 	public static final DropCarAction DROP_CAR_ACTION = new DropCarAction("drop_car");
+	public static final SaveCarAction SAVE_CAR_ACTION = new SaveCarAction("save_car");
 	
 	public static final LoginForm LOGIN_FORM = new LoginForm("/login.jsp");
 	public static final RegisterForm REGISTER_FORM = new RegisterForm("/register.jsp");
@@ -174,8 +177,7 @@ public class FormDispatcher {
 	public static final CarManagementForm CAR_MANAGEMENT_FORM = new CarManagementForm("/car-management.jsp");
 	public static final UserBlockingForm USER_BLOCKING_FORM = new UserBlockingForm("/user-blocking.jsp");
 	public static final ManagerRegistrationForm MANAGER_REGISTRATION_FORM = new ManagerRegistrationForm("/manager-registration.jsp");
-	public static final NewCarForm NEW_CAR_FORM = new NewCarForm("/new-car.jsp");
-	public static final EditCarForm EDIT_CAR_FORM = new EditCarForm("/edit-car.jsp");
+	public static final NewEditCarForm NEW_EDIT_CAR_FORM = new NewEditCarForm("/new-edit-car.jsp");
 	
 	public Form getInitialForm() { return LOGIN_FORM;}
 
