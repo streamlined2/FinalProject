@@ -56,6 +56,8 @@ public class FCServlet extends HttpServlet {
 					Utils.getDigest(getServletContext().getInitParameter("adminPassword").getBytes()),
 					"Primary","User");
 
+			getServletContext().setAttribute(Names.PRIMARY_ADMIN_ATTRIBUTE, primaryAdmin);
+			
 			getServletContext().setAttribute(Names.AVAILABLE_LOCALES_ATTRIBUTE,availableLocales);
 			
 			getServletContext().setAttribute(

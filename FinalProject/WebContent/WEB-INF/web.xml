@@ -13,11 +13,11 @@
   </error-page>
   <context-param>
     <param-name>adminUserName</param-name>
-    <param-value>admin</param-value>
+    <param-value>primary</param-value>
   </context-param>
   <context-param>
     <param-name>adminPassword</param-name>
-    <param-value>admin</param-value>
+    <param-value>user</param-value>
   </context-param>
 	<context-param>
 	<param-name>pageElements</param-name>

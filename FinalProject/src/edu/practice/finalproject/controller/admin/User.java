@@ -1,11 +1,12 @@
 package edu.practice.finalproject.controller.admin;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import edu.practice.finalproject.model.analysis.EntityException;
 import edu.practice.finalproject.model.entity.NaturalKeyEntity;
-import edu.practice.finalproject.model.entity.domain.Car;
 import edu.practice.finalproject.view.action.Action;
 
 public abstract class User extends NaturalKeyEntity {
@@ -42,6 +43,11 @@ public abstract class User extends NaturalKeyEntity {
 			return login.equals(user.login);
 		}
 		return false;
+	}
+	
+	public boolean same(final String login,final byte[] passwordDigest) {
+		if(Objects.isNull(login) || Objects.isNull(passwordDigest)) return false;
+		return this.login.equals(login) && Arrays.equals(this.passwordDigest, passwordDigest);
 	}
 	
 	@Override

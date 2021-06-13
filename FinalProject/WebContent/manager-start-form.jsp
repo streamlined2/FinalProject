@@ -11,7 +11,7 @@
 	<%@include file="common-controls.jsp" %>
 	<form>
 	<fieldset>
-		<legend>Tasks</legend>
+		<legend>Managerial tasks</legend>
 		<table>
 		<tr>
 		<td><label for="approvement">Approve order</label></td>

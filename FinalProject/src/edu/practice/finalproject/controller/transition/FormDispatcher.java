@@ -1,21 +1,28 @@
 package edu.practice.finalproject.controller.transition;
 
+import edu.practice.finalproject.controller.admin.Admin;
 import edu.practice.finalproject.controller.admin.Client;
 import edu.practice.finalproject.controller.admin.Manager;
 import edu.practice.finalproject.controller.admin.User;
 import edu.practice.finalproject.view.action.Action;
+import edu.practice.finalproject.view.action.AddCarAction;
 import edu.practice.finalproject.view.action.ReviewOrderAction;
 import edu.practice.finalproject.view.action.BackAction;
+import edu.practice.finalproject.view.action.CarManagementAction;
 import edu.practice.finalproject.view.action.CheckOrderAction;
 import edu.practice.finalproject.view.action.ConfirmCarCriteriaAction;
+import edu.practice.finalproject.view.action.DropCarAction;
 import edu.practice.finalproject.view.action.AcceptOrderAction;
 import edu.practice.finalproject.view.action.FirstPageAction;
 import edu.practice.finalproject.view.action.LastPageAction;
 import edu.practice.finalproject.view.action.LeaseInvoiceSubmitAction;
 import edu.practice.finalproject.view.action.SwitchLocaleAction;
+import edu.practice.finalproject.view.action.UserBlockingAction;
 import edu.practice.finalproject.view.action.LoginAction;
 import edu.practice.finalproject.view.action.LogoutAction;
 import edu.practice.finalproject.view.action.MaintenanceInvoiceSubmitAction;
+import edu.practice.finalproject.view.action.ManagerRegistrationAction;
+import edu.practice.finalproject.view.action.ModifyCarAction;
 import edu.practice.finalproject.view.action.NextAction;
 import edu.practice.finalproject.view.action.NextPageAction;
 import edu.practice.finalproject.view.action.OrderCarAction;
@@ -28,8 +35,10 @@ import edu.practice.finalproject.view.action.SelectCarAction;
 import edu.practice.finalproject.view.action.SelectLeaseOrderAction;
 import edu.practice.finalproject.view.form.CarBrowsingForm;
 import edu.practice.finalproject.view.form.CarInspectionForm;
+import edu.practice.finalproject.view.form.CarManagementForm;
 import edu.practice.finalproject.view.form.CarOrderStatusForm;
 import edu.practice.finalproject.view.form.CarSelectionCriteriaForm;
+import edu.practice.finalproject.view.form.EditCarForm;
 import edu.practice.finalproject.view.form.MaintenanceChargeForm;
 import edu.practice.finalproject.view.form.Form;
 import edu.practice.finalproject.view.form.LeaseInvoiceDemoForm;
@@ -37,11 +46,15 @@ import edu.practice.finalproject.view.form.LeaseOrderSelectionForm;
 import edu.practice.finalproject.view.form.NewLeaseInvoiceForm;
 import edu.practice.finalproject.view.form.LoginForm;
 import edu.practice.finalproject.view.form.MaintenanceInvoiceDemoForm;
+import edu.practice.finalproject.view.form.ManagerRegistrationForm;
 import edu.practice.finalproject.view.form.ManagerTaskSelectionForm;
+import edu.practice.finalproject.view.form.NewCarForm;
 import edu.practice.finalproject.view.form.OrderForm;
 import edu.practice.finalproject.view.form.RegisterForm;
 import edu.practice.finalproject.view.form.RejectionNotificationForm;
 import edu.practice.finalproject.view.form.ReviewOrderForm;
+import edu.practice.finalproject.view.form.UserBlockingForm;
+import edu.practice.finalproject.view.form.AdminTaskSelectionForm;
 import edu.practice.finalproject.view.form.BrowseOrderListForm;
 
 public class FormDispatcher {
@@ -96,6 +109,14 @@ public class FormDispatcher {
 		transitions.addRule(Manager.class, null, null, MANAGER_TASK_SELECTION_FORM);//should always be last rule for Manager
 
 		//rules for admin role
+		transitions.addRule(Admin.class, ADMIN_TASK_SELECTION_FORM, CAR_MANAGEMENT_ACTION, CAR_MANAGEMENT_FORM);
+		transitions.addRule(Admin.class, ADMIN_TASK_SELECTION_FORM, USER_BLOCKING_ACTION, USER_BLOCKING_FORM);
+		transitions.addRule(Admin.class, ADMIN_TASK_SELECTION_FORM, MANAGER_REGISTRATION_ACTION, MANAGER_REGISTRATION_FORM);
+		transitions.addRule(Admin.class, CAR_MANAGEMENT_FORM, ADD_CAR_ACTION, NEW_CAR_FORM);
+		transitions.addRule(Admin.class, CAR_MANAGEMENT_FORM, MODIFY_CAR_ACTION, EDIT_CAR_FORM);
+		transitions.addRule(Admin.class, CAR_MANAGEMENT_FORM, DROP_CAR_ACTION, CAR_MANAGEMENT_FORM);
+		
+		transitions.addRule(Admin.class, null, null, ADMIN_TASK_SELECTION_FORM);//should always be last rule for Manager
 		
 	}
 	
@@ -121,6 +142,12 @@ public class FormDispatcher {
 	public static final LeaseInvoiceSubmitAction LEASE_INVOICE_SUBMISSION_ACTION = new LeaseInvoiceSubmitAction("lease_invoice_submission");
 	public static final MaintenanceInvoiceSubmitAction MAINTENANCE_INVOICE_SUBMIT_ACTION = new MaintenanceInvoiceSubmitAction("maintenance_invoice_submission");
 	public static final SelectLeaseOrderAction SELECT_LEASE_ORDER_ACTION = new SelectLeaseOrderAction("select_lease_order");
+	public static final CarManagementAction CAR_MANAGEMENT_ACTION = new CarManagementAction("car_management");
+	public static final UserBlockingAction USER_BLOCKING_ACTION = new UserBlockingAction("user_blocking");
+	public static final ManagerRegistrationAction MANAGER_REGISTRATION_ACTION = new ManagerRegistrationAction("manager_registration");
+	public static final AddCarAction ADD_CAR_ACTION = new AddCarAction("add_car");
+	public static final ModifyCarAction MODIFY_CAR_ACTION = new ModifyCarAction("modify_car");
+	public static final DropCarAction DROP_CAR_ACTION = new DropCarAction("drop_car");
 	
 	public static final LoginForm LOGIN_FORM = new LoginForm("/login.jsp");
 	public static final RegisterForm REGISTER_FORM = new RegisterForm("/register.jsp");
@@ -138,6 +165,12 @@ public class FormDispatcher {
 	public static final MaintenanceChargeForm MAINTENANCE_CHARGE_FORM = new MaintenanceChargeForm("/maintenance-charge.jsp");
 	public static final MaintenanceInvoiceDemoForm MAINTENANCE_INVOICE_DEMO_FORM = new MaintenanceInvoiceDemoForm("/maintenance-invoice-demo.jsp");
 	public static final LeaseOrderSelectionForm LEASE_ORDER_SELECTION_FORM = new LeaseOrderSelectionForm("/lease-order-selection.jsp");
+	public static final AdminTaskSelectionForm ADMIN_TASK_SELECTION_FORM = new AdminTaskSelectionForm("/admin-start-form.jsp");
+	public static final CarManagementForm CAR_MANAGEMENT_FORM = new CarManagementForm("/car-management.jsp");
+	public static final UserBlockingForm USER_BLOCKING_FORM = new UserBlockingForm("/user-blocking.jsp");
+	public static final ManagerRegistrationForm MANAGER_REGISTRATION_FORM = new ManagerRegistrationForm("/manager-registration.jsp");
+	public static final NewCarForm NEW_CAR_FORM = new NewCarForm("/new-car.jsp");
+	public static final EditCarForm EDIT_CAR_FORM = new EditCarForm("/edit-car.jsp");
 	
 	public Form getInitialForm() { return LOGIN_FORM;}
 
