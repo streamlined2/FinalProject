@@ -35,7 +35,7 @@ public class RegisterNewAction extends Action {
 
 			final String firstName=FCServlet.getParameterValue(req,Names.FIRSTNAME_PARAMETER);
 			final String lastName=FCServlet.getParameterValue(req,Names.LASTNAME_PARAMETER);
-			final String role=FCServlet.getParameterValue(req,Names.ROLE_PARAMETER);
+			final String role=Names.CLIENT_ROLE_PARAMETER;//FCServlet.getParameterValue(req,Names.ROLE_PARAMETER);
 			final String login=FCServlet.getParameterValue(req,Names.USER_PARAMETER);
 			final byte[] password=FCServlet.getParameterValue(req,Names.PASSWORD_PARAMETER).getBytes();
 			final byte[] password2=FCServlet.getParameterValue(req,Names.PASSWORD2_PARAMETER).getBytes();

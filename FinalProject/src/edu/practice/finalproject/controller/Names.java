@@ -73,7 +73,6 @@ public final class Names {
 	public static final String PREVIOUS_PAGE_PARAMETER = "previousPage"; 
 	public static final String FIRST_PAGE_PARAMETER = "firstPage"; 
 	public static final String LAST_PAGE_PARAMETER = "lastPage";
-	public static final String CAR_NUMBER_PARAMETER = "carNumber";
 	public static final String ORDER_CAR_PARAMETER = "orderCar";
 	public static final String DRIVER_OPTION_PARAMETER = "driver";
 	public static final String LEASE_DUE_TIME_PARAMETER = "returnTime";
@@ -98,6 +97,8 @@ public final class Names {
 	public static final String CAR_MANAGEMENT_PARAMETER = "carManagement";
 	public static final String USER_BLOCKING_PARAMETER = "userBlocking";
 	public static final String MANAGER_REGISTRATION_PARAMETER = "managerRegistration";
+	public static final String MODIFY_CAR_PARAMETER = "modifyCar";
+	public static final String CAR_NUMBER_PARAMETER = "carNumber";
 	
 	public static final String LOGIN_PATTERN = "[0-9A-Za-zÀ-ßà-ÿ¨¸ªº²³¯¿]+";
 	public static final String PASSWORD_PATTERN = "[0-9A-Za-zÀ-ßà-ÿ¨¸ªº²³¯¿]+";

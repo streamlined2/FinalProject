@@ -112,10 +112,15 @@ public class FormDispatcher {
 		transitions.addRule(Admin.class, ADMIN_TASK_SELECTION_FORM, CAR_MANAGEMENT_ACTION, CAR_MANAGEMENT_FORM);
 		transitions.addRule(Admin.class, ADMIN_TASK_SELECTION_FORM, USER_BLOCKING_ACTION, USER_BLOCKING_FORM);
 		transitions.addRule(Admin.class, ADMIN_TASK_SELECTION_FORM, MANAGER_REGISTRATION_ACTION, MANAGER_REGISTRATION_FORM);
+		transitions.addRule(Admin.class, CAR_MANAGEMENT_FORM, BACK_ACTION, ADMIN_TASK_SELECTION_FORM);
+		transitions.addRule(Admin.class, CAR_MANAGEMENT_FORM, NEXT_PAGE_ACTION, CAR_MANAGEMENT_FORM);
+		transitions.addRule(Admin.class, CAR_MANAGEMENT_FORM, FIRST_PAGE_ACTION, CAR_MANAGEMENT_FORM);
+		transitions.addRule(Admin.class, CAR_MANAGEMENT_FORM, PREVIOUS_PAGE_ACTION, CAR_MANAGEMENT_FORM);
+		transitions.addRule(Admin.class, CAR_MANAGEMENT_FORM, LAST_PAGE_ACTION, CAR_MANAGEMENT_FORM);
 		transitions.addRule(Admin.class, CAR_MANAGEMENT_FORM, ADD_CAR_ACTION, NEW_CAR_FORM);
 		transitions.addRule(Admin.class, CAR_MANAGEMENT_FORM, MODIFY_CAR_ACTION, EDIT_CAR_FORM);
 		transitions.addRule(Admin.class, CAR_MANAGEMENT_FORM, DROP_CAR_ACTION, CAR_MANAGEMENT_FORM);
-		
+
 		transitions.addRule(Admin.class, null, null, ADMIN_TASK_SELECTION_FORM);//should always be last rule for Manager
 		
 	}

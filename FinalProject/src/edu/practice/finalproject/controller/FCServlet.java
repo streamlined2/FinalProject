@@ -34,8 +34,6 @@ public class FCServlet extends HttpServlet {
 	private EntityManager entityManager;
 	private FormDispatcher formDispatcher;
 	
-	private Admin primaryAdmin;
-	
 	public static final Locale UKRAINIAN_LOCALE = Locale.forLanguageTag("uk");
 	private static final List<Locale> availableLocales= List.of(Locale.ENGLISH,UKRAINIAN_LOCALE);
 	
@@ -51,7 +49,7 @@ public class FCServlet extends HttpServlet {
 
 			formDispatcher=new FormDispatcher();
 			
-			primaryAdmin=new Admin(
+			final Admin primaryAdmin=new Admin(
 					getServletContext().getInitParameter("adminUserName"),
 					Utils.getDigest(getServletContext().getInitParameter("adminPassword").getBytes()),
 					"Primary","User");
