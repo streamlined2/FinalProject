@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import edu.practice.finalproject.controller.FCServlet;
 import edu.practice.finalproject.controller.Names;
+import edu.practice.finalproject.controller.admin.Admin;
 import edu.practice.finalproject.controller.admin.User;
 import edu.practice.finalproject.model.analysis.Inspector;
 import edu.practice.finalproject.model.dataaccess.EntityManager;
@@ -55,7 +56,10 @@ public class RegisterNewAction extends Action {
 
 			final String firstName=FCServlet.getParameterValue(req,Names.FIRSTNAME_PARAMETER);
 			final String lastName=FCServlet.getParameterValue(req,Names.LASTNAME_PARAMETER);
-			final String role=Names.CLIENT_ROLE_PARAMETER;//FCServlet.getParameterValue(req,Names.ROLE_PARAMETER);
+			String role=Names.CLIENT_ROLE_PARAMETER;
+			if(FCServlet.getUser(req) instanceof Admin) {
+				role=FCServlet.getParameterValue(req,Names.ROLE_PARAMETER);
+			}
 			final String login=FCServlet.getParameterValue(req,Names.USER_PARAMETER);
 			final byte[] password=FCServlet.getParameterValue(req,Names.PASSWORD_PARAMETER).getBytes();
 			final byte[] password2=FCServlet.getParameterValue(req,Names.PASSWORD2_PARAMETER).getBytes();
@@ -78,7 +82,9 @@ public class RegisterNewAction extends Action {
 			user.setLastName(lastName);
 			entityManager.persist(user);
 			
-			FCServlet.setUser(req, user);
+			if(!(FCServlet.getUser(req) instanceof Admin)) {
+				FCServlet.setUser(req, user);
+			}
 			FCServlet.setMessage(req, USER_SUCCESSFULLY_REGISTERED);
 			return true;
 		}catch(Exception e) {

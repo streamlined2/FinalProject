@@ -17,7 +17,7 @@ public class AdminTaskSelectionForm extends Form {
 	public Action getAction(final Map<String,String[]> parameters) {
 		if(FCServlet.ifParameterEquals(parameters,Names.ADMIN_TASK_PARAMETER,Names.CAR_MANAGEMENT_PARAMETER)) return FormDispatcher.CAR_MANAGEMENT_ACTION;
 		if(FCServlet.ifParameterEquals(parameters,Names.ADMIN_TASK_PARAMETER,Names.USER_BLOCKING_PARAMETER)) return FormDispatcher.USER_BLOCKING_ACTION;
-		if(FCServlet.ifParameterEquals(parameters,Names.ADMIN_TASK_PARAMETER,Names.MANAGER_REGISTRATION_PARAMETER)) return FormDispatcher.MANAGER_REGISTRATION_ACTION;
+		if(FCServlet.ifParameterEquals(parameters,Names.ADMIN_TASK_PARAMETER,Names.MANAGER_REGISTRATION_PARAMETER)) return FormDispatcher.REGISTER_ACTION;
 		return super.getAction(parameters);
 	}
 

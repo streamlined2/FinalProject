@@ -38,6 +38,7 @@ public final class Names {
 	public static final String MAINTENANCE_INVOICE_ATTRIBUTE = "maintenanceInvoice";
 	public static final String NEW_CAR_ATTRIBUTE = "createCar";
 	public static final String SELECTED_USER_ATTRIBUTE = "selectedUser";
+	public static final String ADMINISTRATIVE_TASKS_ATTRIBUTE = "administrativeTasks";
 
 	public static final String ACTION_PARAMETER = "action";
 	public static final String USER_PARAMETER = "user";

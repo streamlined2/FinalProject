@@ -23,7 +23,6 @@ import edu.practice.finalproject.view.action.UserBlockingAction;
 import edu.practice.finalproject.view.action.LoginAction;
 import edu.practice.finalproject.view.action.LogoutAction;
 import edu.practice.finalproject.view.action.MaintenanceInvoiceSubmitAction;
-import edu.practice.finalproject.view.action.ManagerRegistrationAction;
 import edu.practice.finalproject.view.action.ModifyCarAction;
 import edu.practice.finalproject.view.action.NextAction;
 import edu.practice.finalproject.view.action.NextPageAction;
@@ -47,7 +46,6 @@ import edu.practice.finalproject.view.form.LeaseOrderSelectionForm;
 import edu.practice.finalproject.view.form.NewLeaseInvoiceForm;
 import edu.practice.finalproject.view.form.LoginForm;
 import edu.practice.finalproject.view.form.MaintenanceInvoiceDemoForm;
-import edu.practice.finalproject.view.form.ManagerRegistrationForm;
 import edu.practice.finalproject.view.form.ManagerTaskSelectionForm;
 import edu.practice.finalproject.view.form.NewEditCarForm;
 import edu.practice.finalproject.view.form.OrderForm;
@@ -112,7 +110,7 @@ public class FormDispatcher {
 		//rules for admin role
 		transitions.addRule(Admin.class, ADMIN_TASK_SELECTION_FORM, CAR_MANAGEMENT_ACTION, CAR_MANAGEMENT_FORM);
 		transitions.addRule(Admin.class, ADMIN_TASK_SELECTION_FORM, USER_BLOCKING_ACTION, USER_BLOCKING_FORM);
-		transitions.addRule(Admin.class, ADMIN_TASK_SELECTION_FORM, MANAGER_REGISTRATION_ACTION, MANAGER_REGISTRATION_FORM);
+		transitions.addRule(Admin.class, ADMIN_TASK_SELECTION_FORM, REGISTER_ACTION, REGISTER_FORM);
 		transitions.addRule(Admin.class, CAR_MANAGEMENT_FORM, BACK_ACTION, ADMIN_TASK_SELECTION_FORM);
 		transitions.addRule(Admin.class, CAR_MANAGEMENT_FORM, NEXT_PAGE_ACTION, CAR_MANAGEMENT_FORM);
 		transitions.addRule(Admin.class, CAR_MANAGEMENT_FORM, FIRST_PAGE_ACTION, CAR_MANAGEMENT_FORM);
@@ -125,9 +123,9 @@ public class FormDispatcher {
 		transitions.addRule(Admin.class, NEW_EDIT_CAR_FORM, SAVE_CAR_ACTION, CAR_MANAGEMENT_FORM);
 		transitions.addRule(Admin.class, USER_BLOCKING_FORM, BACK_ACTION, ADMIN_TASK_SELECTION_FORM);
 		transitions.addRule(Admin.class, USER_BLOCKING_FORM, BLOCK_USER_ACTION, USER_BLOCKING_FORM);
-
+		transitions.addRule(Admin.class, REGISTER_FORM, BACK_ACTION, ADMIN_TASK_SELECTION_FORM);
+		transitions.addRule(Admin.class, REGISTER_FORM, REGISTER_NEW_ACTION, ADMIN_TASK_SELECTION_FORM);
 		transitions.addRule(Admin.class, null, null, ADMIN_TASK_SELECTION_FORM);//should always be last rule for Manager
-		
 	}
 	
 	public static final SwitchLocaleAction SWITCH_LOCALE_ACTION = new SwitchLocaleAction("change_locale");
@@ -154,7 +152,6 @@ public class FormDispatcher {
 	public static final SelectLeaseOrderAction SELECT_LEASE_ORDER_ACTION = new SelectLeaseOrderAction("select_lease_order");
 	public static final CarManagementAction CAR_MANAGEMENT_ACTION = new CarManagementAction("car_management");
 	public static final UserBlockingAction USER_BLOCKING_ACTION = new UserBlockingAction("user_blocking");
-	public static final ManagerRegistrationAction MANAGER_REGISTRATION_ACTION = new ManagerRegistrationAction("manager_registration");
 	public static final AddCarAction ADD_CAR_ACTION = new AddCarAction("add_car");
 	public static final ModifyCarAction MODIFY_CAR_ACTION = new ModifyCarAction("modify_car");
 	public static final DropCarAction DROP_CAR_ACTION = new DropCarAction("drop_car");
@@ -180,7 +177,6 @@ public class FormDispatcher {
 	public static final AdminTaskSelectionForm ADMIN_TASK_SELECTION_FORM = new AdminTaskSelectionForm("/admin-start-form.jsp");
 	public static final CarManagementForm CAR_MANAGEMENT_FORM = new CarManagementForm("/car-management.jsp");
 	public static final UserBlockingForm USER_BLOCKING_FORM = new UserBlockingForm("/user-blocking.jsp");
-	public static final ManagerRegistrationForm MANAGER_REGISTRATION_FORM = new ManagerRegistrationForm("/manager-registration.jsp");
 	public static final NewEditCarForm NEW_EDIT_CAR_FORM = new NewEditCarForm("/new-edit-car.jsp");
 	
 	public Form getInitialForm() { return LOGIN_FORM;}

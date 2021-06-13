@@ -11,7 +11,6 @@
 <body>
 	<p><%=LocalDateTime.now() %></p>
 	<h1 class="error">Error occured which program can't handle!</h1>
-	<p><%=exception %></p>
 	<c:if test="${!empty pageContext.exception}">
 		<p>${pageContext.exception.message}
 	</c:if>

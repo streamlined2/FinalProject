@@ -25,7 +25,7 @@
 			<fmt:message key="user.lastname.prompt" bundle="${localeBundle}" var="lastnamePrompt"/>
 			<td><input type="text" id="lastname" name="lastname" value="${param.lastname}" placeholder="${lastnamePrompt}" size="50" pattern="${requestScope.namePattern}" title="${lettersPrompt}" required/></td>
 		</tr>
-<!-- 
+		<c:if test="${administrativeTasks}">
 		<tr>
 			<td><label for="role"><fmt:message key="user.role" bundle="${localeBundle}"/></label></td>
 			<td>
@@ -35,7 +35,8 @@
 					<option value="admin"><fmt:message key="user.administrator" bundle="${localeBundle}"/></option>
 				</select>
 			</td>
-		</tr> -->
+		</tr>
+		</c:if>
 		<tr>
 			<td><label for="user"><fmt:message key="user.login" bundle="${localeBundle}"/></label></td>
 			<fmt:message key="user.login.prompt" bundle="${localeBundle}" var="userPrompt"/>
