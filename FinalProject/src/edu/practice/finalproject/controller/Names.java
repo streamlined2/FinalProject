@@ -9,6 +9,7 @@ public final class Names {
 	public static final String ERROR_ATTRIBUTE = "error";
 	public static final String MESSAGE_ATTRIBUTE = "message";
 	public static final String LOCALE_ATTRIBUTE = "locale";
+	public static final String ENTITY_MANAGER_ATTRIBUTE = "entityManager";
 	public static final String PRIMARY_ADMIN_ATTRIBUTE = "primaryAdmin";
 	public static final String LOGIN_PATTERN_ATTRIBUTE = "loginPattern"; 
 	public static final String PASSWORD_PATTERN_ATTRIBUTE = "passwordPattern"; 
@@ -98,6 +99,8 @@ public final class Names {
 	public static final String USER_BLOCKING_PARAMETER = "userBlocking";
 	public static final String MANAGER_REGISTRATION_PARAMETER = "managerRegistration";
 	public static final String MODIFY_CAR_PARAMETER = "modifyCar";
+	public static final String DELETE_CAR_PARAMETER = "deleteCar";
+	public static final String NEW_CAR_PARAMETER = "newCar";
 	public static final String CAR_NUMBER_PARAMETER = "carNumber";
 	
 	public static final String LOGIN_PATTERN = "[0-9A-Za-zÀ-ßà-ÿ¨¸ªº²³¯¿]+";

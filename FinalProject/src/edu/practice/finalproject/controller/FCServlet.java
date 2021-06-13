@@ -58,6 +58,8 @@ public class FCServlet extends HttpServlet {
 			
 			getServletContext().setAttribute(Names.AVAILABLE_LOCALES_ATTRIBUTE,availableLocales);
 			
+			getServletContext().setAttribute(Names.ENTITY_MANAGER_ATTRIBUTE, entityManager);
+			
 			getServletContext().setAttribute(
 					Names.PAGE_ELEMENTS_NUMBER_ATTRIBUTE, 
 					Integer.parseInt(getServletContext().getInitParameter("pageElements")));

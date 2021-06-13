@@ -228,6 +228,12 @@ public final class StatementBuilder {
 				append(FROM_CLAUSE).
 				append(getTableName(cl));
 	}
+
+	public static StringBuilder getFetchEntitiesStatement(final Class<? extends Entity> cl,final boolean skipID,final long startElement,final long endElement) {
+		final StringBuilder sb=getFetchEntitiesStatement(cl,skipID);
+		appendLimiters(sb, startElement, endElement);
+		return sb;
+	}
 	
 	public static StringBuilder getInsertStatement(final Entity entity) {
 		final List<Method> getters=Inspector.getGetters(entity.getClass(),true);

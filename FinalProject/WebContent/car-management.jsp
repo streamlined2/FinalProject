@@ -26,7 +26,7 @@
 							<input type="submit" value="Edit" formaction="main?action=modifyCar&carNumber=${number}" formmethod="post"/>
 						</td>
 						<td>
-							<input type="submit" value="Delete" formaction="main?action=modifyCar&carNumber=${number}" formmethod="post"/>
+							<input type="submit" value="Delete" formaction="main?action=deleteCar&carNumber=${number}" formmethod="post"/>
 						</td>
 						<c:forEach items="${entity}" var="value">
 							<td>${value}</td>
@@ -37,6 +37,7 @@
 			</tbody>
 		</table>
 		<hr>
+		<input type="submit" value="New" formaction="main?action=newCar" formmethod="post"/>
 		<input type="submit" value="Next" formaction="main?action=nextPage" formmethod="post"/>
 		<input type="submit" value="Previous" formaction="main?action=previousPage" formmethod="post"/>
 		<input type="submit" value="First" formaction="main?action=firstPage" formmethod="post"/>

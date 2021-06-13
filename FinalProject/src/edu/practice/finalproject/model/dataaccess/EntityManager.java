@@ -12,7 +12,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -159,14 +158,14 @@ public final class EntityManager {
 				conn.commit();
 				return true;
 			}			
-		}finally {
+		} finally {
 			conn.rollback();
 		}
 		return false;
 	}
 	
-	public <E extends Entity> Optional<E> find(final Class<E> cl,final Long key) {
-		final StringBuilder clause=StatementBuilder.getSelectByIdStatement(cl,key);
+	public <E extends Entity> Optional<E> find(final Class<E> cl,final Long id) {
+		final StringBuilder clause=StatementBuilder.getSelectByIdStatement(cl,id);
 
 		try (
 				final Connection conn=dataSource.getConnection();
@@ -222,22 +221,7 @@ public final class EntityManager {
 		return Optional.empty();
 	}
 
-	public <E extends Entity> List<E> fetchByCompositeKeyOrdered(final Class<E> cl,final Map<String,?> keyPairs,final Map<String,Boolean> orderKeys,final long startElement,final long endElement) {
-		final List<E> list=new LinkedList<>();
-		final StringBuilder clause=StatementBuilder.getSelectByKeyOrderedStatement(cl,keyPairs,orderKeys,startElement,endElement);
-		try (
-				final Connection conn=dataSource.getConnection();
-				final Statement statement=conn.createStatement();
-				final ResultSet rs=statement.executeQuery(clause.toString())){
-		
-			composeEntityListFromResultSet(cl, list, rs, false);
-		} catch (SQLException e) {
-			throw new DataAccessException(e);
-		}
-		return list;
-	}
-
-	private <E extends Entity> void composeEntityListFromResultSet(final Class<E> cl, final List<E> list, final ResultSet rs,final boolean skipID) throws SQLException {
+	private <E extends Entity> void formEntityListFromResultSet(final Class<E> cl, final List<E> list, final ResultSet rs,final boolean skipID) throws SQLException {
 		final List<Method> setters = Inspector.getSetters(cl,skipID);
 		while(rs.next()) {
 			final E entity=Inspector.createEntity(cl);
@@ -246,66 +230,48 @@ public final class EntityManager {
 		}
 	}
 
-    public <S extends Entity> List<S> fetchLinks(final Entity master,final Class<S> slaveClass) {
-		final List<S> entities=new ArrayList<>();
-		final StringBuilder clause=StatementBuilder.getFetchSlaveEntitiesStatement(master,slaveClass);
-
-		try (
-				final Connection conn=dataSource.getConnection();
-				final Statement statement=conn.createStatement();
-				final ResultSet rs=statement.executeQuery(clause.toString())){
-			
-			composeEntityListFromResultSet(slaveClass, entities, rs, false);
-		} catch (SQLException e) {
-			throw new DataAccessException(e);
-		}
-		return entities;
-    }
-
-	public <E extends Entity> List<E> fetchEntities(final Class<E> cl,final boolean skipID) {
+	private <E extends Entity> List<E> formEntityListFromQuery(final Class<E> cl, final boolean skipID,final StringBuilder clause) {
 		final List<E> entities=new ArrayList<>();
-		final StringBuilder clause=StatementBuilder.getFetchEntitiesStatement(cl,skipID);
-
 		try (
 				final Connection conn=dataSource.getConnection();
 				final Statement statement=conn.createStatement();
 				final ResultSet rs=statement.executeQuery(clause.toString())){
 			
-			composeEntityListFromResultSet(cl, entities, rs, skipID);
+			formEntityListFromResultSet(cl, entities, rs, skipID);
 		} catch (SQLException e) {
 			throw new DataAccessException(e);
 		}
 		return entities;
 	}
 	
+    public <S extends Entity> List<S> fetchLinks(final Entity master,final Class<S> slaveClass) {
+		final StringBuilder clause=StatementBuilder.getFetchSlaveEntitiesStatement(master,slaveClass);
+		return formEntityListFromQuery(slaveClass, false, clause);
+    }
+
 	public <M extends Entity> List<M> fetchMissingEntities(final Class<M> masterClass,Class<? extends Entity> slaveClass,final long startElement,final long endElement){
-		final List<M> list=new ArrayList<>();
 		final StringBuilder clause=StatementBuilder.getSelectMissingEntitiesStatement(masterClass,slaveClass,startElement,endElement);
-		try (
-				final Connection conn=dataSource.getConnection();
-				final Statement statement=conn.createStatement();
-				final ResultSet rs=statement.executeQuery(clause.toString())){
-		
-			composeEntityListFromResultSet(masterClass, list, rs, false);
-		} catch (SQLException e) {
-			throw new DataAccessException(e);
-		}
-		return list;
+		return formEntityListFromQuery(masterClass, false, clause);
 	}
 	
 	public <M extends Entity> List<M> fetchLinkedEntities(final Class<M> masterClass,Class<? extends Entity> slaveClass,final Map<String,?> keyPairs,final long startElement,final long endElement){
-		final List<M> list=new ArrayList<>();
 		final StringBuilder clause=StatementBuilder.getSelectLinkedEntitiesStatement(masterClass,slaveClass,keyPairs,startElement,endElement);
-		try (
-				final Connection conn=dataSource.getConnection();
-				final Statement statement=conn.createStatement();
-				final ResultSet rs=statement.executeQuery(clause.toString())){
-		
-			composeEntityListFromResultSet(masterClass, list, rs, false);
-		} catch (SQLException e) {
-			throw new DataAccessException(e);
-		}
-		return list;
+		return formEntityListFromQuery(masterClass,false,clause);
+	}
+	
+	public <E extends Entity> List<E> fetchByCompositeKeyOrdered(final Class<E> cl,final Map<String,?> keyPairs,final Map<String,Boolean> orderKeys,final long startElement,final long endElement) {
+		final StringBuilder clause=StatementBuilder.getSelectByKeyOrderedStatement(cl,keyPairs,orderKeys,startElement,endElement);
+		return formEntityListFromQuery(cl,false,clause);
+	}
+
+	public <E extends Entity> List<E> fetchEntities(final Class<E> cl,final boolean skipID,final long startElement,final long endElement) {
+		final StringBuilder clause=StatementBuilder.getFetchEntitiesStatement(cl,skipID,startElement,endElement);
+		return formEntityListFromQuery(cl, skipID, clause);
+	}
+
+	public <E extends Entity> List<E> fetchEntities(final Class<E> cl,final boolean skipID) {
+		final StringBuilder clause=StatementBuilder.getFetchEntitiesStatement(cl,skipID);
+		return formEntityListFromQuery(cl, skipID, clause);
 	}
 	
 	private void fillEntityValues(final Entity entity, final List<Method> setters, final ResultSet rs) {

@@ -11,7 +11,7 @@ public class NewCarForm extends Form {
 
 	@Override
 	public Action getDefaultAction() {
-		return FormDispatcher.NEXT_ACTION;
+		return FormDispatcher.BACK_ACTION;
 	}
 
 }
