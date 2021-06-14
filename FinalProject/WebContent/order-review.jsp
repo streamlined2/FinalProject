@@ -19,7 +19,7 @@
 		</tr>
 		<tr>
 			<td><label for="reason">Reason for rejection</label></td>
-			<td><textarea id="reason" name="rejectionReason" rows="6" cols="60" placeholder="Please enter reason for rejection here"  wrap="soft" value="" required></textarea></td>
+			<td><textarea id="reason" name="rejectionReason" rows="6" cols="60" placeholder="Please enter reason for rejection here"  wrap="soft" value=""></textarea></td>
 		</tr>
 		</table>
 		<hr>

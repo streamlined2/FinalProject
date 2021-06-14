@@ -9,25 +9,32 @@
 </head>
 <body>
 	<%@include file="common-controls.jsp" %>
-	
+	<p>
+	<form action="main?action=selectUser" method="post">
+			<select name="role" id="role" onchange="this.form.submit()">
+				<option value="client"><fmt:message key="user.client" bundle="${localeBundle}"/></option>
+				<option value="manager"><fmt:message key="user.manager" bundle="${localeBundle}"/></option>
+				<option value="admin"><fmt:message key="user.administrator" bundle="${localeBundle}"/></option>
+			</select>
+	</form>
+	<p>
 	<form>
 		<table>
-			<thead><tr>
-				<th>&nbsp;</th>
-				<c:forEach items="${queryHeader}" var="column">
-					<th>${column}</th>
-				</c:forEach>
-			</tr></thead>
 			<tbody>
 				<c:set var="number" value="0"/>
-				<c:forEach items="${queryData}" var="entity">
+				<c:forEach items="${pageItems}" var="entity">
 					<tr>
 						<td>
-							<input type="submit" value="${entity.blocked?'Unblock':'Block'}" formaction="main?action=blockUser&userNumber=${number}" formmethod="post"/>
+							<c:choose>
+							<c:when test="${entity.blocked}">
+								<input type="submit" value="Unblock" formaction="main?action=blockUser&userNumber=${number}" formmethod="post"/>
+							</c:when>
+							<c:otherwise>
+								<input type="submit" value="Block" formaction="main?action=blockUser&userNumber=${number}" formmethod="post"/>
+							</c:otherwise>
+							</c:choose>
 						</td>
-						<c:forEach items="${entity}" var="value">
-							<td>${value}</td>
-						</c:forEach>
+						<td>${entity}</td>
 					</tr>
 					<c:set var="number" value="${number+1}"/>
 				</c:forEach>

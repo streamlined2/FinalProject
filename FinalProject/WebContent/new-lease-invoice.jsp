@@ -28,6 +28,7 @@
 		</table>
 		<hr>
 		<input type="submit" value="Send" formaction="main?action=sendLeaseInvoice" formmethod="post"/>
+		<input type="reset" value="Clear" />
 		<input type="submit" value="Cancel" formaction="main?action=back" formmethod="post" formnovalidate/>
 	</fieldset>
 	</form>

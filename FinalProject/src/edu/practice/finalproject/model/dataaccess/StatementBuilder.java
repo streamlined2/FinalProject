@@ -35,6 +35,7 @@ public final class StatementBuilder {
 	private static final String ORDER_BY_CLAUSE = " ORDER BY ";
 	private static final String LIMIT_CLAUSE = " LIMIT ";
 	private static final String INNER_JOIN_CLAUSE = " INNER JOIN ";
+	private static final String NULL_VALUE_DENOMINATOR = "NULL";
 
 	private StatementBuilder() {}
 	
@@ -103,10 +104,10 @@ public final class StatementBuilder {
 		final Iterator<Method> fieldIterator=fields.iterator();
 		int k=0;
 		if(fieldIterator.hasNext() && k<values.length) {
-			sb.append(Inspector.getFieldName(prefix,fieldIterator.next())).append("=").append(StatementBuilder.mapObjectToString(values[k++]));
+			sb.append(Inspector.getFieldName(prefix,fieldIterator.next())).append("=").append(values[k++]);//StatementBuilder.mapObjectToString()
 			while(fieldIterator.hasNext() && k<values.length) {
 				sb.append(separator).
-				append(Inspector.getFieldName(prefix,fieldIterator.next())).append("=").append(StatementBuilder.mapObjectToString(values[k++]));
+				append(Inspector.getFieldName(prefix,fieldIterator.next())).append("=").append(values[k++]);//StatementBuilder.mapObjectToString()
 			}
 		}
 		return sb;
@@ -334,6 +335,7 @@ public final class StatementBuilder {
 	}
 
 	public static String mapObjectToString(final Object value) {
+		if(Objects.isNull(value)) return NULL_VALUE_DENOMINATOR;
 		final StringBuilder sb=new StringBuilder();
 		final Class<?> cl=value.getClass();
 		if(Entity.class.isAssignableFrom(cl)) {
@@ -341,7 +343,7 @@ public final class StatementBuilder {
 		}else if(cl.isEnum()) {
 			sb.append(((Enum<?>)value).ordinal());
 		}else if(cl==String.class) { 
-			sb.append("'").append(value).append("'");
+			sb.append("'").append(Utils.escapeQuote(value.toString())).append("'");
 		}else if(cl.isArray() && cl.getComponentType()==byte.class){
 			sb.append("X'").append(Utils.byteArray2String((byte[])value)).append("'");
 		}else if(LocalDateTime.class.isAssignableFrom(cl)){

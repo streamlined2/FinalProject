@@ -29,7 +29,7 @@ public class AcceptOrderAction extends ManagerAction {
 		orderReview.setManager(manager);
 		orderReview.setReviewTime(LocalDateTime.now());
 		orderReview.setOrderStatus(OrderStatus.APPROVED);
-		entityManager.persist(leaseOrder);
+		entityManager.persist(orderReview);
 
 		FCServlet.setAttribute(req, Names.ORDER_REVIEW_ATTRIBUTE, orderReview);
 		return true;

@@ -15,6 +15,8 @@ import edu.practice.finalproject.model.entity.document.OrderReview.OrderStatus;
 
 public class RejectOrderAction extends ManagerAction {
 
+	private static final String EMPTY_REJECTION_REASON_MSG = "Reason for rejection shouldn't be empty";
+
 	public RejectOrderAction(String name) {
 		super(name);
 	}
@@ -24,6 +26,11 @@ public class RejectOrderAction extends ManagerAction {
 		final Manager manager = (Manager)FCServlet.getUser(req); 
 		final LeaseOrder leaseOrder = (LeaseOrder)FCServlet.getAttribute(req, Names.SELECTED_ORDER_ATTRIBUTE);
 		final String rejectionReason = FCServlet.getParameterValue(req, Names.REJECTION_REASON_PARAMETER);
+		
+		if(rejectionReason.isBlank()) {
+			FCServlet.setError(req, EMPTY_REJECTION_REASON_MSG);
+			return false;
+		}
 
 		final OrderReview orderReview = Inspector.createEntity(OrderReview.class);
 		orderReview.setLeaseOrder(leaseOrder);
@@ -31,7 +38,7 @@ public class RejectOrderAction extends ManagerAction {
 		orderReview.setReviewTime(LocalDateTime.now());
 		orderReview.setOrderStatus(OrderStatus.REJECTED);
 		orderReview.setReasonNote(rejectionReason);
-		entityManager.persist(leaseOrder);
+		entityManager.persist(orderReview);
 
 		FCServlet.setAttribute(req, Names.ORDER_REVIEW_ATTRIBUTE, orderReview);
 		return true;

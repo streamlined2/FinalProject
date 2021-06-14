@@ -28,7 +28,7 @@ public final class Names {
 	public static final String FIRST_PAGE_ELEMENT_ATTRIBUTE = "firstPageElement";
 	public static final String LAST_PAGE_ELEMENT_ATTRIBUTE = "lastPageElement";
 	public static final String PAGE_ELEMENTS_NUMBER_ATTRIBUTE = "pageElementsNumber";
-	public static final String PAGE_ITEMS_ATTRIBUTE = "pageCars"; 
+	public static final String PAGE_ITEMS_ATTRIBUTE = "pageItems"; 
 	public static final String SELECTED_CAR_ATTRIBUTE = "selectedCar";
 	public static final String SELECTED_ORDER_ATTRIBUTE = "selectedOrder";
 	public static final String ORDER_REVIEW_ATTRIBUTE = "orderReview";
@@ -38,6 +38,7 @@ public final class Names {
 	public static final String MAINTENANCE_INVOICE_ATTRIBUTE = "maintenanceInvoice";
 	public static final String NEW_CAR_ATTRIBUTE = "createCar";
 	public static final String SELECTED_USER_ATTRIBUTE = "selectedUser";
+	public static final String SELECTED_ROLE_ATTRIBUTE = "selectedRole";
 	public static final String ADMINISTRATIVE_TASKS_ATTRIBUTE = "administrativeTasks";
 
 	public static final String ACTION_PARAMETER = "action";
@@ -112,6 +113,8 @@ public final class Names {
 	public static final String CAR_PRODUCTION_DATE_PARAMETER = "productionDate";
 	public static final String BLOCK_USER_PARAMETER = "blockUser";
 	public static final String USER_NUMBER_PARAMETER = "userNumber";
+	public static final String SELECT_USER_PARAMETER = "selectUser";
+	public static final String SELECTED_USER_PARAMETER = "selectedUser";
 	
 	public static final String LOGIN_PATTERN = "[0-9A-Za-zÀ-ßà-ÿ¨¸ªº²³¯¿]+";
 	public static final String PASSWORD_PATTERN = "[0-9A-Za-zÀ-ßà-ÿ¨¸ªº²³¯¿]+";

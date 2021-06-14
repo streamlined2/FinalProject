@@ -242,6 +242,10 @@ public class FCServlet extends HttpServlet {
 		return values!=null && Arrays.asList(values).contains(value); 
 	}
 
+	public static boolean isActionPresent(final HttpServletRequest req,final String actionName) {
+		return isActionPresent(req.getParameterMap(), actionName);
+	}
+	
 	public static boolean isActionPresent(final Map<String,String[]> parameters,final String actionName) {
 		final String[] values=parameters.get(Names.ACTION_PARAMETER);
 		return values!=null && Arrays.asList(values).contains(actionName); 

@@ -11,6 +11,7 @@ import edu.practice.finalproject.view.action.SaveCarAction;
 import edu.practice.finalproject.view.action.BackAction;
 import edu.practice.finalproject.view.action.BlockUserAction;
 import edu.practice.finalproject.view.action.CarManagementAction;
+import edu.practice.finalproject.view.action.ChangeUserAction;
 import edu.practice.finalproject.view.action.CheckOrderAction;
 import edu.practice.finalproject.view.action.ConfirmCarCriteriaAction;
 import edu.practice.finalproject.view.action.DropCarAction;
@@ -122,6 +123,7 @@ public class FormDispatcher {
 		transitions.addRule(Admin.class, NEW_EDIT_CAR_FORM, BACK_ACTION, CAR_MANAGEMENT_FORM);
 		transitions.addRule(Admin.class, NEW_EDIT_CAR_FORM, SAVE_CAR_ACTION, CAR_MANAGEMENT_FORM);
 		transitions.addRule(Admin.class, USER_BLOCKING_FORM, BACK_ACTION, ADMIN_TASK_SELECTION_FORM);
+		transitions.addRule(Admin.class, USER_BLOCKING_FORM, CHANGE_USER_ACTION, USER_BLOCKING_FORM);
 		transitions.addRule(Admin.class, USER_BLOCKING_FORM, BLOCK_USER_ACTION, USER_BLOCKING_FORM);
 		transitions.addRule(Admin.class, REGISTER_FORM, BACK_ACTION, ADMIN_TASK_SELECTION_FORM);
 		transitions.addRule(Admin.class, REGISTER_FORM, REGISTER_NEW_ACTION, ADMIN_TASK_SELECTION_FORM);
@@ -157,6 +159,7 @@ public class FormDispatcher {
 	public static final DropCarAction DROP_CAR_ACTION = new DropCarAction("drop_car");
 	public static final SaveCarAction SAVE_CAR_ACTION = new SaveCarAction("save_car");
 	public static final BlockUserAction BLOCK_USER_ACTION = new BlockUserAction("block_user");
+	public static final ChangeUserAction CHANGE_USER_ACTION = new ChangeUserAction("change_user");
 	
 	public static final LoginForm LOGIN_FORM = new LoginForm("/login.jsp");
 	public static final RegisterForm REGISTER_FORM = new RegisterForm("/register.jsp");

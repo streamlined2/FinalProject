@@ -113,4 +113,8 @@ public abstract class Utils {
 		return sb.toString();
 	}
 	
+	public static String escapeQuote(final String str) {
+		return str.replace("'", "''");
+	}
+	
 }

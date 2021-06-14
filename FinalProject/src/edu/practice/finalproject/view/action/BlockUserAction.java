@@ -12,6 +12,7 @@ import edu.practice.finalproject.model.dataaccess.EntityManager;
 public class BlockUserAction extends AdminAction {
 
 	private static final String INCORRECT_USER_MSG = "Wrong user selected";
+	private static final String CANT_UPDATE_USER_STATUS_MSG = "Can't update user status";
 
 	public BlockUserAction(String name) {
 		super(name);
@@ -24,6 +25,11 @@ public class BlockUserAction extends AdminAction {
 		if(number>=0 && number<queryData.size()) {
 			final User user = queryData.get(number);
 			user.setBlocked(!user.getBlocked());
+			boolean success = entityManager.merge(user);
+			if(!success) {
+				FCServlet.setError(req, CANT_UPDATE_USER_STATUS_MSG);
+				return false;
+			}
 			return true;
 		}
 		FCServlet.setError(req, INCORRECT_USER_MSG);

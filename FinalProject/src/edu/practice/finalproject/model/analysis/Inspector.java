@@ -205,7 +205,7 @@ public final class Inspector {
 	}
 	
 	public static String getReadableValue(final Class<?> type,final Object value) {
-		if(type==Boolean.class || type==boolean.class) 	return Character.toString('\u2716');
+		if(type==Boolean.class || type==boolean.class) 	return ((Boolean)value).booleanValue()?Character.toString('\u2716'):" ";
 		if(type==LocalDate.class) return ((LocalDate)value).format(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT)); 	
 		if(type==LocalDateTime.class) return ((LocalDateTime)value).format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT));
 		return value.toString();
