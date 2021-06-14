@@ -10,7 +10,7 @@ import edu.practice.finalproject.controller.Names;
 import edu.practice.finalproject.controller.admin.Manager;
 import edu.practice.finalproject.model.analysis.Inspector;
 import edu.practice.finalproject.model.dataaccess.EntityManager;
-import edu.practice.finalproject.model.entity.document.LeaseOrder;
+import edu.practice.finalproject.model.entity.document.CarReview;
 import edu.practice.finalproject.model.entity.document.MaintenanceInvoice;
 import utilities.Utils;
 
@@ -26,6 +26,7 @@ public class MaintenanceInvoiceSubmitAction extends ManagerAction {
 	@Override
 	public boolean execute(HttpServletRequest req, EntityManager entityManager) {
 		final Manager manager = (Manager)FCServlet.getUser(req);
+		final CarReview carReview = (CarReview)FCServlet.getAttribute(req, Names.CAR_REVIEW_ATTRIBUTE);
 
 		if(!Utils.checkIfValid(req,Names.ACCOUNT_PARAMETER,Utils::checkAccount)) {
 			FCServlet.setError(req, INCORRECT_ACCOUNT_VALUE_MSG);
@@ -35,17 +36,16 @@ public class MaintenanceInvoiceSubmitAction extends ManagerAction {
 		final String account = FCServlet.getParameterValue(req,Names.ACCOUNT_PARAMETER);
 		final String sumValue = FCServlet.getParameterValue(req,Names.INVOICE_SUM_PARAMETER);
 		final String repairs = FCServlet.getParameterValue(req,Names.REPAIRS_PARAMETER);
-		final LeaseOrder leaseOrder = (LeaseOrder)FCServlet.getAttribute(req, Names.SELECTED_ORDER_ATTRIBUTE);
 
 		try {
 			final BigDecimal sum = new BigDecimal(sumValue);
 			final MaintenanceInvoice invoice = Inspector.createEntity(MaintenanceInvoice.class);
-			invoice.setLeaseOrder(leaseOrder);
+			invoice.setLeaseOrder(carReview.getLeaseOrder());
+			invoice.setRepairs(repairs);
+			invoice.setManager(manager);
+			invoice.setSignTime(LocalDateTime.now());
 			invoice.setAccount(account);
 			invoice.setSum(sum);
-			invoice.setSignTime(LocalDateTime.now());
-			invoice.setManager(manager);
-			invoice.setRepairs(repairs);
 			entityManager.persist(invoice);
 			FCServlet.setAttribute(req, Names.MAINTENANCE_INVOICE_ATTRIBUTE, invoice);
 			return true;

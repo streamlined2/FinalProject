@@ -10,6 +10,7 @@ import edu.practice.finalproject.controller.Names;
 import edu.practice.finalproject.controller.transition.FormDispatcher;
 import edu.practice.finalproject.model.analysis.Inspector;
 import edu.practice.finalproject.model.dataaccess.EntityManager;
+import edu.practice.finalproject.model.entity.document.CarReview;
 import edu.practice.finalproject.model.entity.document.LeaseOrder;
 import edu.practice.finalproject.model.entity.document.OrderReview;
 import edu.practice.finalproject.model.entity.document.OrderReview.OrderStatus;
@@ -43,7 +44,7 @@ public class LeaseOrderSelectionForm extends Form {
 		final Long lastElement=(Long)FCServlet.getAttribute(req, Names.LAST_PAGE_ELEMENT_ATTRIBUTE,firstElement+pageElements-1);
 
 		final Map<String,?> keyPairs = Map.of("orderStatus",OrderStatus.APPROVED);
-		final List<LeaseOrder> queryData=entityManager.fetchLinkedEntities(LeaseOrder.class,OrderReview.class,keyPairs,firstElement,lastElement);
+		final List<LeaseOrder> queryData=entityManager.fetchLinkedMissingEntities(LeaseOrder.class,OrderReview.class,keyPairs,CarReview.class,firstElement,lastElement);
 
 		FCServlet.setAttribute(req, Names.PAGE_ITEMS_ATTRIBUTE,queryData);
 		FCServlet.setAttribute(req, Names.QUERY_DATA_ATTRIBUTE, Inspector.getValuesForEntities(LeaseOrder.class, queryData));

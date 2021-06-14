@@ -25,10 +25,8 @@
 		<tr>
 			<td>Due sum ${maintenanceInvoice.sum}</td>
 		</tr>
-		<tr>
-			<td><label>List of repairs</label></td>
-			<td><textarea name="repairs" rows="6" cols="60" wrap="soft" value="${maintenanceInvoice.repairs}" readonly></textarea></td>
-		</tr>
+		<tr><td>Maintenance to be done</td></tr>
+		<tr><td>${maintenanceInvoice.repairs}</td></tr>
 		</table>
 		<hr>
 		<input type="submit" value="Done" formaction="main?action=back" formmethod="post" formnovalidate/>

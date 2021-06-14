@@ -15,13 +15,14 @@ public class CarInspectionForm extends Form {
 
 	@Override
 	public Action getAction(final Map<String,String[]> parameters) {
-		if(FCServlet.ifParameterEquals(parameters,Names.CAR_INSPECTION_RESULT_PARAMETER,Names.CAR_IN_PERFECT_CONDITION_PARAMETER)) return FormDispatcher.BACK_ACTION;
-		if(FCServlet.ifParameterEquals(parameters,Names.CAR_INSPECTION_RESULT_PARAMETER,Names.CAR_NEEDS_MAINTENANCE_PARAMETER)) return FormDispatcher.NEXT_ACTION;
+		if(FCServlet.isActionPresent(parameters,Names.BACK_PARAMETER)) return FormDispatcher.BACK_ACTION;
+		if(FCServlet.ifParameterEquals(parameters,Names.CAR_INSPECTION_RESULT_PARAMETER,Names.CAR_IN_PERFECT_CONDITION_PARAMETER)) return FormDispatcher.CAR_IN_PERFECT_CONDITION_ACTION;
+		if(FCServlet.ifParameterEquals(parameters,Names.CAR_INSPECTION_RESULT_PARAMETER,Names.CAR_NEEDS_MAINTENANCE_PARAMETER)) return FormDispatcher.CAR_NEEDS_MAINTENANCE_ACTION;
 		return super.getAction(parameters);
 	}
 
 	@Override
 	public Action getDefaultAction() {
-		return FormDispatcher.NEXT_ACTION;
+		return FormDispatcher.BACK_ACTION;
 	}
 }

@@ -28,7 +28,6 @@
 		</table>
 		<hr>
 		<input type="submit" value="Send" formaction="main?action=sendMaintenanceInvoice" formmethod="post"/>
-		<input type="submit" value="Cancel" formaction="main?action=back" formmethod="post" formnovalidate/>
 	</fieldset>
 	</form>
 </body>

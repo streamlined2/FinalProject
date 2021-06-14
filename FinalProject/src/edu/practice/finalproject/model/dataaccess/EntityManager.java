@@ -249,13 +249,18 @@ public final class EntityManager {
 		return formEntityListFromQuery(slaveClass, false, clause);
     }
 
-	public <M extends Entity> List<M> fetchMissingEntities(final Class<M> masterClass,Class<? extends Entity> slaveClass,final long startElement,final long endElement){
+	public <M extends Entity> List<M> fetchMissingEntities(final Class<M> masterClass,final Class<? extends Entity> slaveClass,final long startElement,final long endElement){
 		final StringBuilder clause=StatementBuilder.getSelectMissingEntitiesStatement(masterClass,slaveClass,startElement,endElement);
 		return formEntityListFromQuery(masterClass, false, clause);
 	}
 	
-	public <M extends Entity> List<M> fetchLinkedEntities(final Class<M> masterClass,Class<? extends Entity> slaveClass,final Map<String,?> keyPairs,final long startElement,final long endElement){
+	public <M extends Entity> List<M> fetchLinkedEntities(final Class<M> masterClass,final Class<? extends Entity> slaveClass,final Map<String,?> keyPairs,final long startElement,final long endElement){
 		final StringBuilder clause=StatementBuilder.getSelectLinkedEntitiesStatement(masterClass,slaveClass,keyPairs,startElement,endElement);
+		return formEntityListFromQuery(masterClass,false,clause);
+	}
+	
+	public <M extends Entity> List<M> fetchLinkedMissingEntities(final Class<M> masterClass,final Class<? extends Entity> slaveClass,final Map<String,?> keyPairs,final Class<? extends Entity> missingClass,final long startElement,final long endElement){
+		final StringBuilder clause=StatementBuilder.getSelectLinkedMissingEntitiesStatement(masterClass,slaveClass,keyPairs,missingClass,startElement,endElement);
 		return formEntityListFromQuery(masterClass,false,clause);
 	}
 	

@@ -11,7 +11,7 @@
 	<%@include file="common-controls.jsp" %>
 	<form>
 	<fieldset>
-		<legend>Please inspect car condition</legend>
+		<legend>Please check car condition</legend>
 		<table>
 		<tr>
 		<td><label for="perfect">Perfect</label></td>

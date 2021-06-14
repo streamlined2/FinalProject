@@ -289,7 +289,7 @@ public final class StatementBuilder {
 					append(" )");
 			appendLimiters(sb, startElement, endElement);
 			return sb;
-		}else throw new DataAccessException(String.format("can't find foreign reference from slave class %s to master class %s",masterClass,slaveClass));
+		}else throw new DataAccessException(String.format("can't find foreign reference from slave class %s to master class %s",slaveClass,masterClass));
 	}
 	
 	public static StringBuilder getSelectLinkedEntitiesStatement(
@@ -311,7 +311,40 @@ public final class StatementBuilder {
 			}
 			appendLimiters(sb, startElement, endElement);
 			return sb;
-		}else throw new DataAccessException(String.format("can't find foreign reference from slave class %s to master class %s",masterClass,slaveClass));
+		}else throw new DataAccessException(String.format("can't find foreign reference from slave class %s to master class %s",slaveClass,masterClass));
+	}
+	
+	public static StringBuilder getSelectLinkedMissingEntitiesStatement(
+			final Class<? extends Entity> masterClass,final Class<? extends Entity> slaveClass,final Map<String,?> keyPairs,final Class<? extends Entity> missingClass,final long startElement,final long endElement) {
+
+		final Optional<Method> foreignRef = Inspector.getForeignReference(masterClass,slaveClass);
+		final Optional<Method> missingFRef = Inspector.getForeignReference(masterClass,missingClass);
+		if(foreignRef.isPresent()) {
+			if(missingFRef.isPresent()) {
+				final StringBuilder sb=new StringBuilder(SELECT_CLAUSE).
+						append(getFieldList(Inspector.getSetters(masterClass,false),",","B")).
+						append(FROM_CLAUSE).
+						append(getTableName(masterClass)).append(" B ").
+						append(INNER_JOIN_CLAUSE).
+						append(getTableName(slaveClass)).append(" A ").
+						append(ON_CLAUSE).
+						append(getQualifiedAttribute("B",Entity.ID_FIELD)).append("=").
+						append(getFieldList(List.of(foreignRef.get()),",","A")).
+						append(WHERE_CLAUSE).
+						append(getQualifiedAttribute("B",Entity.ID_FIELD)).
+						append(NOT_IN_CLAUSE).
+							append(SELECT_CLAUSE).
+							append(getFieldList(List.of(missingFRef.get()),",","C")).
+							append(FROM_CLAUSE).
+							append(getTableName(missingClass)).append(" C ").
+						append(" )");
+				if(Objects.nonNull(keyPairs) && !keyPairs.isEmpty()) {
+				    sb.append(AND_CLAUSE).append(getKeyPairWhereClause(keyPairs,'A'));
+				}
+				appendLimiters(sb, startElement, endElement);
+				return sb;
+			}else  throw new DataAccessException(String.format("can't find foreign reference from slave class %s to master class %s",missingClass,masterClass));
+		}else throw new DataAccessException(String.format("can't find foreign reference from slave class %s to master class %s",slaveClass,masterClass));
 	}
 	
 	public static StringBuilder getDeleteStatement(final Entity entity) {

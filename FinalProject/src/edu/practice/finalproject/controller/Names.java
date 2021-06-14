@@ -40,7 +40,9 @@ public final class Names {
 	public static final String SELECTED_USER_ATTRIBUTE = "selectedUser";
 	public static final String SELECTED_ROLE_ATTRIBUTE = "selectedRole";
 	public static final String ADMINISTRATIVE_TASKS_ATTRIBUTE = "administrativeTasks";
+	public static final String CAR_REVIEW_ATTRIBUTE = "carReview";
 
+	public static final String BACK_PARAMETER = "back";
 	public static final String ACTION_PARAMETER = "action";
 	public static final String USER_PARAMETER = "user";
 	public static final String ROLE_PARAMETER = "role";

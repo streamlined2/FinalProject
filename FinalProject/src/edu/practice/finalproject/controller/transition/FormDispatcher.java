@@ -10,7 +10,9 @@ import edu.practice.finalproject.view.action.ReviewOrderAction;
 import edu.practice.finalproject.view.action.SaveCarAction;
 import edu.practice.finalproject.view.action.BackAction;
 import edu.practice.finalproject.view.action.BlockUserAction;
+import edu.practice.finalproject.view.action.CarInPerfectConditionAction;
 import edu.practice.finalproject.view.action.CarManagementAction;
+import edu.practice.finalproject.view.action.CarNeedsMaintenanceAction;
 import edu.practice.finalproject.view.action.ChangeUserAction;
 import edu.practice.finalproject.view.action.CheckOrderAction;
 import edu.practice.finalproject.view.action.ConfirmCarCriteriaAction;
@@ -77,7 +79,7 @@ public class FormDispatcher {
 		transitions.addRule(Client.class, ORDER_FORM, ORDER_CAR_ACTION, CAR_ORDER_STATUS_FORM);
 		transitions.addRule(Client.class, ORDER_FORM, BACK_ACTION, CAR_BROWSING_FORM);
 		transitions.addRule(Client.class, CAR_ORDER_STATUS_FORM, BACK_ACTION, CAR_SELECTION_CRITERIA_FORM);
-		transitions.addRule(Client.class, null, null, CAR_SELECTION_CRITERIA_FORM);//should always be last rule for Client
+		transitions.addRule(Client.class, null, null, CAR_SELECTION_CRITERIA_FORM);//should always be last rule for Client role
 
 		//rules for manager role
 		transitions.addRule(Manager.class, MANAGER_TASK_SELECTION_FORM, REVIEW_ORDER_ACTION, BROWSE_ORDER_LIST_FORM);
@@ -90,23 +92,22 @@ public class FormDispatcher {
 		transitions.addRule(Manager.class, REVIEW_ORDER_FORM, ACCEPT_ORDER_ACTION, NEW_LEASE_INVOICE_FORM);
 		transitions.addRule(Manager.class, NEW_LEASE_INVOICE_FORM, LEASE_INVOICE_SUBMISSION_ACTION, LEASE_INVOICE_DEMO_FORM);
 		transitions.addRule(Manager.class, LEASE_INVOICE_DEMO_FORM, BACK_ACTION, BROWSE_ORDER_LIST_FORM);
-		transitions.addRule(Manager.class, NEW_LEASE_INVOICE_FORM, BACK_ACTION, REVIEW_ORDER_FORM);
 		transitions.addRule(Manager.class, REVIEW_ORDER_FORM, REJECT_ORDER_ACTION, REJECTION_NOTIFICATION_FORM);
 		transitions.addRule(Manager.class, REVIEW_ORDER_FORM, BACK_ACTION, BROWSE_ORDER_LIST_FORM);
 		transitions.addRule(Manager.class, REJECTION_NOTIFICATION_FORM, BACK_ACTION, BROWSE_ORDER_LIST_FORM);
-		transitions.addRule(Manager.class, MANAGER_TASK_SELECTION_FORM, RECEIVE_CAR_ACTION, CAR_INSPECTION_FORM);
-		transitions.addRule(Manager.class, CAR_INSPECTION_FORM, BACK_ACTION, MANAGER_TASK_SELECTION_FORM);
-		transitions.addRule(Manager.class, CAR_INSPECTION_FORM, NEXT_ACTION, LEASE_ORDER_SELECTION_FORM);
-		transitions.addRule(Manager.class, LEASE_ORDER_SELECTION_FORM, SELECT_LEASE_ORDER_ACTION, MAINTENANCE_CHARGE_FORM);
-		transitions.addRule(Manager.class, LEASE_ORDER_SELECTION_FORM, BACK_ACTION, CAR_INSPECTION_FORM);
+		transitions.addRule(Manager.class, MANAGER_TASK_SELECTION_FORM, RECEIVE_CAR_ACTION, LEASE_ORDER_SELECTION_FORM);
+		transitions.addRule(Manager.class, LEASE_ORDER_SELECTION_FORM, SELECT_LEASE_ORDER_ACTION, CAR_INSPECTION_FORM);
+		transitions.addRule(Manager.class, LEASE_ORDER_SELECTION_FORM, BACK_ACTION, MANAGER_TASK_SELECTION_FORM);
 		transitions.addRule(Manager.class, LEASE_ORDER_SELECTION_FORM, NEXT_PAGE_ACTION, LEASE_ORDER_SELECTION_FORM);
 		transitions.addRule(Manager.class, LEASE_ORDER_SELECTION_FORM, FIRST_PAGE_ACTION, LEASE_ORDER_SELECTION_FORM);
 		transitions.addRule(Manager.class, LEASE_ORDER_SELECTION_FORM, PREVIOUS_PAGE_ACTION, LEASE_ORDER_SELECTION_FORM);
 		transitions.addRule(Manager.class, LEASE_ORDER_SELECTION_FORM, LAST_PAGE_ACTION, LEASE_ORDER_SELECTION_FORM);
+		transitions.addRule(Manager.class, CAR_INSPECTION_FORM, BACK_ACTION, LEASE_ORDER_SELECTION_FORM);
+		transitions.addRule(Manager.class, CAR_INSPECTION_FORM, CAR_IN_PERFECT_CONDITION_ACTION, MANAGER_TASK_SELECTION_FORM);
+		transitions.addRule(Manager.class, CAR_INSPECTION_FORM, CAR_NEEDS_MAINTENANCE_ACTION, MAINTENANCE_CHARGE_FORM);
 		transitions.addRule(Manager.class, MAINTENANCE_CHARGE_FORM, MAINTENANCE_INVOICE_SUBMIT_ACTION, MAINTENANCE_INVOICE_DEMO_FORM);
-		transitions.addRule(Manager.class, MAINTENANCE_CHARGE_FORM, BACK_ACTION, LEASE_ORDER_SELECTION_FORM);
 		transitions.addRule(Manager.class, MAINTENANCE_INVOICE_DEMO_FORM, BACK_ACTION, MANAGER_TASK_SELECTION_FORM);
-		transitions.addRule(Manager.class, null, null, MANAGER_TASK_SELECTION_FORM);//should always be last rule for Manager
+		transitions.addRule(Manager.class, null, null, MANAGER_TASK_SELECTION_FORM);//should always be last rule for Manager role
 
 		//rules for admin role
 		transitions.addRule(Admin.class, ADMIN_TASK_SELECTION_FORM, CAR_MANAGEMENT_ACTION, CAR_MANAGEMENT_FORM);
@@ -127,7 +128,7 @@ public class FormDispatcher {
 		transitions.addRule(Admin.class, USER_BLOCKING_FORM, BLOCK_USER_ACTION, USER_BLOCKING_FORM);
 		transitions.addRule(Admin.class, REGISTER_FORM, BACK_ACTION, ADMIN_TASK_SELECTION_FORM);
 		transitions.addRule(Admin.class, REGISTER_FORM, REGISTER_NEW_ACTION, ADMIN_TASK_SELECTION_FORM);
-		transitions.addRule(Admin.class, null, null, ADMIN_TASK_SELECTION_FORM);//should always be last rule for Manager
+		transitions.addRule(Admin.class, null, null, ADMIN_TASK_SELECTION_FORM);//should always be last rule for Admin role
 	}
 	
 	public static final SwitchLocaleAction SWITCH_LOCALE_ACTION = new SwitchLocaleAction("change_locale");
@@ -160,6 +161,8 @@ public class FormDispatcher {
 	public static final SaveCarAction SAVE_CAR_ACTION = new SaveCarAction("save_car");
 	public static final BlockUserAction BLOCK_USER_ACTION = new BlockUserAction("block_user");
 	public static final ChangeUserAction CHANGE_USER_ACTION = new ChangeUserAction("change_user");
+	public static final CarInPerfectConditionAction CAR_IN_PERFECT_CONDITION_ACTION = new CarInPerfectConditionAction("car_in_perfect_condition");
+	public static final CarNeedsMaintenanceAction CAR_NEEDS_MAINTENANCE_ACTION = new CarNeedsMaintenanceAction("car_needs_maintenance");
 	
 	public static final LoginForm LOGIN_FORM = new LoginForm("/login.jsp");
 	public static final RegisterForm REGISTER_FORM = new RegisterForm("/register.jsp");
