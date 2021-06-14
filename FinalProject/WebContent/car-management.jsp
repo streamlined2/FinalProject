@@ -14,6 +14,7 @@
 		<table>
 			<thead><tr>
 				<th>&nbsp;</th>
+				<th>&nbsp;</th>
 				<c:forEach items="${queryHeader}" var="column">
 					<th>${column}</th>
 				</c:forEach>

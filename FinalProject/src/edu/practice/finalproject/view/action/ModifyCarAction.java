@@ -19,12 +19,12 @@ public class ModifyCarAction extends AdminAction {
 
 	@Override
 	public boolean execute(HttpServletRequest req, EntityManager entityManager) {
-		FCServlet.setAttribute(req, Names.NEW_CAR_ATTRIBUTE, Boolean.FALSE);
 		final List<Car> queryData=(List<Car>)FCServlet.getAttribute(req, Names.PAGE_ITEMS_ATTRIBUTE);
 		final int number=Integer.parseInt(FCServlet.getParameterValue(req, Names.CAR_NUMBER_PARAMETER));
 		if(number>=0 && number<queryData.size()) {
 			final Car car = queryData.get(number);
 			FCServlet.setAttribute(req, Names.SELECTED_CAR_ATTRIBUTE, car);
+			FCServlet.setAttribute(req, Names.NEW_CAR_ATTRIBUTE, Boolean.FALSE);
 			return true;
 		}
 		FCServlet.setError(req, INCORRECT_CAR_MSG);

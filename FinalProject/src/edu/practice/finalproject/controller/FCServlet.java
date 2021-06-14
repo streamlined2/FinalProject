@@ -168,6 +168,12 @@ public class FCServlet extends HttpServlet {
 		}
 	}
 	
+	public static Integer getPageElements(final HttpServletRequest req) {
+		final Integer value = (Integer)req.getServletContext().getAttribute(Names.PAGE_ELEMENTS_NUMBER_ATTRIBUTE);
+		if(value==null) return Integer.valueOf(5);
+		return value;
+	}
+
 	public static Locale getDefaultLocale() {
 		return Locale.ENGLISH;
 	}

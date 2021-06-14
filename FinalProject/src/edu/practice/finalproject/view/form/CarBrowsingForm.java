@@ -39,7 +39,7 @@ public class CarBrowsingForm extends Form {
 		final Map<String,Object> filterKeyPairs = (Map<String, Object>) FCServlet.getAttribute(req, Names.FILTER_KEY_PAIRS_ATTRIBUTE);
 		final Map<String,Boolean> orderKeys=(Map<String, Boolean>) FCServlet.getAttribute(req, Names.ORDER_KEYS_ATTRIBUTE);
 		
-		final Integer pageElements=(Integer)FCServlet.getAttribute(req, Names.PAGE_ELEMENTS_NUMBER_ATTRIBUTE,5);
+		final Integer pageElements=FCServlet.getPageElements(req);
 		final Long firstElement=(Long)FCServlet.getAttribute(req, Names.FIRST_PAGE_ELEMENT_ATTRIBUTE,0L);
 		final Long lastElement=(Long)FCServlet.getAttribute(req, Names.LAST_PAGE_ELEMENT_ATTRIBUTE,firstElement+pageElements-1);
 

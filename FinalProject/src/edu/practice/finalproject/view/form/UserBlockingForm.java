@@ -48,7 +48,7 @@ public class UserBlockingForm extends Form {
 
 	@Override
 	public void init(HttpServletRequest req, EntityManager entityManager) {
-		final Integer pageElements=(Integer)FCServlet.getAttribute(req, Names.PAGE_ELEMENTS_NUMBER_ATTRIBUTE,5);
+		final Integer pageElements=FCServlet.getPageElements(req);
 		final Long firstElement=(Long)FCServlet.getAttribute(req, Names.FIRST_PAGE_ELEMENT_ATTRIBUTE,0L);
 		final Long lastElement=(Long)FCServlet.getAttribute(req, Names.LAST_PAGE_ELEMENT_ATTRIBUTE,firstElement+pageElements-1);
 

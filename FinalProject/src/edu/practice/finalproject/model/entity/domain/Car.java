@@ -27,6 +27,7 @@ public class Car extends NaturalKeyEntity {
 		Manufacturer(final String label) { this.label=label;}
 		
 		@Override public String toString() { return label;}
+		public String getLabel() { return label;}
 	}
 	
 	public enum QualityGrade { 
@@ -40,6 +41,7 @@ public class Car extends NaturalKeyEntity {
 		QualityGrade(final String label){ this.label=label;}
 		
 		@Override public String toString() { return label;}
+		public String getLabel() { return label;}
 	}
 	
 	public enum Color { 
@@ -54,6 +56,7 @@ public class Car extends NaturalKeyEntity {
 		Color(final String label){ this.label=label;}
 		
 		@Override public String toString() { return label;}
+		public String getLabel() { return label;}
 	}
 	
 	public enum Style { 
@@ -70,6 +73,7 @@ public class Car extends NaturalKeyEntity {
 		Style(final String label){ this.label=label;}
 
 		@Override public String toString() { return label;}
+		public String getLabel() { return label;}
 	}
 	
 	private String model;

@@ -11,7 +11,10 @@
 	
 	<form>
 	<fieldset>
-		<legend>${createCar?'New car':'Modify car'}</legend>
+		<c:choose>
+		<c:when test="${createCar}"><legend>New car</legend></c:when>
+		<c:otherwise><legend>Modify car</legend></c:otherwise>
+		</c:choose>
 		<table>
 		<tr>
 			<td><label for="model">Model</label></td>
@@ -21,10 +24,11 @@
 			<td><label for="manufacturer">Manufacturer</label></td>
 			<td>
 					<select name="manufacturer" id="manufacturer" required>
-					<c:forEach items="${requestScope.manufacturerValues}" var="item">
+					<c:forEach items="${manufacturerValues}" var="item">
 					<c:choose>
-						<c:when test="${selectedCar.manufacturer eq item}"></c:when>
+						<c:when test="${selectedCar.manufacturer.label eq item}">
 							<option value="${item}" selected>${item}</option>
+						</c:when>
 						<c:otherwise>
 							<option value="${item}">${item}</option>
 						</c:otherwise>
@@ -37,10 +41,11 @@
 			<td><label for="qualityGrade">Quality grade</label></td>
 			<td>
 				<select name="qualityGrade" id="qualityGrade" required>
-				<c:forEach items="${requestScope.qualityGradeValues}" var="item">
+				<c:forEach items="${qualityGradeValues}" var="item">
 				<c:choose>
-					<c:when test="${selectedCar.qualityGrade eq item}"></c:when>
+					<c:when test="${selectedCar.qualityGrade.label eq item}">
 						<option value="${item}" selected>${item}</option>
+                    </c:when>
 					<c:otherwise>
 						<option value="${item}">${item}</option>
 					</c:otherwise>
@@ -61,10 +66,11 @@
 			<td><label for="color">Color</label></td>
 			<td>
 				<select name="color" id="color">
-				<c:forEach items="${requestScope.colorValues}" var="item">
+				<c:forEach items="${colorValues}" var="item">
 				<c:choose>
-					<c:when test="${selectedCar.color eq item}"></c:when>
+					<c:when test="${selectedCar.color.label eq item}">
 						<option value="${item}" selected>${item}</option>
+                    </c:when>
 					<c:otherwise>
 						<option value="${item}">${item}</option>
 					</c:otherwise>
@@ -77,10 +83,11 @@
 			<td><label for="style">Style</label></td>
 			<td>
 				<select name="style" id="style">
-				<c:forEach items="${requestScope.styleValues}" var="item">
+				<c:forEach items="${styleValues}" var="item">
 				<c:choose>
-					<c:when test="${selectedCar.style eq item}"></c:when>
+					<c:when test="${selectedCar.style.label eq item}">
 						<option value="${item}" selected>${item}</option>
+                    </c:when>
 					<c:otherwise>
 						<option value="${item}">${item}</option>
 					</c:otherwise>
@@ -91,9 +98,16 @@
 		</tr>
 		</table>
 		<hr>
-		<input type="submit" value="${createCar?'Create':'Modify'}" formaction="main?action=createModifyCar" formmethod="post"/>
+		<c:choose>
+		<c:when test="${createCar}">
+			<input type="submit" value="Create" formaction="main?action=createModifyCar" formmethod="post"/>
+		</c:when>
+		<c:otherwise>
+			<input type="submit" value="Modify" formaction="main?action=createModifyCar" formmethod="post"/>
+		</c:otherwise>
+		</c:choose>
 		<input type="reset" value="Clear" />
-		<input type="submit" value="Back" formaction="main?action=back" formmethod="post" formnovalidate/>
+		<input type="submit" value="Cancel" formaction="main?action=back" formmethod="post" formnovalidate/>
 	</fieldset>
 	</form>
 </body>

@@ -14,7 +14,7 @@ public class NextPageAction extends PageNavigationAction {
 
 	@Override
 	public boolean execute(final HttpServletRequest req, final EntityManager entityManager) {
-		final Integer numberOfElements=(Integer)FCServlet.getAttribute(req, Names.PAGE_ELEMENTS_NUMBER_ATTRIBUTE,5);
+		final Integer numberOfElements=FCServlet.getPageElements(req);
 		final Long firstElement=(Long)FCServlet.getAttribute(req, Names.FIRST_PAGE_ELEMENT_ATTRIBUTE,0L);
 		final Long lastElement=(Long)FCServlet.getAttribute(req, Names.LAST_PAGE_ELEMENT_ATTRIBUTE,firstElement+numberOfElements-1);
 		FCServlet.setAttribute(req, Names.FIRST_PAGE_ELEMENT_ATTRIBUTE, lastElement+1);
