@@ -10,6 +10,17 @@ import edu.practice.finalproject.model.entity.NaturalKeyEntity;
 import edu.practice.finalproject.view.action.Action;
 
 public abstract class User extends NaturalKeyEntity {
+	public enum Role {
+		CLIENT("client"),
+		MANAGER("manager"),
+		ADMIN("admin");
+		
+		private final String label;
+		Role(final String label){ this.label = label;}
+		public String getLabel() { return label;}
+		@Override public String toString() { return label;}
+	}
+	
 	protected String login;
 	protected byte[] passwordDigest;
 	protected String firstName;

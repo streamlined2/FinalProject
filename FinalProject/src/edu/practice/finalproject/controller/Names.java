@@ -41,16 +41,17 @@ public final class Names {
 	public static final String SELECTED_ROLE_ATTRIBUTE = "selectedRole";
 	public static final String ADMINISTRATIVE_TASKS_ATTRIBUTE = "administrativeTasks";
 	public static final String CAR_REVIEW_ATTRIBUTE = "carReview";
+	public static final String ROLE_VALUES_ATTRIBUTE = "roleValues";
 
 	public static final String BACK_PARAMETER = "back";
 	public static final String ACTION_PARAMETER = "action";
 	public static final String USER_PARAMETER = "user";
 	public static final String ROLE_PARAMETER = "role";
 	public static final String CLIENT_ROLE_PARAMETER = "client";
+	public static final String MANAGER_ROLE_PARAMETER = "manager";
 	public static final String ADMIN_ROLE_PARAMETER = "admin";
 	public static final String LOCALE_PARAMETER = "locale";
 	public static final String LOGOUT_PARAMETER = "logout";
-	public static final String MANAGER_ROLE_PARAMETER = "manager";
 	public static final String PASSWORD_PARAMETER = "password";
 	public static final String PASSWORD2_PARAMETER = "password2";
 	public static final String PASSPORT_PARAMETER = "passport";

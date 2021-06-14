@@ -11,11 +11,18 @@
 	<%@include file="common-controls.jsp" %>
 	<p>
 	<form action="main?action=selectUser" method="post">
-			<select name="role" id="role" onchange="this.form.submit()">
-				<option value="client"><fmt:message key="user.client" bundle="${localeBundle}"/></option>
-				<option value="manager"><fmt:message key="user.manager" bundle="${localeBundle}"/></option>
-				<option value="admin"><fmt:message key="user.administrator" bundle="${localeBundle}"/></option>
-			</select>
+		<select name="role" id="role" onchange="this.form.submit()">
+		    <c:forEach items="${roleValues}" var="item">
+		    <c:choose>
+		        <c:when test="${selectedRole eq item}">
+		            <option value="${item}" selected>${item}</option>
+		        </c:when>
+		        <c:otherwise>
+		            <option value="${item}">${item}</option>
+		        </c:otherwise>
+		    </c:choose>
+		    </c:forEach>
+		</select>
 	</form>
 	<p>
 	<form>
@@ -34,6 +41,7 @@
 							</c:otherwise>
 							</c:choose>
 						</td>
+						<td>&nbsp;</td>
 						<td>${entity}</td>
 					</tr>
 					<c:set var="number" value="${number+1}"/>

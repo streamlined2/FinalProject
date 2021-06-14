@@ -97,6 +97,7 @@ public abstract class Utils {
 	}
 
 	public static Class<? extends User> mapUserRoleToClass(final String name){
+		if(Objects.isNull(name)) throw new IllegalArgumentException("wrong user role value: null");
 		switch(name) {
 			case Names.CLIENT_ROLE_PARAMETER: return Client.class;
 			case Names.MANAGER_ROLE_PARAMETER: return Manager.class;

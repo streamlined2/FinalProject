@@ -37,7 +37,7 @@ public class UserBlockingForm extends Form {
 	}
 	
 	private <U extends User> void updateUserList(HttpServletRequest req, EntityManager entityManager,final Long firstElement,final Long lastElement){
-		final String userType = FCServlet.getParameterValue(req, Names.ROLE_PARAMETER, Names.CLIENT_ROLE_PARAMETER);
+		final String userType = (String)FCServlet.getAttribute(req, Names.SELECTED_ROLE_ATTRIBUTE, User.Role.CLIENT.getLabel());			
 		final Class<U> userClass = (Class<U>)Utils.mapUserRoleToClass(userType);
 		final List<U> queryData=entityManager.fetchEntities(userClass,false,firstElement,lastElement);
 
@@ -53,6 +53,8 @@ public class UserBlockingForm extends Form {
 		final Long lastElement=(Long)FCServlet.getAttribute(req, Names.LAST_PAGE_ELEMENT_ATTRIBUTE,firstElement+pageElements-1);
 
 		updateUserList(req, entityManager, firstElement, lastElement);
+
+		req.setAttribute(Names.ROLE_VALUES_ATTRIBUTE, Inspector.getLabels(User.Role.class));
 
 		super.init(req,entityManager);
 	}
