@@ -6,10 +6,10 @@
   </welcome-file-list>
   <error-page>
     <error-code>404</error-code>
-    <location>/error.jsp</location>
+    <location>/WEB-INF/pages/error.jsp</location>
   </error-page>
   <error-page>
-    <location>/error.jsp</location>
+    <location>/WEB-INF/pages/error.jsp</location>
   </error-page>
   <context-param>
     <param-name>adminUserName</param-name>

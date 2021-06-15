@@ -164,26 +164,26 @@ public class FormDispatcher {
 	public static final CarInPerfectConditionAction CAR_IN_PERFECT_CONDITION_ACTION = new CarInPerfectConditionAction("car_in_perfect_condition");
 	public static final CarNeedsMaintenanceAction CAR_NEEDS_MAINTENANCE_ACTION = new CarNeedsMaintenanceAction("car_needs_maintenance");
 	
-	public static final LoginForm LOGIN_FORM = new LoginForm("/login.jsp");
-	public static final RegisterForm REGISTER_FORM = new RegisterForm("/register.jsp");
-	public static final CarSelectionCriteriaForm CAR_SELECTION_CRITERIA_FORM = new CarSelectionCriteriaForm("/car-selection.jsp");
-	public static final CarBrowsingForm CAR_BROWSING_FORM = new CarBrowsingForm("/car-browsing.jsp");
-	public static final OrderForm ORDER_FORM = new OrderForm("/order.jsp");
-	public static final CarOrderStatusForm CAR_ORDER_STATUS_FORM = new CarOrderStatusForm("/car-order-status.jsp");
-	public static final ManagerTaskSelectionForm MANAGER_TASK_SELECTION_FORM = new ManagerTaskSelectionForm("/manager-start-form.jsp");
-	public static final BrowseOrderListForm BROWSE_ORDER_LIST_FORM = new BrowseOrderListForm("/browse-order-list.jsp");
-	public static final ReviewOrderForm REVIEW_ORDER_FORM = new ReviewOrderForm("/order-review.jsp");
-	public static final NewLeaseInvoiceForm NEW_LEASE_INVOICE_FORM = new NewLeaseInvoiceForm("/new-lease-invoice.jsp");
-	public static final RejectionNotificationForm REJECTION_NOTIFICATION_FORM = new RejectionNotificationForm("/rejection-notification.jsp");
-	public static final LeaseInvoiceDemoForm LEASE_INVOICE_DEMO_FORM = new LeaseInvoiceDemoForm("/lease-invoice-demo.jsp");
-	public static final CarInspectionForm CAR_INSPECTION_FORM = new CarInspectionForm("/car-inspection.jsp");
-	public static final MaintenanceChargeForm MAINTENANCE_CHARGE_FORM = new MaintenanceChargeForm("/maintenance-charge.jsp");
-	public static final MaintenanceInvoiceDemoForm MAINTENANCE_INVOICE_DEMO_FORM = new MaintenanceInvoiceDemoForm("/maintenance-invoice-demo.jsp");
-	public static final LeaseOrderSelectionForm LEASE_ORDER_SELECTION_FORM = new LeaseOrderSelectionForm("/lease-order-selection.jsp");
-	public static final AdminTaskSelectionForm ADMIN_TASK_SELECTION_FORM = new AdminTaskSelectionForm("/admin-start-form.jsp");
-	public static final CarManagementForm CAR_MANAGEMENT_FORM = new CarManagementForm("/car-management.jsp");
-	public static final UserBlockingForm USER_BLOCKING_FORM = new UserBlockingForm("/user-blocking.jsp");
-	public static final NewEditCarForm NEW_EDIT_CAR_FORM = new NewEditCarForm("/new-edit-car.jsp");
+	public static final LoginForm LOGIN_FORM = new LoginForm("/WEB-INF/pages/login.jsp");
+	public static final RegisterForm REGISTER_FORM = new RegisterForm("/WEB-INF/pages/register.jsp");
+	public static final CarSelectionCriteriaForm CAR_SELECTION_CRITERIA_FORM = new CarSelectionCriteriaForm("/WEB-INF/pages/car-selection.jsp");
+	public static final CarBrowsingForm CAR_BROWSING_FORM = new CarBrowsingForm("/WEB-INF/pages/car-browsing.jsp");
+	public static final OrderForm ORDER_FORM = new OrderForm("/WEB-INF/pages/order.jsp");
+	public static final CarOrderStatusForm CAR_ORDER_STATUS_FORM = new CarOrderStatusForm("/WEB-INF/pages/car-order-status.jsp");
+	public static final ManagerTaskSelectionForm MANAGER_TASK_SELECTION_FORM = new ManagerTaskSelectionForm("/WEB-INF/pages/manager-start-form.jsp");
+	public static final BrowseOrderListForm BROWSE_ORDER_LIST_FORM = new BrowseOrderListForm("/WEB-INF/pages/browse-order-list.jsp");
+	public static final ReviewOrderForm REVIEW_ORDER_FORM = new ReviewOrderForm("/WEB-INF/pages/order-review.jsp");
+	public static final NewLeaseInvoiceForm NEW_LEASE_INVOICE_FORM = new NewLeaseInvoiceForm("/WEB-INF/pages/new-lease-invoice.jsp");
+	public static final RejectionNotificationForm REJECTION_NOTIFICATION_FORM = new RejectionNotificationForm("/WEB-INF/pages/rejection-notification.jsp");
+	public static final LeaseInvoiceDemoForm LEASE_INVOICE_DEMO_FORM = new LeaseInvoiceDemoForm("/WEB-INF/pages/lease-invoice-demo.jsp");
+	public static final CarInspectionForm CAR_INSPECTION_FORM = new CarInspectionForm("/WEB-INF/pages/car-inspection.jsp");
+	public static final MaintenanceChargeForm MAINTENANCE_CHARGE_FORM = new MaintenanceChargeForm("/WEB-INF/pages/maintenance-charge.jsp");
+	public static final MaintenanceInvoiceDemoForm MAINTENANCE_INVOICE_DEMO_FORM = new MaintenanceInvoiceDemoForm("/WEB-INF/pages/maintenance-invoice-demo.jsp");
+	public static final LeaseOrderSelectionForm LEASE_ORDER_SELECTION_FORM = new LeaseOrderSelectionForm("/WEB-INF/pages/lease-order-selection.jsp");
+	public static final AdminTaskSelectionForm ADMIN_TASK_SELECTION_FORM = new AdminTaskSelectionForm("/WEB-INF/pages/admin-start-form.jsp");
+	public static final CarManagementForm CAR_MANAGEMENT_FORM = new CarManagementForm("/WEB-INF/pages/car-management.jsp");
+	public static final UserBlockingForm USER_BLOCKING_FORM = new UserBlockingForm("/WEB-INF/pages/user-blocking.jsp");
+	public static final NewEditCarForm NEW_EDIT_CAR_FORM = new NewEditCarForm("/WEB-INF/pages/new-edit-car.jsp");
 	
 	public Form getInitialForm() { return LOGIN_FORM;}
 

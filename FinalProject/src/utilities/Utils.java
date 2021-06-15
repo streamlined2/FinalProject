@@ -4,8 +4,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
-import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalAmount;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -20,7 +18,7 @@ import edu.practice.finalproject.controller.admin.Client;
 import edu.practice.finalproject.controller.admin.Manager;
 import edu.practice.finalproject.controller.admin.User;
 
-public abstract class Utils {
+public final class Utils {
 	
 	private Utils() {}
 
@@ -89,6 +87,7 @@ public abstract class Utils {
 	public static boolean checkIfValid(final HttpServletRequest req,final String parameter,final Predicate<String> checker) {
 		if(Objects.isNull(parameter)) throw new IllegalArgumentException("parameter "+parameter+" shouldn't be null");
 		final String value=FCServlet.getParameterValue(req,parameter);
+		if(Objects.isNull(value)) return false;
 		if(!checker.test(value)) {
 			FCServlet.setError(req, String.format("wrong value %s of parameter %s", value, parameter));
 			return false;	
