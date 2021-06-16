@@ -32,7 +32,6 @@ import utilities.Utils;
 public class FCServlet extends HttpServlet {
 	
 	private EntityManager entityManager;
-	private FormDispatcher formDispatcher;
 	
 	public static final Locale UKRAINIAN_LOCALE = Locale.forLanguageTag("uk");
 	private static final List<Locale> availableLocales= List.of(Locale.ENGLISH,UKRAINIAN_LOCALE);
@@ -47,8 +46,6 @@ public class FCServlet extends HttpServlet {
 			final Context envContext=(Context)new InitialContext().lookup("java:/comp/env");
 			entityManager=new EntityManager((DataSource)envContext.lookup("jdbc/autoleasing"));
 
-			formDispatcher=new FormDispatcher();
-			
 			final Admin primaryAdmin=new Admin(
 					getServletContext().getInitParameter("adminUserName"),
 					Utils.getDigest(getServletContext().getInitParameter("adminPassword").getBytes()),
@@ -80,13 +77,13 @@ public class FCServlet extends HttpServlet {
 		clearMessage(req);
 		Form currentForm=getForm(req);
 		if(currentForm==null) {
-			currentForm=formDispatcher.getInitialForm();
+			currentForm=FormDispatcher.getInitialForm();
 		}else {
 			final Action action=currentForm.getAction(req.getParameterMap());
 			final boolean actionSucceeded=action.execute(req,entityManager);
 			currentForm.destroy(req);
 			final User user=getUser(req);
-			final Form nextForm=formDispatcher.getNextForm(user, currentForm, action, actionSucceeded);
+			final Form nextForm=FormDispatcher.getNextForm(user, currentForm, action, actionSucceeded);
 			if(nextForm!=null) {
 				currentForm=nextForm;
 			}else {

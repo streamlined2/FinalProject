@@ -6,11 +6,93 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
 
+import static edu.practice.finalproject.controller.transition.FormDispatcher.*;
+
+import edu.practice.finalproject.controller.admin.Admin;
+import edu.practice.finalproject.controller.admin.Client;
+import edu.practice.finalproject.controller.admin.Manager;
 import edu.practice.finalproject.controller.admin.User;
 import edu.practice.finalproject.view.action.Action;
 import edu.practice.finalproject.view.form.Form;
 
-public class TransitionRuleMap {
+public final class TransitionRuleMap {
+	
+	public static TransitionRuleMap getInstance() {
+		return Holder.INSTANCE;
+	}
+	
+	private static class Holder {
+		private static final TransitionRuleMap INSTANCE = new TransitionRuleMap();
+	}
+	
+	private TransitionRuleMap() {
+		//setup transition rule map
+		//stray user should be registered or logged in first
+		addRule(null, LOGIN_FORM, REGISTER_ACTION, REGISTER_FORM);
+		addRule(null, REGISTER_FORM, BACK_ACTION, LOGIN_FORM);
+		
+		//rules for client role
+		addRule(Client.class, CAR_SELECTION_CRITERIA_FORM, CONFIRM_CAR_CRITERIA_ACTION, CAR_BROWSING_FORM);
+		addRule(Client.class, CAR_BROWSING_FORM, BACK_ACTION, CAR_SELECTION_CRITERIA_FORM);
+		addRule(Client.class, CAR_BROWSING_FORM, NEXT_PAGE_ACTION, CAR_BROWSING_FORM);
+		addRule(Client.class, CAR_BROWSING_FORM, FIRST_PAGE_ACTION, CAR_BROWSING_FORM);
+		addRule(Client.class, CAR_BROWSING_FORM, PREVIOUS_PAGE_ACTION, CAR_BROWSING_FORM);
+		addRule(Client.class, CAR_BROWSING_FORM, LAST_PAGE_ACTION, CAR_BROWSING_FORM);
+		addRule(Client.class, CAR_BROWSING_FORM, SELECT_CAR_ACTION, ORDER_FORM);
+		addRule(Client.class, ORDER_FORM, ORDER_CAR_ACTION, CAR_ORDER_STATUS_FORM);
+		addRule(Client.class, ORDER_FORM, BACK_ACTION, CAR_BROWSING_FORM);
+		addRule(Client.class, CAR_ORDER_STATUS_FORM, BACK_ACTION, CAR_SELECTION_CRITERIA_FORM);
+		addRule(Client.class, null, null, CAR_SELECTION_CRITERIA_FORM);//should always be last rule for Client role
+
+		//rules for manager role
+		addRule(Manager.class, MANAGER_TASK_SELECTION_FORM, REVIEW_ORDER_ACTION, BROWSE_ORDER_LIST_FORM);
+		addRule(Manager.class, BROWSE_ORDER_LIST_FORM, BACK_ACTION, MANAGER_TASK_SELECTION_FORM);
+		addRule(Manager.class, BROWSE_ORDER_LIST_FORM, NEXT_PAGE_ACTION, BROWSE_ORDER_LIST_FORM);
+		addRule(Manager.class, BROWSE_ORDER_LIST_FORM, FIRST_PAGE_ACTION, BROWSE_ORDER_LIST_FORM);
+		addRule(Manager.class, BROWSE_ORDER_LIST_FORM, PREVIOUS_PAGE_ACTION, BROWSE_ORDER_LIST_FORM);
+		addRule(Manager.class, BROWSE_ORDER_LIST_FORM, LAST_PAGE_ACTION, BROWSE_ORDER_LIST_FORM);
+		addRule(Manager.class, BROWSE_ORDER_LIST_FORM, CHECK_ORDER_ACTION, REVIEW_ORDER_FORM);
+		addRule(Manager.class, REVIEW_ORDER_FORM, ACCEPT_ORDER_ACTION, NEW_LEASE_INVOICE_FORM);
+		addRule(Manager.class, NEW_LEASE_INVOICE_FORM, LEASE_INVOICE_SUBMISSION_ACTION, LEASE_INVOICE_DEMO_FORM);
+		addRule(Manager.class, LEASE_INVOICE_DEMO_FORM, BACK_ACTION, BROWSE_ORDER_LIST_FORM);
+		addRule(Manager.class, REVIEW_ORDER_FORM, REJECT_ORDER_ACTION, REJECTION_NOTIFICATION_FORM);
+		addRule(Manager.class, REVIEW_ORDER_FORM, BACK_ACTION, BROWSE_ORDER_LIST_FORM);
+		addRule(Manager.class, REJECTION_NOTIFICATION_FORM, BACK_ACTION, BROWSE_ORDER_LIST_FORM);
+		addRule(Manager.class, MANAGER_TASK_SELECTION_FORM, RECEIVE_CAR_ACTION, LEASE_ORDER_SELECTION_FORM);
+		addRule(Manager.class, LEASE_ORDER_SELECTION_FORM, SELECT_LEASE_ORDER_ACTION, CAR_INSPECTION_FORM);
+		addRule(Manager.class, LEASE_ORDER_SELECTION_FORM, BACK_ACTION, MANAGER_TASK_SELECTION_FORM);
+		addRule(Manager.class, LEASE_ORDER_SELECTION_FORM, NEXT_PAGE_ACTION, LEASE_ORDER_SELECTION_FORM);
+		addRule(Manager.class, LEASE_ORDER_SELECTION_FORM, FIRST_PAGE_ACTION, LEASE_ORDER_SELECTION_FORM);
+		addRule(Manager.class, LEASE_ORDER_SELECTION_FORM, PREVIOUS_PAGE_ACTION, LEASE_ORDER_SELECTION_FORM);
+		addRule(Manager.class, LEASE_ORDER_SELECTION_FORM, LAST_PAGE_ACTION, LEASE_ORDER_SELECTION_FORM);
+		addRule(Manager.class, CAR_INSPECTION_FORM, BACK_ACTION, LEASE_ORDER_SELECTION_FORM);
+		addRule(Manager.class, CAR_INSPECTION_FORM, CAR_IN_PERFECT_CONDITION_ACTION, MANAGER_TASK_SELECTION_FORM);
+		addRule(Manager.class, CAR_INSPECTION_FORM, CAR_NEEDS_MAINTENANCE_ACTION, MAINTENANCE_CHARGE_FORM);
+		addRule(Manager.class, MAINTENANCE_CHARGE_FORM, MAINTENANCE_INVOICE_SUBMIT_ACTION, MAINTENANCE_INVOICE_DEMO_FORM);
+		addRule(Manager.class, MAINTENANCE_INVOICE_DEMO_FORM, BACK_ACTION, MANAGER_TASK_SELECTION_FORM);
+		addRule(Manager.class, null, null, MANAGER_TASK_SELECTION_FORM);//should always be last rule for Manager role
+
+		//rules for admin role
+		addRule(Admin.class, ADMIN_TASK_SELECTION_FORM, CAR_MANAGEMENT_ACTION, CAR_MANAGEMENT_FORM);
+		addRule(Admin.class, ADMIN_TASK_SELECTION_FORM, USER_BLOCKING_ACTION, USER_BLOCKING_FORM);
+		addRule(Admin.class, ADMIN_TASK_SELECTION_FORM, REGISTER_ACTION, REGISTER_FORM);
+		addRule(Admin.class, CAR_MANAGEMENT_FORM, BACK_ACTION, ADMIN_TASK_SELECTION_FORM);
+		addRule(Admin.class, CAR_MANAGEMENT_FORM, NEXT_PAGE_ACTION, CAR_MANAGEMENT_FORM);
+		addRule(Admin.class, CAR_MANAGEMENT_FORM, FIRST_PAGE_ACTION, CAR_MANAGEMENT_FORM);
+		addRule(Admin.class, CAR_MANAGEMENT_FORM, PREVIOUS_PAGE_ACTION, CAR_MANAGEMENT_FORM);
+		addRule(Admin.class, CAR_MANAGEMENT_FORM, LAST_PAGE_ACTION, CAR_MANAGEMENT_FORM);
+		addRule(Admin.class, CAR_MANAGEMENT_FORM, ADD_CAR_ACTION, NEW_EDIT_CAR_FORM);
+		addRule(Admin.class, CAR_MANAGEMENT_FORM, MODIFY_CAR_ACTION, NEW_EDIT_CAR_FORM);
+		addRule(Admin.class, CAR_MANAGEMENT_FORM, DROP_CAR_ACTION, CAR_MANAGEMENT_FORM);
+		addRule(Admin.class, NEW_EDIT_CAR_FORM, BACK_ACTION, CAR_MANAGEMENT_FORM);
+		addRule(Admin.class, NEW_EDIT_CAR_FORM, SAVE_CAR_ACTION, CAR_MANAGEMENT_FORM);
+		addRule(Admin.class, USER_BLOCKING_FORM, BACK_ACTION, ADMIN_TASK_SELECTION_FORM);
+		addRule(Admin.class, USER_BLOCKING_FORM, CHANGE_USER_ACTION, USER_BLOCKING_FORM);
+		addRule(Admin.class, USER_BLOCKING_FORM, BLOCK_USER_ACTION, USER_BLOCKING_FORM);
+		addRule(Admin.class, REGISTER_FORM, BACK_ACTION, ADMIN_TASK_SELECTION_FORM);
+		addRule(Admin.class, REGISTER_FORM, REGISTER_NEW_ACTION, ADMIN_TASK_SELECTION_FORM);
+		addRule(Admin.class, null, null, ADMIN_TASK_SELECTION_FORM);//should always be last rule for Admin role
+	}
 	
 	private static class TransitionRuleKey {
 		private final Class<? extends User> userClass;

@@ -1,8 +1,5 @@
 package edu.practice.finalproject.controller.transition;
 
-import edu.practice.finalproject.controller.admin.Admin;
-import edu.practice.finalproject.controller.admin.Client;
-import edu.practice.finalproject.controller.admin.Manager;
 import edu.practice.finalproject.controller.admin.User;
 import edu.practice.finalproject.view.action.Action;
 import edu.practice.finalproject.view.action.AddCarAction;
@@ -59,77 +56,9 @@ import edu.practice.finalproject.view.form.UserBlockingForm;
 import edu.practice.finalproject.view.form.AdminTaskSelectionForm;
 import edu.practice.finalproject.view.form.BrowseOrderListForm;
 
-public class FormDispatcher {
-
-	private final TransitionRuleMap transitions=new TransitionRuleMap();
-	{
-		//setup transition rule map
-		//stray user should be registered or logged in first
-		transitions.addRule(null, LOGIN_FORM, REGISTER_ACTION, REGISTER_FORM);
-		transitions.addRule(null, REGISTER_FORM, BACK_ACTION, LOGIN_FORM);
-		
-		//rules for client role
-		transitions.addRule(Client.class, CAR_SELECTION_CRITERIA_FORM, CONFIRM_CAR_CRITERIA_ACTION, CAR_BROWSING_FORM);
-		transitions.addRule(Client.class, CAR_BROWSING_FORM, BACK_ACTION, CAR_SELECTION_CRITERIA_FORM);
-		transitions.addRule(Client.class, CAR_BROWSING_FORM, NEXT_PAGE_ACTION, CAR_BROWSING_FORM);
-		transitions.addRule(Client.class, CAR_BROWSING_FORM, FIRST_PAGE_ACTION, CAR_BROWSING_FORM);
-		transitions.addRule(Client.class, CAR_BROWSING_FORM, PREVIOUS_PAGE_ACTION, CAR_BROWSING_FORM);
-		transitions.addRule(Client.class, CAR_BROWSING_FORM, LAST_PAGE_ACTION, CAR_BROWSING_FORM);
-		transitions.addRule(Client.class, CAR_BROWSING_FORM, SELECT_CAR_ACTION, ORDER_FORM);
-		transitions.addRule(Client.class, ORDER_FORM, ORDER_CAR_ACTION, CAR_ORDER_STATUS_FORM);
-		transitions.addRule(Client.class, ORDER_FORM, BACK_ACTION, CAR_BROWSING_FORM);
-		transitions.addRule(Client.class, CAR_ORDER_STATUS_FORM, BACK_ACTION, CAR_SELECTION_CRITERIA_FORM);
-		transitions.addRule(Client.class, null, null, CAR_SELECTION_CRITERIA_FORM);//should always be last rule for Client role
-
-		//rules for manager role
-		transitions.addRule(Manager.class, MANAGER_TASK_SELECTION_FORM, REVIEW_ORDER_ACTION, BROWSE_ORDER_LIST_FORM);
-		transitions.addRule(Manager.class, BROWSE_ORDER_LIST_FORM, BACK_ACTION, MANAGER_TASK_SELECTION_FORM);
-		transitions.addRule(Manager.class, BROWSE_ORDER_LIST_FORM, NEXT_PAGE_ACTION, BROWSE_ORDER_LIST_FORM);
-		transitions.addRule(Manager.class, BROWSE_ORDER_LIST_FORM, FIRST_PAGE_ACTION, BROWSE_ORDER_LIST_FORM);
-		transitions.addRule(Manager.class, BROWSE_ORDER_LIST_FORM, PREVIOUS_PAGE_ACTION, BROWSE_ORDER_LIST_FORM);
-		transitions.addRule(Manager.class, BROWSE_ORDER_LIST_FORM, LAST_PAGE_ACTION, BROWSE_ORDER_LIST_FORM);
-		transitions.addRule(Manager.class, BROWSE_ORDER_LIST_FORM, CHECK_ORDER_ACTION, REVIEW_ORDER_FORM);
-		transitions.addRule(Manager.class, REVIEW_ORDER_FORM, ACCEPT_ORDER_ACTION, NEW_LEASE_INVOICE_FORM);
-		transitions.addRule(Manager.class, NEW_LEASE_INVOICE_FORM, LEASE_INVOICE_SUBMISSION_ACTION, LEASE_INVOICE_DEMO_FORM);
-		transitions.addRule(Manager.class, LEASE_INVOICE_DEMO_FORM, BACK_ACTION, BROWSE_ORDER_LIST_FORM);
-		transitions.addRule(Manager.class, REVIEW_ORDER_FORM, REJECT_ORDER_ACTION, REJECTION_NOTIFICATION_FORM);
-		transitions.addRule(Manager.class, REVIEW_ORDER_FORM, BACK_ACTION, BROWSE_ORDER_LIST_FORM);
-		transitions.addRule(Manager.class, REJECTION_NOTIFICATION_FORM, BACK_ACTION, BROWSE_ORDER_LIST_FORM);
-		transitions.addRule(Manager.class, MANAGER_TASK_SELECTION_FORM, RECEIVE_CAR_ACTION, LEASE_ORDER_SELECTION_FORM);
-		transitions.addRule(Manager.class, LEASE_ORDER_SELECTION_FORM, SELECT_LEASE_ORDER_ACTION, CAR_INSPECTION_FORM);
-		transitions.addRule(Manager.class, LEASE_ORDER_SELECTION_FORM, BACK_ACTION, MANAGER_TASK_SELECTION_FORM);
-		transitions.addRule(Manager.class, LEASE_ORDER_SELECTION_FORM, NEXT_PAGE_ACTION, LEASE_ORDER_SELECTION_FORM);
-		transitions.addRule(Manager.class, LEASE_ORDER_SELECTION_FORM, FIRST_PAGE_ACTION, LEASE_ORDER_SELECTION_FORM);
-		transitions.addRule(Manager.class, LEASE_ORDER_SELECTION_FORM, PREVIOUS_PAGE_ACTION, LEASE_ORDER_SELECTION_FORM);
-		transitions.addRule(Manager.class, LEASE_ORDER_SELECTION_FORM, LAST_PAGE_ACTION, LEASE_ORDER_SELECTION_FORM);
-		transitions.addRule(Manager.class, CAR_INSPECTION_FORM, BACK_ACTION, LEASE_ORDER_SELECTION_FORM);
-		transitions.addRule(Manager.class, CAR_INSPECTION_FORM, CAR_IN_PERFECT_CONDITION_ACTION, MANAGER_TASK_SELECTION_FORM);
-		transitions.addRule(Manager.class, CAR_INSPECTION_FORM, CAR_NEEDS_MAINTENANCE_ACTION, MAINTENANCE_CHARGE_FORM);
-		transitions.addRule(Manager.class, MAINTENANCE_CHARGE_FORM, MAINTENANCE_INVOICE_SUBMIT_ACTION, MAINTENANCE_INVOICE_DEMO_FORM);
-		transitions.addRule(Manager.class, MAINTENANCE_INVOICE_DEMO_FORM, BACK_ACTION, MANAGER_TASK_SELECTION_FORM);
-		transitions.addRule(Manager.class, null, null, MANAGER_TASK_SELECTION_FORM);//should always be last rule for Manager role
-
-		//rules for admin role
-		transitions.addRule(Admin.class, ADMIN_TASK_SELECTION_FORM, CAR_MANAGEMENT_ACTION, CAR_MANAGEMENT_FORM);
-		transitions.addRule(Admin.class, ADMIN_TASK_SELECTION_FORM, USER_BLOCKING_ACTION, USER_BLOCKING_FORM);
-		transitions.addRule(Admin.class, ADMIN_TASK_SELECTION_FORM, REGISTER_ACTION, REGISTER_FORM);
-		transitions.addRule(Admin.class, CAR_MANAGEMENT_FORM, BACK_ACTION, ADMIN_TASK_SELECTION_FORM);
-		transitions.addRule(Admin.class, CAR_MANAGEMENT_FORM, NEXT_PAGE_ACTION, CAR_MANAGEMENT_FORM);
-		transitions.addRule(Admin.class, CAR_MANAGEMENT_FORM, FIRST_PAGE_ACTION, CAR_MANAGEMENT_FORM);
-		transitions.addRule(Admin.class, CAR_MANAGEMENT_FORM, PREVIOUS_PAGE_ACTION, CAR_MANAGEMENT_FORM);
-		transitions.addRule(Admin.class, CAR_MANAGEMENT_FORM, LAST_PAGE_ACTION, CAR_MANAGEMENT_FORM);
-		transitions.addRule(Admin.class, CAR_MANAGEMENT_FORM, ADD_CAR_ACTION, NEW_EDIT_CAR_FORM);
-		transitions.addRule(Admin.class, CAR_MANAGEMENT_FORM, MODIFY_CAR_ACTION, NEW_EDIT_CAR_FORM);
-		transitions.addRule(Admin.class, CAR_MANAGEMENT_FORM, DROP_CAR_ACTION, CAR_MANAGEMENT_FORM);
-		transitions.addRule(Admin.class, NEW_EDIT_CAR_FORM, BACK_ACTION, CAR_MANAGEMENT_FORM);
-		transitions.addRule(Admin.class, NEW_EDIT_CAR_FORM, SAVE_CAR_ACTION, CAR_MANAGEMENT_FORM);
-		transitions.addRule(Admin.class, USER_BLOCKING_FORM, BACK_ACTION, ADMIN_TASK_SELECTION_FORM);
-		transitions.addRule(Admin.class, USER_BLOCKING_FORM, CHANGE_USER_ACTION, USER_BLOCKING_FORM);
-		transitions.addRule(Admin.class, USER_BLOCKING_FORM, BLOCK_USER_ACTION, USER_BLOCKING_FORM);
-		transitions.addRule(Admin.class, REGISTER_FORM, BACK_ACTION, ADMIN_TASK_SELECTION_FORM);
-		transitions.addRule(Admin.class, REGISTER_FORM, REGISTER_NEW_ACTION, ADMIN_TASK_SELECTION_FORM);
-		transitions.addRule(Admin.class, null, null, ADMIN_TASK_SELECTION_FORM);//should always be last rule for Admin role
-	}
+public final class FormDispatcher {
+	
+	private FormDispatcher() {}
 	
 	public static final SwitchLocaleAction SWITCH_LOCALE_ACTION = new SwitchLocaleAction("change_locale");
 	public static final LogoutAction LOGOUT_ACTION = new LogoutAction("logout");
@@ -185,12 +114,12 @@ public class FormDispatcher {
 	public static final UserBlockingForm USER_BLOCKING_FORM = new UserBlockingForm("/WEB-INF/pages/user-blocking.jsp");
 	public static final NewEditCarForm NEW_EDIT_CAR_FORM = new NewEditCarForm("/WEB-INF/pages/new-edit-car.jsp");
 	
-	public Form getInitialForm() { return LOGIN_FORM;}
+	public static Form getInitialForm() { return LOGIN_FORM;}
 
-	public Form getNextForm(final User user,final Form form,final Action action,final boolean actionSucceeded) {
+	public static Form getNextForm(final User user,final Form form,final Action action,final boolean actionSucceeded) {
 		if(action==SWITCH_LOCALE_ACTION) return form;
 		if(action==LOGOUT_ACTION) return getInitialForm();
 		if(!actionSucceeded) return form;
-		return transitions.getNextForm(user, form, action).orElse(getInitialForm());
+		return TransitionRuleMap.getInstance().getNextForm(user, form, action).orElse(getInitialForm());
 	}
 }
