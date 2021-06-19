@@ -71,9 +71,14 @@ public abstract class User extends NaturalKeyEntity {
 	}
 	
 	public abstract void checkPermission(final Action action) throws SecurityException;
+	public abstract Role role();
 
 	@Override public String toString() {
 			return new StringBuilder(firstName).append(" ").append(lastName).toString();
+	}
+	
+	public String getDescription() {
+		return new StringBuilder(firstName).append(" ").append(lastName).append(" (").append(role().getLabel()).append(")").toString();
 	}
 
 	@Override

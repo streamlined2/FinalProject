@@ -16,4 +16,6 @@ public class Manager extends User {
 		if(!(action instanceof ManagerAction)) throw new SecurityException("Manager may perform appropriate actions only!");
 	}
 
+	@Override
+	public Role role() { return Role.MANAGER;	}
 }

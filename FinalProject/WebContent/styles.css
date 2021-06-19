@@ -1,4 +1,5 @@
 @charset "UTF-8";
+* { font-family: verdana }
 .error { color:red; font-style: italic }
 .message { color: blue; font-style: italic }
 thead {vertical-align:bottom;}
