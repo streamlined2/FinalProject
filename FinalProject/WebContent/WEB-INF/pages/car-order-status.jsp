@@ -9,10 +9,24 @@
 </head>
 <body>
 	<%@include file="common-controls.jsp" %>
+
 	<form>
-		<h2>Car was successfully reserved!</h2>
+	<fieldset>
+		<legend>Car reservation status</legend>
+		<table>
+		<tr>
+			<td><h2>Car ${selectedOrder.car} has been successfully reserved!</h2></td>
+		</tr>
+		<tr>
+			<td>
+				Your reservation starts from ${selectedOrder.startTime} and valid till ${selectedOrder.endTime}<br>
+				<c:if test="${selectedOrder.driverPresent}">with driver assigned</c:if>
+			</td>
+		</tr>
+		</table>
 		<hr>
 		<input type="submit" value="Repeat" formaction="main?action=select_car_criteria" formmethod="post"/>
+	</fieldset>
 	</form>
 
 </body>

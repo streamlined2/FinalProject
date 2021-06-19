@@ -72,6 +72,8 @@ public class OrderCarAction extends ClientAction {
 			order.setEndTime(dueTime.get());
 			entityManager.persist(order);
 
+			FCServlet.setAttribute(req, Names.SELECTED_ORDER_ATTRIBUTE, order);
+
 			return true;
 		}catch(Exception e) {
 			FCServlet.setError(req, String.format("%s: %s",INTERNAL_ERROR,e.getMessage()));
