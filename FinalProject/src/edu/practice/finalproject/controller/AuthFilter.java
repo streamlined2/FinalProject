@@ -51,6 +51,7 @@ public class AuthFilter implements Filter {
 		} else {
 			FCServlet.invalidateSession(req);
 			throw new ServletException(String.format(WRONG_REQUEST_MSG,req.getRequestURI()));
+			//resp.sendError(1, String.format(WRONG_REQUEST_MSG,req.getRequestURI()));
 		}
 	}
 
