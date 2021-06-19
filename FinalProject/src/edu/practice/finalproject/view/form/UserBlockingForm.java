@@ -12,7 +12,7 @@ import edu.practice.finalproject.controller.transition.FormDispatcher;
 import edu.practice.finalproject.model.analysis.Inspector;
 import edu.practice.finalproject.model.dataaccess.EntityManager;
 import edu.practice.finalproject.view.action.Action;
-import utilities.Utils;
+import edu.practice.finalproject.utilities.Utils;
 
 public class UserBlockingForm extends Form {
 	

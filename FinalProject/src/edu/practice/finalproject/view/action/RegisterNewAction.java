@@ -3,7 +3,6 @@ package edu.practice.finalproject.view.action;
 import java.util.Arrays;
 import java.util.Optional;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 import edu.practice.finalproject.controller.FCServlet;
@@ -12,7 +11,7 @@ import edu.practice.finalproject.controller.admin.Admin;
 import edu.practice.finalproject.controller.admin.User;
 import edu.practice.finalproject.model.analysis.Inspector;
 import edu.practice.finalproject.model.dataaccess.EntityManager;
-import utilities.Utils;
+import edu.practice.finalproject.utilities.Utils;
 
 public class RegisterNewAction extends Action {
 

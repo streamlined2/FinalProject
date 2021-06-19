@@ -3,8 +3,6 @@ package edu.practice.finalproject.view.action;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Optional;
-
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 import edu.practice.finalproject.controller.FCServlet;
@@ -15,7 +13,7 @@ import edu.practice.finalproject.model.analysis.Inspector;
 import edu.practice.finalproject.model.dataaccess.EntityManager;
 import edu.practice.finalproject.model.entity.document.LeaseOrder;
 import edu.practice.finalproject.model.entity.domain.Car;
-import utilities.Utils;
+import edu.practice.finalproject.utilities.Utils;
 
 public class OrderCarAction extends ClientAction {
 

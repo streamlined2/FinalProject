@@ -12,7 +12,7 @@ import edu.practice.finalproject.model.analysis.Inspector;
 import edu.practice.finalproject.model.dataaccess.EntityManager;
 import edu.practice.finalproject.model.entity.document.CarReview;
 import edu.practice.finalproject.model.entity.document.MaintenanceInvoice;
-import utilities.Utils;
+import edu.practice.finalproject.utilities.Utils;
 
 public class MaintenanceInvoiceSubmitAction extends ManagerAction {
 

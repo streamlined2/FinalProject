@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 import edu.practice.finalproject.controller.FCServlet;
@@ -16,7 +15,7 @@ import edu.practice.finalproject.model.entity.domain.Car.Color;
 import edu.practice.finalproject.model.entity.domain.Car.Manufacturer;
 import edu.practice.finalproject.model.entity.domain.Car.QualityGrade;
 import edu.practice.finalproject.model.entity.domain.Car.Style;
-import utilities.Utils;
+import edu.practice.finalproject.utilities.Utils;
 
 public class ConfirmCarCriteriaAction extends ClientAction {
 

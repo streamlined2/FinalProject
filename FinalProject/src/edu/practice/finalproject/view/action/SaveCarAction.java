@@ -16,7 +16,7 @@ import edu.practice.finalproject.model.entity.domain.Car.Color;
 import edu.practice.finalproject.model.entity.domain.Car.Manufacturer;
 import edu.practice.finalproject.model.entity.domain.Car.QualityGrade;
 import edu.practice.finalproject.model.entity.domain.Car.Style;
-import utilities.Utils;
+import edu.practice.finalproject.utilities.Utils;
 
 public class SaveCarAction extends AdminAction {
 

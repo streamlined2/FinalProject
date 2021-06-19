@@ -10,6 +10,7 @@ import java.util.Objects;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -23,7 +24,7 @@ import edu.practice.finalproject.controller.transition.FormDispatcher;
 import edu.practice.finalproject.model.dataaccess.EntityManager;
 import edu.practice.finalproject.view.action.Action;
 import edu.practice.finalproject.view.form.Form;
-import utilities.Utils;
+import edu.practice.finalproject.utilities.Utils;
 
 /**
  * Main servlet class that implements Front Controller patterm
@@ -99,7 +100,6 @@ public class FCServlet extends HttpServlet {
 		currentForm.init(req,entityManager);
 		try {
 			getServletContext().getRequestDispatcher(currentForm.getName()).forward(req,resp);
-			//resp.sendRedirect(getServletContext().getContextPath()+currentForm.getName());
 		} catch (IOException e) {
 			throw new ServletException(e);
 		}
@@ -257,6 +257,8 @@ public class FCServlet extends HttpServlet {
 	public static void invalidateSession(final HttpServletRequest req) {
 		final HttpSession session=req.getSession(false);
 		if(session!=null) {
+			FCServlet.clearUser(req);
+			FCServlet.clearForm(req);
 			session.invalidate();
 		}
 	}

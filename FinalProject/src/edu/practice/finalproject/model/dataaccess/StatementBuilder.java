@@ -15,7 +15,7 @@ import java.util.function.Function;
 import edu.practice.finalproject.model.analysis.Inspector;
 import edu.practice.finalproject.model.entity.Entity;
 import edu.practice.finalproject.model.entity.NaturalKeyEntity;
-import utilities.Utils;
+import edu.practice.finalproject.utilities.Utils;
 
 public final class StatementBuilder {
 	

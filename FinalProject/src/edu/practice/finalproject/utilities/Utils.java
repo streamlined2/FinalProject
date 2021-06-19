@@ -1,4 +1,4 @@
-package utilities;
+package edu.practice.finalproject.utilities;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -116,5 +116,4 @@ public final class Utils {
 	public static String escapeQuote(final String str) {
 		return str.replace("'", "''");
 	}
-	
 }

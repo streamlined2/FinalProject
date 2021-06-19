@@ -121,8 +121,8 @@ public final class TransitionRuleMap {
 		}
 		
 		public boolean encompasses(final TransitionRuleKey key) {
-			boolean suits=true;
-			if(userClass!=null)	suits = suits && userClass.isAssignableFrom(key.userClass); 
+			boolean suits = true;
+			if(userClass!=null)	suits = userClass.isAssignableFrom(key.userClass); 
 			if(form!=null) suits = suits && Objects.equals(form, key.form);
 			if(action!=null) suits = suits && Objects.equals(action, key.action); 
 			return suits;
