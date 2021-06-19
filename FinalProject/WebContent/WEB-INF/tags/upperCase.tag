@@ -1,4 +1,5 @@
 <%@ tag language="java" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
-<jsp:doBody var="body"/>
+<%@ tag body-content="scriptless" %>
+<jsp:doBody var="body" scope="page"/>
 ${fn:toUpperCase(pageScope.body)}

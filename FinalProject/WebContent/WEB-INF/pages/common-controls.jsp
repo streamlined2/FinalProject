@@ -12,7 +12,7 @@
 		<td><div class="message">${sessionScope.message}</div></td>
 		<td><div class="error">${sessionScope.error}</div></td>
 		<td style="font-family: verdana; width:10%"><tags:currentUser/></td>
-		<td style="width:5%"><tags:logoutButton/></td>
+		<td style="width:5%"><tags:logoutButton action="logout" image="logoutbutton.png"/></td>
 	</tr></table>
 </body>
 </html>
