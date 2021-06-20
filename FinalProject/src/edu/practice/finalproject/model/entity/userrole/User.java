@@ -1,4 +1,4 @@
-package edu.practice.finalproject.controller.admin;
+package edu.practice.finalproject.model.entity.userrole;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;

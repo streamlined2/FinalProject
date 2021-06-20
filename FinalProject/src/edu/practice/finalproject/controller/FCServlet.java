@@ -18,10 +18,10 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 
-import edu.practice.finalproject.controller.admin.Admin;
-import edu.practice.finalproject.controller.admin.User;
 import edu.practice.finalproject.controller.transition.FormDispatcher;
 import edu.practice.finalproject.model.dataaccess.EntityManager;
+import edu.practice.finalproject.model.entity.userrole.Admin;
+import edu.practice.finalproject.model.entity.userrole.User;
 import edu.practice.finalproject.view.action.Action;
 import edu.practice.finalproject.view.form.Form;
 import edu.practice.finalproject.utilities.Utils;

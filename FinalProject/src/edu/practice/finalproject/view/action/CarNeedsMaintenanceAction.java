@@ -6,12 +6,12 @@ import javax.servlet.http.HttpServletRequest;
 
 import edu.practice.finalproject.controller.FCServlet;
 import edu.practice.finalproject.controller.Names;
-import edu.practice.finalproject.controller.admin.Manager;
 import edu.practice.finalproject.model.analysis.Inspector;
 import edu.practice.finalproject.model.dataaccess.EntityManager;
 import edu.practice.finalproject.model.entity.document.CarReview;
 import edu.practice.finalproject.model.entity.document.LeaseOrder;
 import edu.practice.finalproject.model.entity.document.CarReview.CarCondition;
+import edu.practice.finalproject.model.entity.userrole.Manager;
 
 public class CarNeedsMaintenanceAction extends ManagerAction {
 

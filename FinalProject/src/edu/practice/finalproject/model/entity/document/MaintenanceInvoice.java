@@ -6,8 +6,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.StringJoiner;
 
-import edu.practice.finalproject.controller.admin.Manager;
 import edu.practice.finalproject.model.analysis.EntityException;
+import edu.practice.finalproject.model.entity.userrole.Manager;
 
 public class MaintenanceInvoice extends Invoice {
 	

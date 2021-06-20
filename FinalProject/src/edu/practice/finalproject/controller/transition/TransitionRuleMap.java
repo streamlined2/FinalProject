@@ -8,10 +8,10 @@ import java.util.Optional;
 
 import static edu.practice.finalproject.controller.transition.FormDispatcher.*;
 
-import edu.practice.finalproject.controller.admin.Admin;
-import edu.practice.finalproject.controller.admin.Client;
-import edu.practice.finalproject.controller.admin.Manager;
-import edu.practice.finalproject.controller.admin.User;
+import edu.practice.finalproject.model.entity.userrole.Admin;
+import edu.practice.finalproject.model.entity.userrole.Client;
+import edu.practice.finalproject.model.entity.userrole.Manager;
+import edu.practice.finalproject.model.entity.userrole.User;
 import edu.practice.finalproject.view.action.Action;
 import edu.practice.finalproject.view.form.Form;
 

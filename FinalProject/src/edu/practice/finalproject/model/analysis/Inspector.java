@@ -27,6 +27,14 @@ import edu.practice.finalproject.model.entity.Entity;
 
 public final class Inspector {
 	
+	private static final String[] ENTITY_BEANS_PACKAGE_PREFIXES={
+			"edu.practice.finalproject.model.entity.",
+			"edu.practice.finalproject.model.entity.userrole.",
+			"edu.practice.finalproject.model.entity.document.",
+			"edu.practice.finalproject.model.entity.domain."
+	};
+	private static final Set<Class<? extends Entity>> discoveredEntityClasses=discoverEntityClasses(ENTITY_BEANS_PACKAGE_PREFIXES);
+
 	private Inspector() {}
 	
 	public static <E extends Entity> E createEntity(final Class<E> cl) {
@@ -270,5 +278,19 @@ public final class Inspector {
 		final int index=path.getName().indexOf(".");
 		return packagePrefix+
 				(index!=-1?path.getName().substring(0,index):path.getName());
+	}
+
+	public static boolean isConcreteClass(final Class<?> cl) {
+		final int modifiers=cl.getModifiers();
+		return Modifier.isPublic(modifiers) && !Modifier.isInterface(modifiers) && !Modifier.isAbstract(modifiers);
+	}
+
+	public static <E extends Entity> Set<Class<E>> getConcreteDescendantsOf(final Class<E> baseClass){
+		final Set<Class<E>> set=new HashSet<>();
+		discoveredEntityClasses.forEach(
+				cl->{ 
+					if(isConcreteClass(cl) && baseClass.isAssignableFrom(cl)) 
+						set.add((Class<E>) cl);});
+		return set;
 	}
 }

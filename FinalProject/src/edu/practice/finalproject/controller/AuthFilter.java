@@ -1,6 +1,9 @@
 package edu.practice.finalproject.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -15,20 +18,20 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class AuthFilter implements Filter {
 	
+	private static final String WRONG_REQUEST_MSG = "Access to the page %s is prohibited";
+	
 	private static final String WELCOME_PAGE_PARAMETER = "welcomePage";
 	private static final String SERVLET_PATH_PARAMETER = "servletPath";
 	private static final String CONTEXT_PATH_PARAMETER = "contextPath";
 
-	private static final String WRONG_REQUEST_MSG = "Access to the page %s is prohibited";
-	
+	private final List<String> allowedPages = new ArrayList<>();
+
 	private boolean check;
-	private String welcomePage;
-	private String servletPath;
 	private String contextPath;
 	
 	private boolean correctServletPath(HttpServletRequest req) {
 		String path = req.getServletPath();
-		return path.equals(welcomePage) || path.equals(servletPath);
+		return allowedPages.contains(path);
 	}
 	
 	private boolean correctContextPath(HttpServletRequest req) {
@@ -58,8 +61,10 @@ public class AuthFilter implements Filter {
 	@Override
 	public void init(FilterConfig fConfig) throws ServletException {
 		check = "true".equalsIgnoreCase(fConfig.getInitParameter("check"));
-		servletPath = fConfig.getInitParameter(SERVLET_PATH_PARAMETER);
-		welcomePage = fConfig.getInitParameter(WELCOME_PAGE_PARAMETER);
 		contextPath = fConfig.getInitParameter(CONTEXT_PATH_PARAMETER);
+		allowedPages.add("/styles.css");
+		allowedPages.add("/logoutbutton.png");
+		allowedPages.add(fConfig.getInitParameter(SERVLET_PATH_PARAMETER));
+		allowedPages.add(fConfig.getInitParameter(WELCOME_PAGE_PARAMETER));
 	}
 }

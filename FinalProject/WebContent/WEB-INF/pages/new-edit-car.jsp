@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib tagdir="/WEB-INF/tags" prefix="tags" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -23,18 +24,18 @@
 		<tr>
 			<td><label for="manufacturer">Manufacturer</label></td>
 			<td>
-					<select name="manufacturer" id="manufacturer" required>
-					<c:forEach items="${manufacturerValues}" var="item">
-					<c:choose>
-						<c:when test="${selectedCar.manufacturer.label eq item}">
-							<option value="${item}" selected>${item}</option>
-						</c:when>
-						<c:otherwise>
-							<option value="${item}">${item}</option>
-						</c:otherwise>
-					</c:choose>
-					</c:forEach>
-					</select>
+				<select name="manufacturer" id="manufacturer" required>
+				<c:forEach items="${manufacturerValues}" var="item">
+				<c:choose>
+					<c:when test="${selectedCar.manufacturer.label eq item}">
+						<option value="${item}" selected>${item}</option>
+					</c:when>
+					<c:otherwise>
+						<option value="${item}">${item}</option>
+					</c:otherwise>
+				</c:choose>
+				</c:forEach>
+				</select>
 			</td>
 		</tr>
 		<tr>

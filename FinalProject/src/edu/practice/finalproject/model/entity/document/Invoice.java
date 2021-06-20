@@ -3,8 +3,8 @@ package edu.practice.finalproject.model.entity.document;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-import edu.practice.finalproject.controller.admin.Manager;
 import edu.practice.finalproject.model.entity.NaturalKeyEntity;
+import edu.practice.finalproject.model.entity.userrole.Manager;
 
 public abstract class Invoice extends NaturalKeyEntity {
 

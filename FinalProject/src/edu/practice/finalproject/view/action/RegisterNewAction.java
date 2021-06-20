@@ -7,10 +7,10 @@ import javax.servlet.http.HttpServletRequest;
 
 import edu.practice.finalproject.controller.FCServlet;
 import edu.practice.finalproject.controller.Names;
-import edu.practice.finalproject.controller.admin.Admin;
-import edu.practice.finalproject.controller.admin.User;
 import edu.practice.finalproject.model.analysis.Inspector;
 import edu.practice.finalproject.model.dataaccess.EntityManager;
+import edu.practice.finalproject.model.entity.userrole.Admin;
+import edu.practice.finalproject.model.entity.userrole.User;
 import edu.practice.finalproject.utilities.Utils;
 
 public class RegisterNewAction extends Action {

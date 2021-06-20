@@ -1,7 +1,6 @@
 package edu.practice.finalproject.model.dataaccess;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -11,12 +10,10 @@ import java.sql.Statement;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.IntPredicate;
 import javax.sql.DataSource;
 
@@ -31,32 +28,6 @@ public final class EntityManager {
 	public EntityManager(final DataSource dataSource) {
 		Objects.requireNonNull(dataSource);
 		this.dataSource=dataSource;
-	}
-	
-	private static final String[] ENTITY_BEANS_PACKAGE_PREFIXES={
-			"edu.practice.finalproject.controller.admin.",
-			"edu.practice.finalproject.model.entity.",
-			"edu.practice.finalproject.model.entity.document.",
-			"edu.practice.finalproject.model.entity.domain."
-	};
-	private static final Set<Class<? extends Entity>> discoveredEntityClasses=Inspector.discoverEntityClasses(ENTITY_BEANS_PACKAGE_PREFIXES);
-	
-	public static boolean isConcreteClass(final Class<?> cl) {
-		final int modifiers=cl.getModifiers();
-		return Modifier.isPublic(modifiers) && !Modifier.isInterface(modifiers) && !Modifier.isAbstract(modifiers);
-	}
-	
-	public static <E extends Entity> Set<Class<E>> getConcreteDescendantsOf(final Class<E> baseClass){
-		final Set<Class<E>> set=new HashSet<>();
-		discoveredEntityClasses.forEach(
-				cl->{ 
-					if(isConcreteClass(cl) && baseClass.isAssignableFrom(cl)) 
-						set.add((Class<E>) cl);});
-		return set;
-	}
-	
-	public <E extends Entity> List<E> fetchEntities(final Class<E> cl) {
-		return fetchEntities(cl,false);
 	}
 	
 	public boolean persist(final Entity entity) {
@@ -112,46 +83,46 @@ public final class EntityManager {
 		return false;
 	}
 	
-	public boolean remove(final Entity entity) {
-		final StringBuilder clause=StatementBuilder.getDeleteStatement(entity);
-		
-		try(final Connection conn=dataSource.getConnection()){
-			conn.setAutoCommit(false);
-			try(final Statement statement=conn.createStatement()){
-				return performUpdate(clause, conn, statement, count->count==1);
-			}
-		} catch (SQLException e) {
-			throw new DataAccessException(e);
-		}
-	}
-
 	public boolean merge(final Entity entity) {
 		final StringBuilder clause=StatementBuilder.getUpdateStatement(entity);
 
 		try(final Connection conn=dataSource.getConnection()){
 			conn.setAutoCommit(false);
 			try(final Statement statement=conn.createStatement()){
-				return performUpdate(clause, conn, statement, count->count>0);
+				return updateOnCondition(clause, conn, statement, count->count>0);
 			}
 		} catch (SQLException e) {
 			throw new DataAccessException(e);
 		}
 	}
 	
-	public boolean removeLinks(final Entity master,final Class<? extends Entity> slaveClass) {
-		final StringBuilder clause=StatementBuilder.getDeleteLinkStatement(master,slaveClass);
+	public boolean remove(final Entity entity) {
+		final StringBuilder clause=StatementBuilder.getDeleteStatement(entity);
 		
 		try(final Connection conn=dataSource.getConnection()){
 			conn.setAutoCommit(false);
 			try(final Statement statement=conn.createStatement()){
-				return performUpdate(clause, conn, statement, count->count>0);
+				return updateOnCondition(clause, conn, statement, count->count==1);
 			}
 		} catch (SQLException e) {
 			throw new DataAccessException(e);
 		}
 	}
 
-	private boolean performUpdate(final StringBuilder clause, final Connection conn, final Statement statement, final IntPredicate condition) throws SQLException {
+	public boolean removeLinks(final Entity master,final Class<? extends Entity> slaveClass) {
+		final StringBuilder clause=StatementBuilder.getDeleteLinkStatement(master,slaveClass);
+		
+		try(final Connection conn=dataSource.getConnection()){
+			conn.setAutoCommit(false);
+			try(final Statement statement=conn.createStatement()){
+				return updateOnCondition(clause, conn, statement, count->count>0);
+			}
+		} catch (SQLException e) {
+			throw new DataAccessException(e);
+		}
+	}
+
+	private boolean updateOnCondition(final StringBuilder clause, final Connection conn, final Statement statement, final IntPredicate condition) throws SQLException {
 		try {
 			final int count=statement.executeUpdate(clause.toString());
 			if(condition.test(count)) {
@@ -174,7 +145,7 @@ public final class EntityManager {
 		
 			if(rs.next()) {
 				final E entity=Inspector.createEntity(cl);
-				fillEntityValues(entity, Inspector.getSetters(cl,false), rs);
+				setProperties(entity, Inspector.getSetters(cl,false), rs);
 				return Optional.of(entity);
 			}
 		} catch (SQLException e) {
@@ -194,7 +165,7 @@ public final class EntityManager {
 				final ResultSet rs=statement.executeQuery(clause.toString())){
 		
 			if(rs.next()) {
-				fillEntityValues(entity, Inspector.getSetters(cl,false), rs);
+				setProperties(entity, Inspector.getSetters(cl,false), rs);
 				return Optional.of(entity);
 			}
 		} catch (SQLException e) {
@@ -203,7 +174,7 @@ public final class EntityManager {
 		return Optional.empty();
 	}
 
-	public <E extends Entity> Optional<E>findByCompositeKey(final Class<E> cl,final Map<String,?> keyPairs) {
+	public <E extends Entity> Optional<E> findByCompositeKey(final Class<E> cl,final Map<String,?> keyPairs) {
 		final StringBuilder clause=StatementBuilder.getSelectByKeyStatement(cl,keyPairs);
 		try (
 				final Connection conn=dataSource.getConnection();				
@@ -212,7 +183,7 @@ public final class EntityManager {
 		
 			final E entity=Inspector.createEntity(cl);
 			if(rs.next()) {
-				fillEntityValues(entity, Inspector.getSetters(cl,false), rs);
+				setProperties(entity, Inspector.getSetters(cl,false), rs);
 				return Optional.of(entity);
 			}
 		} catch (SQLException e) {
@@ -225,7 +196,7 @@ public final class EntityManager {
 		final List<Method> setters = Inspector.getSetters(cl,skipID);
 		while(rs.next()) {
 			final E entity=Inspector.createEntity(cl);
-			fillEntityValues(entity, setters, rs);
+			setProperties(entity, setters, rs);
 			list.add(entity);
 		}
 	}
@@ -244,11 +215,20 @@ public final class EntityManager {
 		return entities;
 	}
 	
-    public <S extends Entity> List<S> fetchLinks(final Entity master,final Class<S> slaveClass) {
-		final StringBuilder clause=StatementBuilder.getFetchSlaveEntitiesStatement(master,slaveClass);
-		return formEntityListFromQuery(slaveClass, false, clause);
-    }
+	public <E extends Entity> List<E> fetchEntities(final Class<E> cl) {
+		return fetchEntities(cl,false);
+	}
+	
+	public <E extends Entity> List<E> fetchEntities(final Class<E> cl,final boolean skipID,final long startElement,final long endElement) {
+		final StringBuilder clause=StatementBuilder.getFetchEntitiesStatement(cl,skipID,startElement,endElement);
+		return formEntityListFromQuery(cl, skipID, clause);
+	}
 
+	public <E extends Entity> List<E> fetchEntities(final Class<E> cl,final boolean skipID) {
+		final StringBuilder clause=StatementBuilder.getFetchEntitiesStatement(cl,skipID);
+		return formEntityListFromQuery(cl, skipID, clause);
+	}
+	
 	public <M extends Entity> List<M> fetchMissingEntities(final Class<M> masterClass,final Class<? extends Entity> slaveClass,final long startElement,final long endElement){
 		final StringBuilder clause=StatementBuilder.getSelectMissingEntitiesStatement(masterClass,slaveClass,startElement,endElement);
 		return formEntityListFromQuery(masterClass, false, clause);
@@ -269,17 +249,12 @@ public final class EntityManager {
 		return formEntityListFromQuery(cl,false,clause);
 	}
 
-	public <E extends Entity> List<E> fetchEntities(final Class<E> cl,final boolean skipID,final long startElement,final long endElement) {
-		final StringBuilder clause=StatementBuilder.getFetchEntitiesStatement(cl,skipID,startElement,endElement);
-		return formEntityListFromQuery(cl, skipID, clause);
-	}
+    public <S extends Entity> List<S> fetchLinks(final Entity master,final Class<S> slaveClass) {
+		final StringBuilder clause=StatementBuilder.getFetchSlaveEntitiesStatement(master,slaveClass);
+		return formEntityListFromQuery(slaveClass, false, clause);
+    }
 
-	public <E extends Entity> List<E> fetchEntities(final Class<E> cl,final boolean skipID) {
-		final StringBuilder clause=StatementBuilder.getFetchEntitiesStatement(cl,skipID);
-		return formEntityListFromQuery(cl, skipID, clause);
-	}
-	
-	private void fillEntityValues(final Entity entity, final List<Method> setters, final ResultSet rs) {
+	private void setProperties(final Entity entity, final List<Method> setters, final ResultSet rs) {
 		int k=1;
 		try {
 			for(final Method setter:setters) {

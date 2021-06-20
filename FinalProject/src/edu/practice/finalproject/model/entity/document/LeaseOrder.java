@@ -5,10 +5,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.StringJoiner;
 
-import edu.practice.finalproject.controller.admin.Client;
 import edu.practice.finalproject.model.analysis.EntityException;
 import edu.practice.finalproject.model.entity.NaturalKeyEntity;
 import edu.practice.finalproject.model.entity.domain.Car;
+import edu.practice.finalproject.model.entity.userrole.Client;
 
 public class LeaseOrder extends NaturalKeyEntity {
 	private Client client;

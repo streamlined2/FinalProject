@@ -4,9 +4,9 @@ import java.lang.reflect.Method;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import edu.practice.finalproject.controller.admin.Manager;
 import edu.practice.finalproject.model.analysis.EntityException;
 import edu.practice.finalproject.model.entity.NaturalKeyEntity;
+import edu.practice.finalproject.model.entity.userrole.Manager;
 
 public class CarReview extends NaturalKeyEntity {
 	public enum CarCondition { PERFECT, NEEDS_MAINTENANCE}

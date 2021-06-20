@@ -1,6 +1,5 @@
 package edu.practice.finalproject.controller.transition;
 
-import edu.practice.finalproject.controller.admin.User;
 import edu.practice.finalproject.view.action.Action;
 import edu.practice.finalproject.view.action.AddCarAction;
 import edu.practice.finalproject.view.action.ReviewOrderAction;
@@ -14,6 +13,7 @@ import edu.practice.finalproject.view.action.ChangeUserAction;
 import edu.practice.finalproject.view.action.CheckOrderAction;
 import edu.practice.finalproject.view.action.ConfirmCarCriteriaAction;
 import edu.practice.finalproject.view.action.DropCarAction;
+import edu.practice.finalproject.model.entity.userrole.User;
 import edu.practice.finalproject.view.action.AcceptOrderAction;
 import edu.practice.finalproject.view.action.FirstPageAction;
 import edu.practice.finalproject.view.action.LastPageAction;
