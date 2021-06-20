@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tags" %>
+<%@ taglib prefix="tag" uri="/WEB-INF/optionselector.tld"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -24,35 +25,13 @@
 		<tr>
 			<td><label for="manufacturer">Manufacturer</label></td>
 			<td>
-				<select name="manufacturer" id="manufacturer" required>
-				<c:forEach items="${manufacturerValues}" var="item">
-				<c:choose>
-					<c:when test="${selectedCar.manufacturer.label eq item}">
-						<option value="${item}" selected>${item}</option>
-					</c:when>
-					<c:otherwise>
-						<option value="${item}">${item}</option>
-					</c:otherwise>
-				</c:choose>
-				</c:forEach>
-				</select>
+				<tag:selector name="manufacturer" values="${manufacturerValues}" selectedValue="${selectedCar.manufacturer.label}" required="true"/>
 			</td>
 		</tr>
 		<tr>
 			<td><label for="qualityGrade">Quality grade</label></td>
 			<td>
-				<select name="qualityGrade" id="qualityGrade" required>
-				<c:forEach items="${qualityGradeValues}" var="item">
-				<c:choose>
-					<c:when test="${selectedCar.qualityGrade.label eq item}">
-						<option value="${item}" selected>${item}</option>
-                    </c:when>
-					<c:otherwise>
-						<option value="${item}">${item}</option>
-					</c:otherwise>
-				</c:choose>
-				</c:forEach>
-				</select>
+				<tag:selector name="qualityGrade" values="${qualityGradeValues}" selectedValue="${selectedCar.qualityGrade.label}" required="true"/>
 			</td>
 		</tr>
 		<tr>
@@ -66,35 +45,13 @@
 		<tr>
 			<td><label for="color">Color</label></td>
 			<td>
-				<select name="color" id="color">
-				<c:forEach items="${colorValues}" var="item">
-				<c:choose>
-					<c:when test="${selectedCar.color.label eq item}">
-						<option value="${item}" selected>${item}</option>
-                    </c:when>
-					<c:otherwise>
-						<option value="${item}">${item}</option>
-					</c:otherwise>
-				</c:choose>
-				</c:forEach>
-				</select>
+				<tag:selector name="color" values="${colorValues}" selectedValue="${selectedCar.color.label}" required="true"/>
 			</td>
 		</tr>
 		<tr>
 			<td><label for="style">Style</label></td>
 			<td>
-				<select name="style" id="style">
-				<c:forEach items="${styleValues}" var="item">
-				<c:choose>
-					<c:when test="${selectedCar.style.label eq item}">
-						<option value="${item}" selected>${item}</option>
-                    </c:when>
-					<c:otherwise>
-						<option value="${item}">${item}</option>
-					</c:otherwise>
-				</c:choose>
-				</c:forEach>
-				</select>
+				<tag:selector name="style" values="${styleValues}" selectedValue="${selectedCar.style.label}" required="true"/>
 			</td>
 		</tr>
 		</table>
