@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="tag" uri="/WEB-INF/optionselector.tld"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -20,44 +21,28 @@
 				<td><label for="manufacturer">Manufacturer</label></td>
 				<td><input type="checkbox" id="manufacturer" name="selectByManufacturer" value="manufacturer"/></td>
 				<td>
-					<select name="manufacturer" id="manufacturer" required>
-					<c:forEach items="${requestScope.manufacturerValues}" var="item">
-					<option value="${item}">${item}</option>
-					</c:forEach>
-					</select>
+					<tag:selector name="manufacturer" values="${manufacturerValues}" required="true"/>
 				</td>
 			</tr>
 			<tr>
 				<td><label for="qualityGrade">Quality grade</label></td>
 				<td><input type="checkbox" id="qualityGrade" name="selectByQualityGrade" value="qualityGrade"/></td>
 				<td>
-					<select name="qualityGrade" id="qualityGrade" required>
-					<c:forEach items="${requestScope.qualityGradeValues}" var="item">
-					<option value="${item}">${item}</option>
-					</c:forEach>
-					</select>
+					<tag:selector name="qualityGrade" values="${qualityGradeValues}" required="true"/>
 				</td>
 			</tr>
 			<tr>
 				<td><label for="color">Color</label></td>
 				<td><input type="checkbox" id="color" name="selectByColor" value="color"/></td>
 				<td>
-					<select name="color" id="color">
-					<c:forEach items="${requestScope.colorValues}" var="item">
-					<option value="${item}">${item}</option>
-					</c:forEach>
-					</select>
+					<tag:selector name="color" values="${colorValues}" required="true"/>
 				</td>
 			</tr>
 			<tr>
 				<td><label for="style">Style</label></td>
 				<td><input type="checkbox" id="style" name="selectByStyle" value="style"/></td>
 				<td>
-					<select name="style" id="style">
-					<c:forEach items="${requestScope.styleValues}" var="item">
-					<option value="${item}">${item}</option>
-					</c:forEach>
-					</select>
+					<tag:selector name="style" values="${styleValues}" required="true"/>
 				</td>
 			</tr>
 			</table>
