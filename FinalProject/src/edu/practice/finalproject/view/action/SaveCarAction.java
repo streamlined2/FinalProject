@@ -22,12 +22,14 @@ public class SaveCarAction extends AdminAction {
 
 	private static final String WRONG_CAR_MODEL_MSG = "Wrong car model";
 	private static final String WRONG_RENT_COST_MSG = "Wrong rent cost value";
-	private static final String WRONG_PRODUCTION_DATE_MSG = "Wrong car production date";
 	private static final String WRONG_MANUFACTURER_MSG = "Wrong manufacturer";
 	private static final String WRONG_QUALITY_GRADE_MSG = "Wrong quality grade";
 	private static final String WRONG_COLOR_MSG = "Wrong color";
 	private static final String WRONG_STYLE_MSG = "Wrong style";
 	private static final String CANT_SAVE_CAR_MSG = "Can't save car";
+	private static final String COST_SHOULD_BE_POSITIVE_MSG = "Lease cost should be positive value";
+	private static final String WRONG_PRODUCTION_DATE_FORMAT_MSG = "Wrong car production date";
+	private static final String WRONG_PRODUCTION_DATE_VALUE_MSG = "Production date %tF should succeed current date %tF";
 	
 	public SaveCarAction(String name) {
 		super(name);
@@ -80,9 +82,21 @@ public class SaveCarAction extends AdminAction {
 		
 		try {
 			final String rentCost=FCServlet.getParameterValue(req,Names.CAR_RENT_COST_PARAMETER);
-			car.setCost(new BigDecimal(rentCost));
+			final BigDecimal costValue = new BigDecimal(rentCost);
+			if(costValue.compareTo(BigDecimal.ZERO)<=0) {
+				FCServlet.setError(req, COST_SHOULD_BE_POSITIVE_MSG);
+				return false;
+			}
+			car.setCost(costValue);
+			
 			final String productionDate=FCServlet.getParameterValue(req,Names.CAR_PRODUCTION_DATE_PARAMETER);
-			car.setProductionDate(LocalDate.parse(productionDate));
+			final LocalDate prodDateValue = LocalDate.parse(productionDate);
+			final LocalDate now = LocalDate.now();
+			if(prodDateValue.isBefore(now)) {
+				FCServlet.setError(req, String.format(WRONG_PRODUCTION_DATE_VALUE_MSG, prodDateValue, now));
+				return false;
+			}
+			car.setProductionDate(prodDateValue);
 			
 			boolean success;
 			if(createNew.booleanValue()) {
@@ -98,7 +112,7 @@ public class SaveCarAction extends AdminAction {
 		} catch(NumberFormatException e) {
 			FCServlet.setError(req, WRONG_RENT_COST_MSG);
 		} catch(DateTimeParseException e) {
-			FCServlet.setError(req, WRONG_PRODUCTION_DATE_MSG);
+			FCServlet.setError(req, WRONG_PRODUCTION_DATE_FORMAT_MSG);
 		}
 		return false;
 	}

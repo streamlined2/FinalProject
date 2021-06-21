@@ -21,8 +21,8 @@ public class OrderCarAction extends ClientAction {
 		super(name);
 	}
 	
-	private static final String WRONG_DUE_TIME = "Lease start time %c should precede due time %c";
-	private static final String WRONG_START_TIME = "Lease start time %c should follow current time %c";
+	private static final String WRONG_DUE_TIME = "Lease start time %tF should precede due time %tF";
+	private static final String WRONG_START_TIME = "Lease start time %tF should follow current time %tF";
 	private static final String WRONG_USER = "You should be logged as a client";
 	private static final String WRONG_CAR = "You should select car first";
 	private static final String INTERNAL_ERROR = "Can't save the order";
@@ -53,13 +53,14 @@ public class OrderCarAction extends ClientAction {
 			final Optional<LocalDateTime> startTime=Utils.getTime(FCServlet.getParameterValue(req,Names.LEASE_START_TIME_PARAMETER));
 			final Optional<LocalDateTime> dueTime=Utils.getTime(FCServlet.getParameterValue(req,Names.LEASE_DUE_TIME_PARAMETER));
 			
-			if(startTime.get().isBefore(LocalDateTime.now())) {
-				FCServlet.setError(req, String.format(WRONG_START_TIME, startTime.get(), dueTime.get()) );
+			final LocalDateTime now = LocalDateTime.now();
+			if(startTime.get().isBefore(now)) {
+				FCServlet.setError(req, String.format(WRONG_START_TIME, startTime.get(), now));
 				return false;
 			}
 			
 			if(dueTime.get().isBefore(startTime.get())) {
-				FCServlet.setError(req, String.format(WRONG_DUE_TIME, startTime.get(), dueTime.get()) );
+				FCServlet.setError(req, String.format(WRONG_DUE_TIME, startTime.get(), dueTime.get()));
 				return false;
 			}
 			
