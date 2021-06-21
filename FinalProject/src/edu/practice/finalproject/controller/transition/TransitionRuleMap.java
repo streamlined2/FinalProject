@@ -26,7 +26,10 @@ public final class TransitionRuleMap {
 	}
 	
 	private TransitionRuleMap() {
-		//setup transition rule map: most precise rules first, general rules last
+		//setup transition rule map
+		//stray user should be registered or logged in first
+		addRule(null, LOGIN_FORM, REGISTER_ACTION, REGISTER_FORM);
+		addRule(null, REGISTER_FORM, BACK_ACTION, LOGIN_FORM);
 
 		//rules for client role
 		addRule(Client.class, CAR_SELECTION_CRITERIA_FORM, CONFIRM_CAR_CRITERIA_ACTION, CAR_BROWSING_FORM);
@@ -94,10 +97,6 @@ public final class TransitionRuleMap {
 		addRule(Admin.class, REGISTER_FORM, REGISTER_NEW_ACTION, ADMIN_TASK_SELECTION_FORM);
 		addRule(Admin.class, null, null, ADMIN_TASK_SELECTION_FORM);//should always be last rule for Admin role
 
-		//stray user should be registered or logged in first
-		//should be latest rules in list
-		addRule(null, LOGIN_FORM, REGISTER_ACTION, REGISTER_FORM);
-		addRule(null, REGISTER_FORM, BACK_ACTION, LOGIN_FORM);
 	}
 	
 	private static class TransitionRuleKey {
