@@ -34,6 +34,7 @@ public class FCServlet extends HttpServlet {
 	
 	private EntityManager entityManager;
 	
+	public static final String MAPPING_PATTERN = "main";
 	public static final Locale UKRAINIAN_LOCALE = Locale.forLanguageTag("uk");
 	private static final List<Locale> availableLocales= List.of(Locale.ENGLISH,UKRAINIAN_LOCALE);
 	

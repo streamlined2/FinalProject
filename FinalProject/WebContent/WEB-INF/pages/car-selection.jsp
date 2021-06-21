@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="tag" uri="/WEB-INF/optionselector.tld"%>
+<%@ taglib prefix="opt" tagdir="/WEB-INF/tags"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -50,36 +51,9 @@
 		<fieldset>
 			<legend>Order by</legend>
 			<table>
-			<tr>
-				<td><label for="order1">Rent cost</label></td>
-				<td><input type="checkbox" id="order1" name="orderByRentCost" value="cost"/></td>
-				<td>
-					<select name="costSort" id="order1">
-						<option value="asc" >Ascending</option>
-						<option value="desc">Descending</option>
-					</select>
-				</td>
-			</tr>
-			<tr>
-				<td><label for="order2">Model</label></td>
-				<td><input type="checkbox" id="order2" name="orderByModel" value="model"/></td>
-				<td>
-					<select name="modelSort" id="order2">
-						<option value="asc" >Ascending</option>
-						<option value="desc">Descending</option>
-					</select>
-				</td>
-			</tr>
-			<tr>
-				<td><label for="order3">Production date</label></td>
-				<td><input type="checkbox" id="order3" name="orderByProductionDate" value="productionDate"/></td>
-				<td>
-					<select name="productionDateSort" id="order3">
-						<option value="asc" >Ascending</option>
-						<option value="desc">Descending</option>
-					</select>
-				</td>
-			</tr>
+			<opt:orderOption id="order1" label="Rent cost" checkName="orderByRentCost" checkValue="cost" optionName="costSort"/>
+			<opt:orderOption id="order2" label="Model" checkName="orderByModel" checkValue="model" optionName="modelSort"/>
+			<opt:orderOption id="order3" label="Production date" checkName="orderByProductionDate" checkValue="productionDate" optionName="productionDateSort"/>
 			</table>
 		</fieldset>
 		<hr>

@@ -25,6 +25,7 @@ public final class Names {
 	public static final String ORDER_KEYS_ATTRIBUTE = "orderKeys";
 	public static final String QUERY_DATA_ATTRIBUTE = "queryData";
 	public static final String QUERY_HEADER_ATTRIBUTE = "queryHeader";
+	public static final String QUERY_BUTTONS_MAP_ATTRIBUTE = "buttonsMap";
 	public static final String FIRST_PAGE_ELEMENT_ATTRIBUTE = "firstPageElement";
 	public static final String LAST_PAGE_ELEMENT_ATTRIBUTE = "lastPageElement";
 	public static final String PAGE_ELEMENTS_NUMBER_ATTRIBUTE = "pageElementsNumber";

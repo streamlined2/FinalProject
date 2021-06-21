@@ -45,6 +45,7 @@ public class CarManagementForm extends Form {
 		final List<Car> queryData=entityManager.fetchEntities(Car.class,false,firstElement,lastElement);
 
 		FCServlet.setAttribute(req, Names.PAGE_ITEMS_ATTRIBUTE,queryData);
+		FCServlet.setAttribute(req, Names.QUERY_BUTTONS_MAP_ATTRIBUTE, Map.of("modifyCar","Edit","deleteCar","Delete"));
 		FCServlet.setAttribute(req, Names.QUERY_DATA_ATTRIBUTE, Inspector.getValuesForEntities(Car.class, queryData));
 		FCServlet.setAttribute(req, Names.QUERY_HEADER_ATTRIBUTE, Inspector.getCaptions(Car.class));
 		
@@ -54,6 +55,7 @@ public class CarManagementForm extends Form {
 	@Override
 	public void destroy(HttpServletRequest req) {
 		FCServlet.removeAttribute(req, Names.PAGE_ITEMS_ATTRIBUTE);
+		FCServlet.removeAttribute(req, Names.QUERY_BUTTONS_MAP_ATTRIBUTE);
 		FCServlet.removeAttribute(req, Names.QUERY_DATA_ATTRIBUTE);
 		FCServlet.removeAttribute(req, Names.QUERY_HEADER_ATTRIBUTE);
 		super.destroy(req);

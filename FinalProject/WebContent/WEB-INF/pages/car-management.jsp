@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="tv" uri="/WEB-INF/table-view.tld" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -11,7 +12,8 @@
 	<%@include file="common-controls.jsp" %>
 	
 	<form>
-		<table>
+		<tv:table-view buttons="${buttonsMap}" queryHeader="${queryHeader}" queryData="${queryData}" order="carNumber"/>
+<!-- 	<table>
 			<thead><tr>
 				<th>&nbsp;</th>
 				<th>&nbsp;</th>
@@ -36,7 +38,7 @@
 					<c:set var="number" value="${number+1}"/>
 				</c:forEach>
 			</tbody>
-		</table>
+		</table> -->
 		<hr>
 		<input type="submit" value="New" formaction="main?action=newCar" formmethod="post"/>
 		<input type="submit" value="Next" formaction="main?action=nextPage" formmethod="post"/>

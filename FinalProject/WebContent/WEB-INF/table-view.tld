@@ -3,35 +3,38 @@
 		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 		xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd" 
 		version="2.0">
-<description>custom select/option tag that supports previously selected value</description>
+<description>custom table view tag</description>
 <tlib-version>1.0</tlib-version>
-<short-name>SelectorTag</short-name>
+<short-name>TableViewTag</short-name>
 <tag>
-	<name>selector</name>
-	<tag-class>edu.practice.finalproject.view.tag.OptionSelectorTag</tag-class>
+	<name>table-view</name>
+	<tag-class>edu.practice.finalproject.view.tag.TableViewTag</tag-class>
 	<body-content>empty</body-content>
 	<attribute>
-		<description>tag label</description>
-		<name>name</name>
+		<description>map of action/label buttons</description>
+		<name>buttons</name>
 		<required>true</required>
 		<rtexprvalue>true</rtexprvalue>
+		<type>java.util.Map</type>
 	</attribute>
 	<attribute>
-		<description>list of possible property values</description>
-		<name>values</name>
+		<description>table header captions</description>
+		<name>queryHeader</name>
 		<required>true</required>
 		<rtexprvalue>true</rtexprvalue>
 		<type>java.lang.String[]</type>
 	</attribute>
 	<attribute>
-		<description>selected value</description>
-		<name>selectedValue</name>
-		<required>false</required>
+		<description>table data</description>
+		<name>queryData</name>
+		<required>true</required>
 		<rtexprvalue>true</rtexprvalue>
+		<type>java.util.List</type>
 	</attribute>
 	<attribute>
-		<name>required</name>
-		<required>false</required>
+		<description>order parameter name</description>
+		<name>order</name>
+		<required>true</required>
 	</attribute>
 </tag>
 </taglib>
