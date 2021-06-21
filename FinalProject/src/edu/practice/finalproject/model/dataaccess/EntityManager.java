@@ -24,10 +24,12 @@ import edu.practice.finalproject.model.entity.NaturalKeyEntity;
 
 public final class EntityManager {
 	
+	private static final String DATASOURCE_SHOULDNT_BE_NULL = "Provide non-null datasource parameter for constructor";
+	
 	private final DataSource dataSource;
 	
 	public EntityManager(final DataSource dataSource) {
-		Objects.requireNonNull(dataSource);
+		Objects.requireNonNull(dataSource,DATASOURCE_SHOULDNT_BE_NULL);
 		this.dataSource=dataSource;
 	}
 	

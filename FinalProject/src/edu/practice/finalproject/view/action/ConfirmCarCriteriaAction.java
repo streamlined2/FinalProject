@@ -47,10 +47,10 @@ public class ConfirmCarCriteriaAction extends ClientAction {
 		final String style=FCServlet.getParameterValue(req,Names.STYLE_PARAMETER);
 		
 		final Map<String,Object> filterKeyPairs=new HashMap<>();
-		addFilterKeyValue(filterKeyPairs,selectByManufacturer,"manufacturer",Inspector.getByLabel(Manufacturer.class,manufacturer));
-		addFilterKeyValue(filterKeyPairs,selectByQualityGrade,"qualityGrade",Inspector.getByLabel(QualityGrade.class,qualityGrade));
-		addFilterKeyValue(filterKeyPairs,selectByColor,"color",Inspector.getByLabel(Color.class,color));
-		addFilterKeyValue(filterKeyPairs,selectByStyle,"style",Inspector.getByLabel(Style.class,style));
+		addFilterKeyValue(filterKeyPairs,selectByManufacturer,Names.MANUFACTURER_PARAMETER,Inspector.getByLabel(Manufacturer.class,manufacturer));
+		addFilterKeyValue(filterKeyPairs,selectByQualityGrade,Names.QUALITY_GRADE_PARAMETER,Inspector.getByLabel(QualityGrade.class,qualityGrade));
+		addFilterKeyValue(filterKeyPairs,selectByColor,Names.COLOR_PARAMETER,Inspector.getByLabel(Color.class,color));
+		addFilterKeyValue(filterKeyPairs,selectByStyle,Names.STYLE_PARAMETER,Inspector.getByLabel(Style.class,style));
 		
 		final String orderByRentCost=FCServlet.getParameterValue(req,Names.ORDER_BY_RENT_COST_PARAMETER);
 		final String costSort=FCServlet.getParameterValue(req,Names.RENT_COST_ORDER_PARAMETER);
@@ -60,9 +60,9 @@ public class ConfirmCarCriteriaAction extends ClientAction {
 		final String productionDateSort=FCServlet.getParameterValue(req,Names.PRODUCTION_DATE_PARAMETER);
 		
 		final Map<String,Boolean> orderKeys=new HashMap<>();
-		addOrderKey(orderKeys,orderByRentCost,"cost",Utils.isAscendingOrder(costSort));
-		addOrderKey(orderKeys,orderByModel,"model",Utils.isAscendingOrder(modelSort));
-		addOrderKey(orderKeys,orderByProductionDate,"productionDate",Utils.isAscendingOrder(productionDateSort));
+		addOrderKey(orderKeys,orderByRentCost,Names.CAR_RENT_COST_PARAMETER,Utils.isAscendingOrder(costSort));
+		addOrderKey(orderKeys,orderByModel,Names.CAR_MODEL_PARAMETER,Utils.isAscendingOrder(modelSort));
+		addOrderKey(orderKeys,orderByProductionDate,Names.CAR_PRODUCTION_DATE_PARAMETER,Utils.isAscendingOrder(productionDateSort));
 		
 		FCServlet.setAttribute(req, Names.FILTER_KEY_PAIRS_ATTRIBUTE, filterKeyPairs);
 		FCServlet.setAttribute(req, Names.ORDER_KEYS_ATTRIBUTE, orderKeys);

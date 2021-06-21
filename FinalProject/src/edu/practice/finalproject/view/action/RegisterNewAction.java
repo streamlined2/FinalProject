@@ -5,9 +5,14 @@ import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import edu.practice.finalproject.controller.FCServlet;
 import edu.practice.finalproject.controller.Names;
+import edu.practice.finalproject.model.analysis.EntityException;
 import edu.practice.finalproject.model.analysis.Inspector;
+import edu.practice.finalproject.model.dataaccess.DataAccessException;
 import edu.practice.finalproject.model.dataaccess.EntityManager;
 import edu.practice.finalproject.model.entity.userrole.Admin;
 import edu.practice.finalproject.model.entity.userrole.User;
@@ -15,11 +20,12 @@ import edu.practice.finalproject.utilities.Utils;
 
 public class RegisterNewAction extends Action {
 
+	private static final Logger logger = LogManager.getLogger();
+
 	public RegisterNewAction(String name) {
 		super(name);
 	}
 	
-	private static final String INTERNAL_ERROR = "Can't register new user";
 	private static final String DIFFERENT_PASSWORDS = "Passwords should coincide";
 	private static final String USER_SUCCESSFULLY_REGISTERED = "User successfully registered";
 	private static final String USER_ALREADY_REGISTERED = "This login has been taken already";
@@ -28,6 +34,7 @@ public class RegisterNewAction extends Action {
 	private static final String WRONG_USER_MSG = "Wrong user name";
 	private static final String WRONG_PASSWORD_MSG = "Wrong first password";
 	private static final String WRONG_PASSWORD2_MSG = "Wrong second password";
+	private static final String CANT_SAVE_NEW_USER_MSG = "Cannot register new user";
 
 	@Override
 	public boolean execute(final HttpServletRequest req, final EntityManager entityManager) {
@@ -85,9 +92,13 @@ public class RegisterNewAction extends Action {
 				FCServlet.setUser(req, user);
 			}
 			FCServlet.setMessage(req, USER_SUCCESSFULLY_REGISTERED);
-			return true;
-		}catch(Exception e) {
-			FCServlet.setError(req, String.format("%s: %s",INTERNAL_ERROR,e.getMessage()));
+			return true;				
+		} catch(EntityException | DataAccessException e) {
+			logger.error(CANT_SAVE_NEW_USER_MSG, e);
+			FCServlet.setError(req, CANT_SAVE_NEW_USER_MSG);				
+		} catch(Exception e) {
+			logger.error(CANT_SAVE_NEW_USER_MSG, e);
+			FCServlet.setError(req, String.format("%s: %s",CANT_SAVE_NEW_USER_MSG,e.getMessage()));
 		}
 		return false;
 	}

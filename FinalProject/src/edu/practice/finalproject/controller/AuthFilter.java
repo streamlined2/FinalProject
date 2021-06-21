@@ -13,11 +13,15 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  * Servlet Filter implementation class AuthFilter
  */
 public class AuthFilter implements Filter {
 	
+	private static final Logger logger = LogManager.getLogger();
 	private static final String WRONG_REQUEST_MSG = "Access to the page %s is prohibited";
 	
 	private static final String WELCOME_PAGE_PARAMETER = "welcomePage";
@@ -53,6 +57,7 @@ public class AuthFilter implements Filter {
 			chain.doFilter(req, resp);
 		} else {
 			FCServlet.invalidateSession(req);
+			logger.error(WRONG_REQUEST_MSG);
 			throw new ServletException(String.format(WRONG_REQUEST_MSG,req.getRequestURI()));
 			//resp.sendError(1, String.format(WRONG_REQUEST_MSG,req.getRequestURI()));
 		}

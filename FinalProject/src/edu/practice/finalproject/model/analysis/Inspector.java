@@ -153,7 +153,7 @@ public final class Inspector {
 	public static String getFieldName(final String prefix,final String accessorName) {
 		final StringBuilder sb=new StringBuilder(prefix);
 		if(!prefix.isEmpty()) sb.append(".");
-		sb.append(accessorName.substring(3,4).toString().toLowerCase());
+		sb.append(accessorName.substring(3,4).toLowerCase());
 		sb.append(accessorName.substring(4));
 		return sb.toString();
 	}

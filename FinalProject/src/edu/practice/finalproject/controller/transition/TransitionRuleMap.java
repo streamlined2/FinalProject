@@ -26,7 +26,7 @@ public final class TransitionRuleMap {
 	}
 	
 	private TransitionRuleMap() {
-		//setup transition rule map
+		//setup transition rule map: most precise rules first, general rules last
 
 		//rules for client role
 		addRule(Client.class, CAR_SELECTION_CRITERIA_FORM, CONFIRM_CAR_CRITERIA_ACTION, CAR_BROWSING_FORM);

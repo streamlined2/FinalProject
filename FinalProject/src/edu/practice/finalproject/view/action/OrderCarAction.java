@@ -5,9 +5,14 @@ import java.util.Objects;
 import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import edu.practice.finalproject.controller.FCServlet;
 import edu.practice.finalproject.controller.Names;
+import edu.practice.finalproject.model.analysis.EntityException;
 import edu.practice.finalproject.model.analysis.Inspector;
+import edu.practice.finalproject.model.dataaccess.DataAccessException;
 import edu.practice.finalproject.model.dataaccess.EntityManager;
 import edu.practice.finalproject.model.entity.document.LeaseOrder;
 import edu.practice.finalproject.model.entity.domain.Car;
@@ -17,6 +22,8 @@ import edu.practice.finalproject.utilities.Utils;
 
 public class OrderCarAction extends ClientAction {
 
+	private static final Logger logger = LogManager.getLogger();
+
 	public OrderCarAction(String name) {
 		super(name);
 	}
@@ -25,7 +32,8 @@ public class OrderCarAction extends ClientAction {
 	private static final String WRONG_START_TIME = "Lease start time %tF should follow current time %tF";
 	private static final String WRONG_USER = "You should be logged as a client";
 	private static final String WRONG_CAR = "You should select car first";
-	private static final String INTERNAL_ERROR = "Can't save the order";
+	private static final String CANT_SAVE_LEASE_ORDER_MSG = "Cannot save lease order";
+	private static final String LEASE_ORDER_SAVED_MSG = "Lease order saved";
 
 	@Override
 	public boolean execute(HttpServletRequest req, EntityManager entityManager) {
@@ -74,10 +82,14 @@ public class OrderCarAction extends ClientAction {
 			entityManager.persist(order);
 
 			FCServlet.setAttribute(req, Names.SELECTED_ORDER_ATTRIBUTE, order);
-
+			FCServlet.setMessage(req, LEASE_ORDER_SAVED_MSG);
 			return true;
+		} catch(EntityException | DataAccessException e) {
+			logger.error(CANT_SAVE_LEASE_ORDER_MSG, e);
+			FCServlet.setError(req, CANT_SAVE_LEASE_ORDER_MSG);
 		}catch(Exception e) {
-			FCServlet.setError(req, String.format("%s: %s",INTERNAL_ERROR,e.getMessage()));
+			logger.error(CANT_SAVE_LEASE_ORDER_MSG, e);
+			FCServlet.setError(req, String.format("%s: %s",CANT_SAVE_LEASE_ORDER_MSG,e.getMessage()));
 		}
 		return false;
 	}

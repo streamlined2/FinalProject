@@ -5,9 +5,13 @@ import java.time.LocalDateTime;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import edu.practice.finalproject.controller.FCServlet;
 import edu.practice.finalproject.controller.Names;
+import edu.practice.finalproject.model.analysis.EntityException;
 import edu.practice.finalproject.model.analysis.Inspector;
+import edu.practice.finalproject.model.dataaccess.DataAccessException;
 import edu.practice.finalproject.model.dataaccess.EntityManager;
 import edu.practice.finalproject.model.entity.document.LeaseInvoice;
 import edu.practice.finalproject.model.entity.document.OrderReview;
@@ -16,8 +20,12 @@ import edu.practice.finalproject.utilities.Utils;
 
 public class LeaseInvoiceSubmitAction extends ManagerAction {
 
+	private static final Logger logger = LogManager.getLogger();
+
 	private static final String INCORRECT_INVOICE_SUM_VALUE_MSG = "The value of invoice sum is incorrect";
 	private static final String INCORRECT_ACCOUNT_VALUE_MSG = "You entered incorrect bank account";
+	private static final String CANT_SAVE_LEASE_INVOICE_MSG = "Cannot save lease invoice";
+	private static final String LEASE_INVOICE_SAVED_MSG = "Lease invoice saved";
 
 	public LeaseInvoiceSubmitAction(String name) {
 		super(name);
@@ -46,9 +54,15 @@ public class LeaseInvoiceSubmitAction extends ManagerAction {
 			invoice.setManager(manager);
 			entityManager.persist(invoice);
 			FCServlet.setAttribute(req, Names.LEASE_INVOICE_ATTRIBUTE, invoice);
+			FCServlet.setMessage(req, LEASE_INVOICE_SAVED_MSG);
 			return true;
-		}catch(NumberFormatException e) {
+		} catch (NumberFormatException e) {
+			logger.error(INCORRECT_INVOICE_SUM_VALUE_MSG, e);
 			FCServlet.setError(req, INCORRECT_INVOICE_SUM_VALUE_MSG);
+			return false;
+		} catch(EntityException | DataAccessException e) {
+			logger.error(CANT_SAVE_LEASE_INVOICE_MSG, e);
+			FCServlet.setError(req, CANT_SAVE_LEASE_INVOICE_MSG);
 			return false;
 		}
 	}

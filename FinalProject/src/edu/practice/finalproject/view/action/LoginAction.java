@@ -7,8 +7,12 @@ import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import edu.practice.finalproject.controller.FCServlet;
 import edu.practice.finalproject.controller.Names;
+import edu.practice.finalproject.model.dataaccess.DataAccessException;
 import edu.practice.finalproject.model.dataaccess.EntityManager;
 import edu.practice.finalproject.model.entity.userrole.Admin;
 import edu.practice.finalproject.model.entity.userrole.User;
@@ -16,14 +20,17 @@ import edu.practice.finalproject.utilities.Utils;
 
 public class LoginAction extends Action {
 	
+	private static final Logger logger = LogManager.getLogger();
+
 	public LoginAction(String name) {
 		super(name);
 	}
 
 	private static final String HELLO_EN = "Hi";
-	private static final String HELLO_UK = "Добрий день";
-	private static final String ERROR_MSG="Error occured while trying to login. Please try again";
-	private static final String USER_BLOCKED_MSG = "Please talk to administrator to resolve login issue";
+	private static final String HELLO_UK = "Привіт";
+	private static final String ERROR_MSG="Incorrect login or password. Please try again";
+	private static final String USER_BLOCKED_MSG = "Your account is blocked by administrator";
+	private static final String CAN_FIND_USER_MSG = "Cannot find user";
 	
 	@Override
 	public boolean execute(final HttpServletRequest req,final EntityManager entityManager) {
@@ -56,8 +63,13 @@ public class LoginAction extends Action {
 				return true;
 			}else {
 				FCServlet.setError(req, ERROR_MSG);
+				return false;
 			}
-		}catch (Exception e) {
+		} catch(DataAccessException e) {
+			logger.error(CAN_FIND_USER_MSG, e);
+			FCServlet.setError(req, CAN_FIND_USER_MSG);
+		} catch (Exception e) {
+			logger.error(String.format("%s: %s",ERROR_MSG,e.getMessage()), e);
 			FCServlet.setError(req, String.format("%s: %s",ERROR_MSG,e.getMessage()));
 		}
 		return false;
