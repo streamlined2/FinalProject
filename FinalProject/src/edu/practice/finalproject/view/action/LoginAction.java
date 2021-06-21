@@ -52,7 +52,7 @@ public class LoginAction extends Action {
 					return false;
 				}
 				FCServlet.setUser(req, user.get());
-				FCServlet.setMessage(req, String.format("%s, %s!", FCServlet.getLocale(req)==Locale.ENGLISH?HELLO_EN:HELLO_UK,user.get().toString()));
+				FCServlet.setMessage(req, String.format("%s, %s %s!", FCServlet.getLocale(req)==Locale.ENGLISH?HELLO_EN:HELLO_UK,user.get().getFirstName(),user.get().getLastName()));
 				return true;
 			}else {
 				FCServlet.setError(req, ERROR_MSG);

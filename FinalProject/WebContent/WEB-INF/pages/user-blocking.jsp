@@ -27,6 +27,15 @@
 	<p>
 	<form>
 		<table>
+			<thead>
+			<tr>
+				<th>&nbsp;</th>
+				<th>&nbsp;</th>
+				<th>Login</th>
+				<th>First name</th>
+				<th>Last name</th>
+			</tr>
+			</thead>
 			<tbody>
 				<c:set var="number" value="0"/>
 				<c:forEach items="${pageItems}" var="entity">
@@ -42,7 +51,9 @@
 							</c:choose>
 						</td>
 						<td>&nbsp;</td>
-						<td>${entity}</td>
+						<td>${entity.login}</td>
+						<td>${entity.firstName}</td>
+						<td>${entity.lastName}</td>
 					</tr>
 					<c:set var="number" value="${number+1}"/>
 				</c:forEach>

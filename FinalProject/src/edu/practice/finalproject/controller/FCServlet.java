@@ -10,7 +10,6 @@ import java.util.Objects;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -34,10 +33,18 @@ public class FCServlet extends HttpServlet {
 	
 	private EntityManager entityManager;
 	
-	public static final String MAPPING_PATTERN = "main";
 	public static final Locale UKRAINIAN_LOCALE = Locale.forLanguageTag("uk");
 	private static final List<Locale> availableLocales= List.of(Locale.ENGLISH,UKRAINIAN_LOCALE);
 	
+	//private static final Logger logger = LogManager.getLogger(FCServlet.class);
+	private static final int NO_APPROPRIATE_FORM_MAPPING_CODE=1;
+	private static final String NO_APPROPRIATE_FORM_MAPPING_MSG="No appropriate mapping for given user, form and action!";
+	private static final String CANT_TRANSFER_TO_ERROR_PAGE_MSG = "Can't transfer to error page"; 
+	private static final String SERVLET_INITIALIZATION_ERROR_MSG = "Servlet cannot be initialized properly";
+	private static final String CANT_TRANSFER_TO_NEXT_FORM_MSG = "Can't transfer to next form page";
+	
+	public static final String MAPPING_PATTERN = "main";
+
 	public FCServlet() {
 		super();
 	}
@@ -66,13 +73,11 @@ public class FCServlet extends HttpServlet {
 			Locale.setDefault(getDefaultLocale());
 			
 		}catch(NamingException | NoSuchAlgorithmException e) {
+			//logger.fatal(SERVLET_INITIALIZATION_ERROR_MSG, e);
 			throw new ServletException(e);
 		}
 	}
 
-	private static final int NO_APPROPRIATE_FORM_MAPPING_CODE=1;
-	private static final String NO_APPROPRIATE_FORM_MAPPING_MSG="No appropriate mapping for given user, form and action!"; 
-	
     private void process(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException {	
     	initLocale(req);
 		clearError(req);
@@ -91,8 +96,10 @@ public class FCServlet extends HttpServlet {
 			}else {
 				try {
 					setError(req,NO_APPROPRIATE_FORM_MAPPING_MSG);
+					//logger.fatal(NO_APPROPRIATE_FORM_MAPPING_MSG);
 					resp.sendError(NO_APPROPRIATE_FORM_MAPPING_CODE,NO_APPROPRIATE_FORM_MAPPING_MSG);
 				} catch (IOException e) {
+					//logger.fatal(CANT_TRANSFER_TO_ERROR_PAGE_MSG, e);
 					throw new ServletException(e);
 				}
 			}
@@ -102,6 +109,7 @@ public class FCServlet extends HttpServlet {
 		try {
 			getServletContext().getRequestDispatcher(currentForm.getName()).forward(req,resp);
 		} catch (IOException e) {
+			//logger.fatal(CANT_TRANSFER_TO_NEXT_FORM_MSG, e);
 			throw new ServletException(e);
 		}
 	}
@@ -168,7 +176,7 @@ public class FCServlet extends HttpServlet {
 	
 	public static Integer getPageElements(final HttpServletRequest req) {
 		final Integer value = (Integer)req.getServletContext().getAttribute(Names.PAGE_ELEMENTS_NUMBER_ATTRIBUTE);
-		if(value==null) return Integer.valueOf(5);
+		if(value==null) return Integer.valueOf(7);
 		return value;
 	}
 
@@ -229,8 +237,7 @@ public class FCServlet extends HttpServlet {
 	}
 
 	public static String getParameterValue(final HttpServletRequest req,final String parameter,final String defaultValue) {
-		final String value=getParameterValue(req.getParameterMap(),parameter);
-		return Objects.isNull(value)?defaultValue:value;
+		return Objects.requireNonNullElse(getParameterValue(req.getParameterMap(),parameter),defaultValue);
 	}
 
 	public static String getParameterValue(final Map<String,String[]> parameters,final String parameter) {
