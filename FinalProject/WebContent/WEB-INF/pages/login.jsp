@@ -13,6 +13,7 @@
 
 	<fieldset><legend><fmt:message key="user.credentials" bundle="${localeBundle}"/></legend>
 		<table>
+<!-- 
 		<tr>
 			<td><label for="role"><fmt:message key="user.role" bundle="${localeBundle}"/></label></td>
 			<td>
@@ -23,6 +24,7 @@
 				</select>
 			</td>
 		</tr>
+ -->
 		<tr>
 			<td><label for="user"><fmt:message key="user.login" bundle="${localeBundle}"/></label></td>
 			<fmt:message key="user.login.prompt" bundle="${localeBundle}" var="userPrompt"/>

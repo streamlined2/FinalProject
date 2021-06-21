@@ -31,7 +31,7 @@ public class LoginAction extends Action {
 			if(!Utils.checkIfValid(req,Names.USER_PARAMETER,Utils::checkLogin)) return false;
 			if(!Utils.checkIfValid(req,Names.PASSWORD_PARAMETER,Utils::checkPassword)) return false;
 
-			final String role=FCServlet.getParameterValue(req,Names.ROLE_PARAMETER);
+			//final String role=FCServlet.getParameterValue(req,Names.ROLE_PARAMETER);
 			final String login=FCServlet.getParameterValue(req,Names.USER_PARAMETER);
 			final byte[] passwordDigest=Utils.getDigest(FCServlet.getParameterValue(req, Names.PASSWORD_PARAMETER).getBytes());
 			
@@ -43,7 +43,7 @@ public class LoginAction extends Action {
 				final Map<String,Object> keyPairs=new HashMap<>();
 				keyPairs.put("login", login);
 				keyPairs.put("passwordDigest", passwordDigest);
-				user=entityManager.findByCompositeKey(Utils.mapUserRoleToClass(role),keyPairs);
+				user=entityManager.findByCompositeKey(User.class,keyPairs);//Utils.mapUserRoleToClass(role)
 			}
 			
 			if(!user.isEmpty()) {

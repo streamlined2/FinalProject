@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.IntPredicate;
 import javax.sql.DataSource;
 
@@ -175,19 +176,22 @@ public final class EntityManager {
 	}
 
 	public <E extends Entity> Optional<E> findByCompositeKey(final Class<E> cl,final Map<String,?> keyPairs) {
-		final StringBuilder clause=StatementBuilder.getSelectByKeyStatement(cl,keyPairs);
-		try (
-				final Connection conn=dataSource.getConnection();				
-				final Statement statement=conn.createStatement();
-				final ResultSet rs=statement.executeQuery(clause.toString())){
-		
-			final E entity=Inspector.createEntity(cl);
-			if(rs.next()) {
-				setProperties(entity, Inspector.getSetters(cl,false), rs);
-				return Optional.of(entity);
+
+		for(final Class<E> entityClass:Inspector.getConcreteDescendantsOf(cl)) {
+			final StringBuilder clause=StatementBuilder.getSelectByKeyStatement(entityClass,keyPairs);
+			try (
+					final Connection conn=dataSource.getConnection();				
+					final Statement statement=conn.createStatement();
+					final ResultSet rs=statement.executeQuery(clause.toString())){
+			
+				if(rs.next()) {
+					final E entity=Inspector.createEntity(entityClass);
+					setProperties(entity, Inspector.getSetters(entityClass,false), rs);
+					return Optional.of(entity);
+				}
+			} catch (SQLException e) {
+				throw new DataAccessException(e);
 			}
-		} catch (SQLException e) {
-			throw new DataAccessException(e);
 		}
 		return Optional.empty();
 	}
