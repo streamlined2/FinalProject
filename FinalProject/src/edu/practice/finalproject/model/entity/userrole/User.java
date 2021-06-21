@@ -21,6 +21,8 @@ public abstract class User extends NaturalKeyEntity {
 		@Override public String toString() { return label;}
 	}
 	
+	protected static final String PASSED_ACTION_SHOULDNT_BE_NULL = "Passed action shouldn't be null";
+	
 	protected String login;
 	protected byte[] passwordDigest;
 	protected String firstName;

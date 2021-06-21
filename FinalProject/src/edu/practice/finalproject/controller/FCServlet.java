@@ -17,6 +17,10 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.Marker;
+
 import edu.practice.finalproject.controller.transition.FormDispatcher;
 import edu.practice.finalproject.model.dataaccess.EntityManager;
 import edu.practice.finalproject.model.entity.userrole.Admin;
@@ -33,18 +37,20 @@ public class FCServlet extends HttpServlet {
 	
 	private EntityManager entityManager;
 	
-	public static final Locale UKRAINIAN_LOCALE = Locale.forLanguageTag("uk");
+	private static final Locale UKRAINIAN_LOCALE = Locale.forLanguageTag("uk");
 	private static final List<Locale> availableLocales= List.of(Locale.ENGLISH,UKRAINIAN_LOCALE);
 	
-	//private static final Logger logger = LogManager.getLogger(FCServlet.class);
+	private static final Logger logger = LogManager.getLogger();
+	
 	private static final int NO_APPROPRIATE_FORM_MAPPING_CODE=1;
 	private static final String NO_APPROPRIATE_FORM_MAPPING_MSG="No appropriate mapping for given user, form and action!";
 	private static final String CANT_TRANSFER_TO_ERROR_PAGE_MSG = "Can't transfer to error page"; 
 	private static final String SERVLET_INITIALIZATION_ERROR_MSG = "Servlet cannot be initialized properly";
 	private static final String CANT_TRANSFER_TO_NEXT_FORM_MSG = "Can't transfer to next form page";
+	private static final String ACCESS_VIOLATION_MSG = "Access violation";
 	
 	public static final String MAPPING_PATTERN = "main";
-
+	
 	public FCServlet() {
 		super();
 	}
@@ -73,7 +79,7 @@ public class FCServlet extends HttpServlet {
 			Locale.setDefault(getDefaultLocale());
 			
 		}catch(NamingException | NoSuchAlgorithmException e) {
-			//logger.fatal(SERVLET_INITIALIZATION_ERROR_MSG, e);
+			logger.fatal(SERVLET_INITIALIZATION_ERROR_MSG, e);
 			throw new ServletException(e);
 		}
 	}
@@ -82,34 +88,39 @@ public class FCServlet extends HttpServlet {
     	initLocale(req);
 		clearError(req);
 		clearMessage(req);
+		
 		Form currentForm=getForm(req);
 		if(currentForm==null) {
 			currentForm=FormDispatcher.getInitialForm();
 		}else {
-			final Action action=currentForm.getAction(req.getParameterMap());
-			final boolean actionSucceeded=action.execute(req,entityManager);
-			currentForm.destroy(req);
-			final User user=getUser(req);
-			final Form nextForm=FormDispatcher.getNextForm(user, currentForm, action, actionSucceeded);
-			if(nextForm!=null) {
-				currentForm=nextForm;
-			}else {
-				try {
+			Action action=currentForm.getAction(req.getParameterMap());
+			try{
+				checkAccess(req, action);
+				boolean succeeded=action.execute(req, entityManager);
+				currentForm.destroy(req);
+				Form nextForm=FormDispatcher.getNextForm(getUser(req), currentForm, action, succeeded);
+				if(nextForm!=null) {
+					currentForm=nextForm;
+				}else {
 					setError(req,NO_APPROPRIATE_FORM_MAPPING_MSG);
-					//logger.fatal(NO_APPROPRIATE_FORM_MAPPING_MSG);
+					logger.fatal(NO_APPROPRIATE_FORM_MAPPING_MSG);
 					resp.sendError(NO_APPROPRIATE_FORM_MAPPING_CODE,NO_APPROPRIATE_FORM_MAPPING_MSG);
-				} catch (IOException e) {
-					//logger.fatal(CANT_TRANSFER_TO_ERROR_PAGE_MSG, e);
-					throw new ServletException(e);
 				}
+			} catch(SecurityException e) {
+				logger.fatal(ACCESS_VIOLATION_MSG, e);
+				throw new ServletException(e);
+			} catch (IOException e) {
+				logger.fatal(CANT_TRANSFER_TO_ERROR_PAGE_MSG, e);
+				throw new ServletException(e);
 			}
 		}
+		
 		setForm(req, currentForm);
-		currentForm.init(req,entityManager);
+		currentForm.init(req, entityManager);
 		try {
 			getServletContext().getRequestDispatcher(currentForm.getName()).forward(req,resp);
 		} catch (IOException e) {
-			//logger.fatal(CANT_TRANSFER_TO_NEXT_FORM_MSG, e);
+			logger.fatal(CANT_TRANSFER_TO_NEXT_FORM_MSG, e);
 			throw new ServletException(e);
 		}
 	}
@@ -124,22 +135,25 @@ public class FCServlet extends HttpServlet {
 		process(req,resp);
 	}
 	
-	public static Form getForm(final HttpServletRequest req) {
+	private static void checkAccess(HttpServletRequest req, Action action) throws SecurityException {
+		User user=getUser(req);
+		if(Objects.nonNull(user)) {
+			user.checkPermission(action);
+		}
+	}
+	
+	private static Form getForm(final HttpServletRequest req) {
 		return (Form)getAttribute(req,Names.FORM_ATTRIBUTE);
 	}
 	
-	public static void setForm(final HttpServletRequest req, final Form form) {
+	private static void setForm(final HttpServletRequest req, final Form form) {
 		setAttribute(req, Names.FORM_ATTRIBUTE, form);
 	}
 	
-	public static void clearForm(final HttpServletRequest req) {
+	private static void clearForm(final HttpServletRequest req) {
 		removeAttribute(req, Names.FORM_ATTRIBUTE);
 	}
 
-	public static EntityManager getEntityManager(final HttpServletRequest req) {
-		return (EntityManager)req.getServletContext().getAttribute(Names.ENTITY_MANAGER_ATTRIBUTE);
-	}
-	
 	public static User getUser(final HttpServletRequest req) {
 		return (User)getAttribute(req,Names.USER_ATTRIBUTE);
 	}
@@ -175,9 +189,7 @@ public class FCServlet extends HttpServlet {
 	}
 	
 	public static Integer getPageElements(final HttpServletRequest req) {
-		final Integer value = (Integer)req.getServletContext().getAttribute(Names.PAGE_ELEMENTS_NUMBER_ATTRIBUTE);
-		if(value==null) return Integer.valueOf(7);
-		return value;
+		return Objects.requireNonNullElse((Integer)req.getServletContext().getAttribute(Names.PAGE_ELEMENTS_NUMBER_ATTRIBUTE), Integer.valueOf(7));
 	}
 
 	public static Locale getDefaultLocale() {

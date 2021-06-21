@@ -29,7 +29,7 @@ public class SaveCarAction extends AdminAction {
 	private static final String CANT_SAVE_CAR_MSG = "Can't save car";
 	private static final String COST_SHOULD_BE_POSITIVE_MSG = "Lease cost should be positive value";
 	private static final String WRONG_PRODUCTION_DATE_FORMAT_MSG = "Wrong car production date";
-	private static final String WRONG_PRODUCTION_DATE_VALUE_MSG = "Production date %tF should succeed current date %tF";
+	private static final String WRONG_PRODUCTION_DATE_VALUE_MSG = "Production date %tF should precede current date %tF";
 	
 	public SaveCarAction(String name) {
 		super(name);
@@ -89,10 +89,10 @@ public class SaveCarAction extends AdminAction {
 			}
 			car.setCost(costValue);
 			
-			final String productionDate=FCServlet.getParameterValue(req,Names.CAR_PRODUCTION_DATE_PARAMETER);
+			final String productionDate = FCServlet.getParameterValue(req,Names.CAR_PRODUCTION_DATE_PARAMETER);
 			final LocalDate prodDateValue = LocalDate.parse(productionDate);
 			final LocalDate now = LocalDate.now();
-			if(prodDateValue.isBefore(now)) {
+			if(createNew.booleanValue() && now.isBefore(prodDateValue)) {
 				FCServlet.setError(req, String.format(WRONG_PRODUCTION_DATE_VALUE_MSG, prodDateValue, now));
 				return false;
 			}

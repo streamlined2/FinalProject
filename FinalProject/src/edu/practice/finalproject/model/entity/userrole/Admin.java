@@ -1,11 +1,14 @@
 package edu.practice.finalproject.model.entity.userrole;
 
+import java.util.Objects;
+
 import edu.practice.finalproject.view.action.Action;
 import edu.practice.finalproject.view.action.AdminAction;
+import edu.practice.finalproject.view.action.ClientAction;
 
 public class Admin extends User {
 
-	public Admin(final String login,final byte[] passwordDigest, String firstName, String lastName)  {
+	public Admin(String login, byte[] passwordDigest, String firstName, String lastName)  {
 		super(login, passwordDigest, firstName, lastName);
 	}
 	
@@ -13,7 +16,8 @@ public class Admin extends User {
 
 	@Override
 	public void checkPermission(Action action) throws SecurityException {
-		if(!(action instanceof AdminAction)) throw new SecurityException("Administrator may perform appropriate actions only!");
+		Objects.requireNonNull(action, PASSED_ACTION_SHOULDNT_BE_NULL);
+		if(action.getClass().getSuperclass()!=Action.class && !(action instanceof AdminAction)) throw new SecurityException(String.format("Administrator can't perform this action %s!",action));
 	}
 
 	@Override

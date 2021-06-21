@@ -6,7 +6,7 @@ import edu.practice.finalproject.controller.FCServlet;
 import edu.practice.finalproject.controller.Names;
 import edu.practice.finalproject.model.dataaccess.EntityManager;
 
-public class PreviousPageAction extends PageNavigationAction {
+public class PreviousPageAction extends Action {
 
 	public PreviousPageAction(String name) {
 		super(name);

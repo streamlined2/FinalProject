@@ -4,7 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import edu.practice.finalproject.model.dataaccess.EntityManager;
 
-public class LastPageAction extends PageNavigationAction {
+public class LastPageAction extends Action {
 
 	public LastPageAction(String name) {
 		super(name);

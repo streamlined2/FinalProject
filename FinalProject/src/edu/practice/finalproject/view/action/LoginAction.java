@@ -20,7 +20,7 @@ public class LoginAction extends Action {
 		super(name);
 	}
 
-	private static final String HELLO_EN = "Hello";
+	private static final String HELLO_EN = "Hi";
 	private static final String HELLO_UK = "Добрий день";
 	private static final String ERROR_MSG="Error occured while trying to login. Please try again";
 	private static final String USER_BLOCKED_MSG = "Please talk to administrator to resolve login issue";

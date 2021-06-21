@@ -6,7 +6,7 @@ import edu.practice.finalproject.controller.FCServlet;
 import edu.practice.finalproject.controller.Names;
 import edu.practice.finalproject.model.dataaccess.EntityManager;
 
-public class FirstPageAction extends PageNavigationAction {
+public class FirstPageAction extends Action {
 
 	public FirstPageAction(String name) {
 		super(name);
