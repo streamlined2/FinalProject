@@ -1,6 +1,5 @@
 package edu.practice.finalproject.model.entity.userrole;
 
-import edu.practice.finalproject.model.entity.userrole.User.Role;
 import edu.practice.finalproject.view.action.Action;
 import edu.practice.finalproject.view.action.ClientAction;
 

@@ -32,7 +32,7 @@ public class CarReview extends NaturalKeyEntity {
 	public List<Method> keyGetters() {
 		try {
 			return List.of(
-					OrderReview.class.getMethod("getLeaseOrder")
+					CarReview.class.getMethod("getLeaseOrder")
 			);
 		} catch (NoSuchMethodException | SecurityException e) {
 			throw new EntityException(e);

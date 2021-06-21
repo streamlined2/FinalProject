@@ -41,9 +41,9 @@ public class MaintenanceInvoice extends Invoice {
 	public List<Method> keyGetters() {
 		try {
 			return List.of(
-					LeaseInvoice.class.getMethod("getLeaseOrder"),
-					LeaseInvoice.class.getMethod("getManager"),
-					LeaseInvoice.class.getMethod("getSignTime")
+					MaintenanceInvoice.class.getMethod("getLeaseOrder"),
+					MaintenanceInvoice.class.getMethod("getManager"),
+					MaintenanceInvoice.class.getMethod("getSignTime")
 			);
 		} catch (NoSuchMethodException | SecurityException e) {
 			throw new EntityException(e);
