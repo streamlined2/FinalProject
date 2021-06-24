@@ -56,10 +56,22 @@ import edu.practice.finalproject.view.form.UserBlockingForm;
 import edu.practice.finalproject.view.form.AdminTaskSelectionForm;
 import edu.practice.finalproject.view.form.BrowseOrderListForm;
 
+/**
+ * Dispatcher that determines first and following interface forms
+ * @author Serhii Pylypenko
+ *
+ */
 public final class FormDispatcher {
 	
 	private FormDispatcher() {}
 	
+	private static FormDispatcher instance = new FormDispatcher();
+	
+	public static FormDispatcher getInstance() { return instance;}
+	
+	/**
+	 * Set of registered actions/commands that user may choose as options to take 
+	 */
 	public static final SwitchLocaleAction SWITCH_LOCALE_ACTION = new SwitchLocaleAction("change_locale");
 	public static final LogoutAction LOGOUT_ACTION = new LogoutAction("logout");
 	public static final LoginAction LOGIN_ACTION = new LoginAction("login");
@@ -93,6 +105,9 @@ public final class FormDispatcher {
 	public static final CarInPerfectConditionAction CAR_IN_PERFECT_CONDITION_ACTION = new CarInPerfectConditionAction("car_in_perfect_condition");
 	public static final CarNeedsMaintenanceAction CAR_NEEDS_MAINTENANCE_ACTION = new CarNeedsMaintenanceAction("car_needs_maintenance");
 	
+	/**
+	 * Set of registered forms that constitute user interface 
+	 */
 	public static final LoginForm LOGIN_FORM = new LoginForm("/WEB-INF/pages/login.jsp");
 	public static final RegisterForm REGISTER_FORM = new RegisterForm("/WEB-INF/pages/register.jsp");
 	public static final CarSelectionCriteriaForm CAR_SELECTION_CRITERIA_FORM = new CarSelectionCriteriaForm("/WEB-INF/pages/car-selection.jsp");
@@ -114,9 +129,21 @@ public final class FormDispatcher {
 	public static final UserBlockingForm USER_BLOCKING_FORM = new UserBlockingForm("/WEB-INF/pages/user-blocking.jsp");
 	public static final NewEditCarForm NEW_EDIT_CAR_FORM = new NewEditCarForm("/WEB-INF/pages/new-edit-car.jsp");
 	
-	public static Form getInitialForm() { return LOGIN_FORM;}
+	/**
+	 * Returns foremost interface form that precedes others 
+	 * @return initial interface form
+	 */
+	public Form getInitialForm() { return LOGIN_FORM;}
 
-	public static Form getNextForm(final User user,final Form form,final Action action,final boolean actionSucceeded) {
+	/**
+	 * Returns same form if locale switched or previous action failed, or initial form if user logged out, otherwise delegates call to {@code TransitionRuleMap.getNextForm} method  
+	 * @param user object that represents authenticated user, or null if he has not logged in yet
+	 * @param form current interface form
+	 * @param action selected option/command
+	 * @param actionSucceeded true if action succeeded
+	 * @return next interface form to make transition to
+	 */
+	public Form getNextForm(final User user,final Form form,final Action action,final boolean actionSucceeded) {
 		if(action==SWITCH_LOCALE_ACTION) return form;
 		if(action==LOGOUT_ACTION) return getInitialForm();
 		if(!actionSucceeded) return form;

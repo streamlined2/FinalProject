@@ -1,5 +1,10 @@
 package edu.practice.finalproject.controller;
 
+/**
+ * Container of various named constants for attributes, request parameters, etc 
+ * @author Serhii Pylypenko
+ *
+ */
 public final class Names {
 	
 	private Names() {}

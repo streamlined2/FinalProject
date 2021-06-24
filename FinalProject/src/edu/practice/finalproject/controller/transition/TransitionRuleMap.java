@@ -15,6 +15,11 @@ import edu.practice.finalproject.model.entity.userrole.User;
 import edu.practice.finalproject.view.action.Action;
 import edu.practice.finalproject.view.form.Form;
 
+/**
+ * Map that holds transition rules for user interface forms
+ * @author Serhii Pylypenko
+ *
+ */
 public final class TransitionRuleMap {
 	
 	public static TransitionRuleMap getInstance() {
@@ -25,6 +30,9 @@ public final class TransitionRuleMap {
 		private static final TransitionRuleMap INSTANCE = new TransitionRuleMap();
 	}
 	
+	/**
+	 * Fills default rules for singleton instance
+	 */
 	private TransitionRuleMap() {
 		//setup transition rule map
 		//stray user should be registered or logged in first
@@ -99,7 +107,14 @@ public final class TransitionRuleMap {
 
 	}
 	
+	/**
+	 * Map key class that consists of user role, original interface form and taken action which leads to another form
+	 * @author Serhii Pylypenko
+	 *
+	 */
 	private static class TransitionRuleKey {
+		private static final String PARAMETER_KEY_SHOULD_NOT_BE_NULL = "parameter key should not be null";
+		
 		private final Class<? extends User> userClass;
 		private final Form form;
 		private final Action action;
@@ -124,10 +139,19 @@ public final class TransitionRuleMap {
 		@Override public int hashCode() {
 			return Objects.hash(userClass,form,action);
 		}
-		
+
+		/**
+		 * Tests if {@code this.key} is more general than passed {@code key} parameter
+		 * @param key map key to check against 
+		 * @return true if {@code this.key} is more general and accepts given parameter {@code key} as sub-rule
+		 */
 		public boolean encompasses(final TransitionRuleKey key) {
+			Objects.requireNonNull(key,PARAMETER_KEY_SHOULD_NOT_BE_NULL);
 			boolean suits = true;
-			if(userClass!=null)	suits = userClass.isAssignableFrom(key.userClass); 
+			if(userClass!=null)	
+				suits = userClass.isAssignableFrom(key.userClass);
+			else 
+				suits = (key.userClass==null);
 			if(form!=null) suits = suits && Objects.equals(form, key.form);
 			if(action!=null) suits = suits && Objects.equals(action, key.action); 
 			return suits;
@@ -140,6 +164,13 @@ public final class TransitionRuleMap {
 		ruleMap.put(new TransitionRuleKey(userClass,sourceForm,action), targetForm);
 	}
 	
+	/**
+	 * Fetches first most agreeable rule and determines interface form to transit after user takes action 
+	 * @param user authenticated user object if any, or null if user still hasn't logged in
+	 * @param sourceForm current interface form to make transition from
+	 * @param action represents action/command user takes to perform task  
+	 * @return next interface form enveloped in {@code Optional} or {@code Optional.empty} if not found
+	 */
 	public Optional<Form> getNextForm(final User user,final Form sourceForm,final Action action) {
 		final TransitionRuleKey seekKey=new TransitionRuleKey(user==null?null:user.getClass(), sourceForm, action);
 		for(final Entry<TransitionRuleKey,Form> entry:ruleMap.entrySet()) {
@@ -147,5 +178,4 @@ public final class TransitionRuleMap {
 		}
 		return Optional.empty();
 	}
-
 }

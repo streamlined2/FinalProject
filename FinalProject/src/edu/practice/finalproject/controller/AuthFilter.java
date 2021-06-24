@@ -17,7 +17,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * Servlet Filter implementation class AuthFilter
+ * Servlet filter which checks for incorrect references within JSP pages 
+ * that do not refer to front controller servlet and prevents unauthorized access
+ * @author Serhii Pylypenko
  */
 public class AuthFilter implements Filter {
 	
@@ -48,6 +50,9 @@ public class AuthFilter implements Filter {
 				correctServletPath(req) && correctContextPath(req);
 	}
 
+	/**
+	 * Checks if reference to follow refers to front controller servlet or other allowed pages, proceeds to next filter/servlet or error page by throwing exception
+	 */
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 		HttpServletRequest req = (HttpServletRequest)request;
@@ -57,9 +62,8 @@ public class AuthFilter implements Filter {
 			chain.doFilter(req, resp);
 		} else {
 			FCServlet.invalidateSession(req);
-			logger.error(WRONG_REQUEST_MSG);
+			logger.error(WRONG_REQUEST_MSG,req.getRequestURI());
 			throw new ServletException(String.format(WRONG_REQUEST_MSG,req.getRequestURI()));
-			//resp.sendError(1, String.format(WRONG_REQUEST_MSG,req.getRequestURI()));
 		}
 	}
 

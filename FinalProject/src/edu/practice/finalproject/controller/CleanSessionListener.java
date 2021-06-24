@@ -6,8 +6,8 @@ import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 
 /**
- * Application Lifecycle Listener implementation class CleanSessionListener
- *
+ * Session listener which removes and clears every related attribute
+ * @author Serhii Pylypenko
  */
 public class CleanSessionListener implements HttpSessionListener {
 

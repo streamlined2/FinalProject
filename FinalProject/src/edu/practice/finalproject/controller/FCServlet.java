@@ -28,12 +28,13 @@ import edu.practice.finalproject.view.form.Form;
 import edu.practice.finalproject.utilities.Utils;
 
 /**
- * Main servlet class that implements Front Controller patterm
+ * Main servlet class that implements Front Controller pattern
  * @author Serhii Pylypenko
  */
 public class FCServlet extends HttpServlet {
 	
 	private EntityManager entityManager;
+	private FormDispatcher formDispatcher;
 	
 	private static final Locale UKRAINIAN_LOCALE = Locale.forLanguageTag("uk");
 	private static final List<Locale> availableLocales= List.of(Locale.ENGLISH,UKRAINIAN_LOCALE);
@@ -53,13 +54,18 @@ public class FCServlet extends HttpServlet {
 		super();
 	}
 	
+	/**
+	 * Locates and injects external resource references, reads and Initializes servlet's parameters 
+	 */
     @Override
 	public void init() throws ServletException {
 		try{
 			final Context envContext=(Context)new InitialContext().lookup("java:/comp/env");
-			entityManager=new EntityManager((DataSource)envContext.lookup("jdbc/autoleasing"));
+			entityManager = new EntityManager((DataSource)envContext.lookup("jdbc/autoleasing"));
+			
+			formDispatcher = FormDispatcher.getInstance();
 
-			final Admin primaryAdmin=new Admin(
+			final Admin primaryAdmin = new Admin(
 					getServletContext().getInitParameter("adminUserName"),
 					Utils.getDigest(getServletContext().getInitParameter("adminPassword").getBytes()),
 					"Primary","User");
@@ -82,24 +88,31 @@ public class FCServlet extends HttpServlet {
 		}
 	}
 
-    private void process(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException {	
+    /**
+     * Main servlet method which processes request by selecting and initializing next user interface form, 
+     * checking permissions, performing action, and forwarding to chosen form  
+     * @param req
+     * @param resp
+     * @throws ServletException
+     */
+    private void process(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException {
     	initLocale(req);
 		clearError(req);
 		clearMessage(req);
 		
 		Form currentForm=getForm(req);
 		if(currentForm==null) {
-			currentForm=FormDispatcher.getInitialForm();
+			currentForm=getFormDispatcher().getInitialForm();
 		}else {
 			Action action=currentForm.getAction(req.getParameterMap());
 			try{
 				checkAccess(req, action);
 				boolean succeeded=action.execute(req, entityManager);
 				currentForm.destroy(req);
-				Form nextForm=FormDispatcher.getNextForm(getUser(req), currentForm, action, succeeded);
+				Form nextForm=getFormDispatcher().getNextForm(getUser(req), currentForm, action, succeeded);
 				if(nextForm!=null) {
 					currentForm=nextForm;
-				}else {
+				} else {
 					setError(req,NO_APPROPRIATE_FORM_MAPPING_MSG);
 					logger.fatal(NO_APPROPRIATE_FORM_MAPPING_MSG);
 					resp.sendError(NO_APPROPRIATE_FORM_MAPPING_CODE,NO_APPROPRIATE_FORM_MAPPING_MSG);
@@ -107,7 +120,7 @@ public class FCServlet extends HttpServlet {
 			} catch(SecurityException e) {
 				logger.fatal(ACCESS_VIOLATION_MSG, e);
 				throw new ServletException(e);
-			} catch (IOException e) {
+			} catch(IOException e) {
 				logger.fatal(CANT_TRANSFER_TO_ERROR_PAGE_MSG, e);
 				throw new ServletException(e);
 			}
@@ -133,6 +146,8 @@ public class FCServlet extends HttpServlet {
 		process(req,resp);
 	}
 	
+	public FormDispatcher getFormDispatcher() { return formDispatcher;}
+	
 	private static void checkAccess(HttpServletRequest req, Action action) throws SecurityException {
 		User user=getUser(req);
 		if(Objects.nonNull(user)) {
@@ -140,15 +155,15 @@ public class FCServlet extends HttpServlet {
 		}
 	}
 	
-	private static Form getForm(final HttpServletRequest req) {
+	public Form getForm(final HttpServletRequest req) {
 		return (Form)getAttribute(req,Names.FORM_ATTRIBUTE);
 	}
 	
-	private static void setForm(final HttpServletRequest req, final Form form) {
+	private void setForm(final HttpServletRequest req, final Form form) {
 		setAttribute(req, Names.FORM_ATTRIBUTE, form);
 	}
 	
-	private static void clearForm(final HttpServletRequest req) {
+	private void clearForm(final HttpServletRequest req) {
 		removeAttribute(req, Names.FORM_ATTRIBUTE);
 	}
 
@@ -275,8 +290,6 @@ public class FCServlet extends HttpServlet {
 	public static void invalidateSession(final HttpServletRequest req) {
 		final HttpSession session=req.getSession(false);
 		if(session!=null) {
-			FCServlet.clearUser(req);
-			FCServlet.clearForm(req);
 			session.invalidate();
 		}
 	}
