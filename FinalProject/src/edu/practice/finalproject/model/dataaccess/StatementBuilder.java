@@ -119,7 +119,7 @@ public final class StatementBuilder {
 		if(k<list.length) {
 			sb.append(mapper.apply(list[k++]));
 			while(k<list.length) {
-				sb.append(separator).append(prefix.isBlank()?"":prefix+".").append(mapper.apply(list[k++]));
+				sb.append(separator).append(prefix.trim().isEmpty()?"":prefix+".").append(mapper.apply(list[k++]));
 			}
 		}
 		return sb;

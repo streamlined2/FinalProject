@@ -36,7 +36,7 @@ public class RejectOrderAction extends ManagerAction {
 		final LeaseOrder leaseOrder = (LeaseOrder)FCServlet.getAttribute(req, Names.SELECTED_ORDER_ATTRIBUTE);
 		final String rejectionReason = FCServlet.getParameterValue(req, Names.REJECTION_REASON_PARAMETER);
 		
-		if(rejectionReason.isBlank()) {
+		if(rejectionReason.trim().isEmpty()) {
 			FCServlet.setError(req, EMPTY_REJECTION_REASON_MSG);
 			return false;
 		}

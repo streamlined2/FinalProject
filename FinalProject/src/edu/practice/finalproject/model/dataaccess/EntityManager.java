@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.IntPredicate;
 import javax.sql.DataSource;
 
@@ -276,7 +275,7 @@ public final class EntityManager {
 		if(Entity.class.isAssignableFrom(cl) && value instanceof Number) {
 			final long id = ((Number)value).longValue();
 			final Optional<Entity> entity = find((Class<Entity>)cl,id);
-			if(entity.isEmpty()) {
+			if(!entity.isPresent()) {
 				Entity e = Inspector.createEntity((Class<? extends Entity>)cl);
 				e.setId(id);
 				return e;

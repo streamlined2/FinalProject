@@ -24,7 +24,7 @@ public class ConfirmCarCriteriaAction extends ClientAction {
 	}
 	
 	private static <V> void addFilterKeyValue(final Map<String,Object> keyPairs,final String flag,final String key,final Optional<V> value) {
-		if(Objects.nonNull(flag) && !flag.isEmpty() && !value.isEmpty()) {
+		if(Objects.nonNull(flag) && !flag.isEmpty() && value.isPresent()) {
 			keyPairs.put(key, value.get());
 		}
 	}

@@ -52,28 +52,28 @@ public class SaveCarAction extends AdminAction {
 
 		final String manufacturer=FCServlet.getParameterValue(req,Names.MANUFACTURER_PARAMETER);		
 		final Optional<Manufacturer> manufacturerValue = Inspector.getByLabel(Manufacturer.class, manufacturer);
-		if(manufacturerValue.isEmpty()) {
+		if(!manufacturerValue.isPresent()) {
 			FCServlet.setError(req, WRONG_MANUFACTURER_MSG);
 			return false;
 		}
 		
 		final String qualityGrade=FCServlet.getParameterValue(req,Names.QUALITY_GRADE_PARAMETER);
 		final Optional<QualityGrade> qualityGradeValue = Inspector.getByLabel(QualityGrade.class, qualityGrade);
-		if(qualityGradeValue.isEmpty()) {
+		if(!qualityGradeValue.isPresent()) {
 			FCServlet.setError(req, WRONG_QUALITY_GRADE_MSG);
 			return false;			
 		}
 
 		final String color=FCServlet.getParameterValue(req,Names.COLOR_PARAMETER);		
 		final Optional<Color> colorValue = Inspector.getByLabel(Color.class, color);
-		if(colorValue.isEmpty()) {
+		if(!colorValue.isPresent()) {
 			FCServlet.setError(req, WRONG_COLOR_MSG);
 			return false;
 		}
 
 		final String style=FCServlet.getParameterValue(req,Names.STYLE_PARAMETER);
 		final Optional<Style> styleValue = Inspector.getByLabel(Style.class, style);
-		if(styleValue.isEmpty()) {
+		if(!styleValue.isPresent()) {
 			FCServlet.setError(req, WRONG_STYLE_MSG);
 			return false;
 		}

@@ -53,7 +53,7 @@ public class LoginAction extends Action {
 				user=entityManager.findByCompositeKey(User.class,keyPairs);//Utils.mapUserRoleToClass(role)
 			}
 			
-			if(!user.isEmpty()) {
+			if(user.isPresent()) {
 				if(user.get().getBlocked()) {
 					FCServlet.setError(req, USER_BLOCKED_MSG);
 					return false;
