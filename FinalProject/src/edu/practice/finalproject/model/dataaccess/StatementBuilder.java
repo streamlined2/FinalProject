@@ -17,6 +17,11 @@ import edu.practice.finalproject.model.entity.Entity;
 import edu.practice.finalproject.model.entity.NaturalKeyEntity;
 import edu.practice.finalproject.utilities.Utils;
 
+/**
+ * SQL query statement construction class
+ * @author Serhii Pylypenko
+ *
+ */
 public final class StatementBuilder {
 	
 	private static final String DELETE_CLAUSE = "DELETE FROM ";
@@ -43,27 +48,64 @@ public final class StatementBuilder {
 		return qualifier+"."+attribute;
 	}
 
+	/**
+	 * Helper method to map entity class {@code cl} to table name
+	 * @param cl entity class
+	 * @return mapped table name
+	 */
 	public static String getTableName(final Class<? extends Entity> cl) {
 		return cl.getSimpleName().toLowerCase();
 	}
-	
+
+	/**
+	 * Returns name of link table which couples master and slave entity class tables
+	 * @param <M>master type
+	 * @param <S> slave type
+	 * @param master master class
+	 * @param slave slave class
+	 * @return name of link table 
+	 */
 	public static <M extends Entity,S extends Entity> String getLinkTableName(
 			final Class<M> master,final Class<S> slave) {
 		return getTableName(master)+"_"+getTableName(slave);
 	}
 	
+	/**
+	 * Returns link field name of class for given {@code entity} within link table  
+	 * @param entity 
+	 * @return link field name for given {@code entity}
+	 */
 	public static String getLinkName(final Entity entity) {
 		return getLinkName(entity.getClass());
 	}
 	
+	/**
+	 * Returns link field name of class for given entity class {@code cl} within link table  
+	 * @param <E> entity type
+	 * @param cl entity class
+	 * @return link field name for given entity class {@code cl}
+	 */
 	public static <E extends Entity> String getLinkName(final Class<E> cl) {
 		return cl.getSimpleName().toLowerCase()+"_"+Entity.ID_FIELD;
 	}
 	
+	/**
+	 * Composes field list string of {@code accessor} that is separated by {@code separator}
+	 * @param accessor list of accessor methods
+	 * @param separator
+	 * @return string field list of accessors
+	 */
 	private static StringBuilder getFieldList(final Iterable<Method> accessor,final String separator) {
 		return getFieldList(accessor,separator,"");
 	}
 	
+	/**
+	 * Composes qualified field list string of {@code accessor} that is separated by {@code separator}
+	 * @param accessor list of accessor methods
+	 * @param separator
+	 * @param prefix for qualified field name
+	 * @return string field list of accessors for qualified fields
+	 */
 	private static StringBuilder getFieldList(final Iterable<Method> accessor,final String separator,final String prefix) {
 		final StringBuilder sb=new StringBuilder();
 		final Iterator<Method> i=accessor.iterator();
@@ -76,6 +118,11 @@ public final class StatementBuilder {
 		return sb;
 	}
 	
+	/**
+	 * Composes order keys string of field names, separated by commas
+	 * @param orderKeys map of order fields where key is field name and boolean value should be true if ordered ascending, false otherwise
+	 * @return order fields string
+	 */
 	private static StringBuilder getOrderFieldList(final Map<String,Boolean> orderKeys) {
 		final StringBuilder sb=new StringBuilder();
 		final Iterator<Entry<String, Boolean>> i=orderKeys.entrySet().iterator();
@@ -98,7 +145,15 @@ public final class StatementBuilder {
 	private static StringBuilder getFieldValueList(final Iterable<Method> fields,final Object[] values,final String separator) {
 		return getFieldValueList(fields,values,separator,"");
 	}
-	
+
+	/**
+	 * Composes string representation of pairs of qualified field names and its values, separated by {@code separator}
+	 * @param fields list of {@code fields} represented by getter or setter methods
+	 * @param values array of field values
+	 * @param separator
+	 * @param prefix field name qualifier
+	 * @return string of pairs of qualified field names and values
+	 */
 	private static StringBuilder getFieldValueList(final Iterable<Method> fields,final Object[] values,final String separator,final String prefix) {
 		final StringBuilder sb=new StringBuilder();
 		final Iterator<Method> fieldIterator=fields.iterator();
@@ -112,7 +167,15 @@ public final class StatementBuilder {
 		}
 		return sb;
 	}
-	
+
+	/**
+	 * Composes string representation of {@code list} every item of which is mapped to string by {@code mapper} method reference
+	 * @param separator separates string representation of values
+	 * @param prefix prepends mapped value if not empty
+	 * @param mapper mapping method reference to extract string representation from array item {@code list}
+	 * @param list of values
+	 * @return string representation of array of values
+	 */
 	private static StringBuilder getValueList(final String separator,final String prefix,final Function<Object,String> mapper,final Object... list) {
 		final StringBuilder sb=new StringBuilder();
 		int k=0;
@@ -124,7 +187,13 @@ public final class StatementBuilder {
 		}
 		return sb;
 	}
-	
+
+	/**
+	 * Computes value for every getter method from {@code getters} list and entity {@code entity}, returns them as object array
+	 * @param entity entity which field values should be computed
+	 * @param getters list of getter methods of {@code entity} entity
+	 * @return object array of computed values for every {@entity} field which has getter in {@code getters}
+	 */
 	private static Object[] getValues(final Entity entity,final List<Method> getters) {
 		final Object[] values=new Object[getters.size()];
 		int k=0;
@@ -134,6 +203,11 @@ public final class StatementBuilder {
 		return values;
 	}
 	
+	/**
+	 * Composes SQL statement for entity modification 
+	 * @param entity to save in database
+	 * @return string which contains SQL update statement
+	 */
 	public static StringBuilder getUpdateStatement(final Entity entity) {
 		final List<Method> getters=Inspector.getGetters(entity.getClass(),true);
 		final Object[] values=getValues(entity,getters);
@@ -149,6 +223,12 @@ public final class StatementBuilder {
 				append(" )");
 	}
 
+	/**
+	 * Composes SQL statement to fetch entity of class {@code cl} by primary key {@code key}
+	 * @param cl entity class to fetch
+	 * @param key primary key for entity to fetch
+	 * @return string representation of SQL statement for entity fetching
+	 */
 	public static StringBuilder getSelectByIdStatement(final Class<? extends Entity> cl,final Long key) {
 		return new StringBuilder(SELECT_CLAUSE).
 				append(getFieldList(Inspector.getSetters(cl,false),",")).
@@ -160,7 +240,15 @@ public final class StatementBuilder {
 				append(StatementBuilder.mapObjectToString(key)).
 				append(" )");
 	}
-	
+
+	/**
+	 * Composes SQL statement to fetch entity of class {@code cl} by its composite natural key {@code keys}
+	 * @param <E> type of natural key entity
+	 * @param cl entity class to fetch
+	 * @param entity entity which fields compose natural key components
+	 * @param keys array of composite natural key values
+	 * @return string representation of SQL statement for entity fetching
+	 */
 	public static <E extends NaturalKeyEntity> StringBuilder getSelectByNaturalKeyStatement(final Class<E> cl,final E entity,final Object...keys) {
 		return new StringBuilder(SELECT_CLAUSE).
 				append(getFieldList(Inspector.getSetters(cl,false),",","B")).
@@ -177,12 +265,27 @@ public final class StatementBuilder {
 		return getSelectByKeyOrderedStatement(cl,keyPairs,null);
 	}
 	
+	/**
+	 * Composes SQL statement to fetch ordered entity list of class {@code cl} filtered by {@code keyPairs}, ordered by {@code orderKeys}, starting from {@code startElement} and ending at {@code endElement}
+	 * @param cl entity class to fetch
+	 * @param keyPairs map of filtering keys and values
+	 * @param orderKeys sort keys
+	 * @param startElement starting element of query
+	 * @param endElement ending element of query
+	 * @return string representation of SQL statement for entity fetching
+	 */
 	public static StringBuilder getSelectByKeyOrderedStatement(final Class<? extends Entity> cl,final Map<String,?> keyPairs,final Map<String,Boolean> orderKeys,final long startElement,final long endElement) {
 		final StringBuilder sb=getSelectByKeyOrderedStatement(cl,keyPairs,orderKeys);
 		appendLimiters(sb, startElement, endElement);
 		return sb;
 	}
 
+	/**
+	 * Helper method to add LIMIT clause to passed SQL statement {@code sb} to limit query starting from {@code startElement} up to {@code endElement} 
+	 * @param sb SQL statement for query to limit size of result
+	 * @param startElement starting element
+	 * @param endElement ending element
+	 */
 	private static void appendLimiters(final StringBuilder sb, final long startElement, final long endElement) {
 		final long count=Math.max(endElement-startElement+1,0L);
 		if(count>0) {
@@ -190,6 +293,13 @@ public final class StatementBuilder {
 		}
 	}
 
+	/**
+	 * Composes SQL statement to fetch ordered entity list of class {@code cl} filtered by {@code keyPairs}, ordered by {@code orderKeys}
+	 * @param cl entity class to fetch
+	 * @param keyPairs map of filtering keys and values
+	 * @param orderKeys sort keys
+	 * @return string representation of SQL statement for entity fetching
+	 */
 	public static StringBuilder getSelectByKeyOrderedStatement(final Class<? extends Entity> cl,final Map<String,?> keyPairs,final Map<String,Boolean> orderKeys) {
 		final StringBuilder sb=new StringBuilder(SELECT_CLAUSE).
 				append(getFieldList(Inspector.getSetters(cl,false),",")).
@@ -207,7 +317,14 @@ public final class StatementBuilder {
 	private static <V> StringBuilder getKeyPairWhereClause(final Map<String,V> entries) {
 		return getKeyPairWhereClause(entries,null);
 	}
-	
+
+	/**
+	 * Helper method to compose WHERE clause by scanning {@code entries} map and interpreting its key entry as attribute name, prefixed by {@code alias}, and entry value for filtering 
+	 * @param <V> entry value type
+	 * @param entries map of filtering keys and values
+	 * @param alias alias of table used as attribute prefix 
+	 * @return WHERE clause for SQL statement
+	 */
 	private static <V> StringBuilder getKeyPairWhereClause(final Map<String,V> entries,final Character alias) {
 		final String prefix = Objects.isNull(alias)?"":alias+".";
 		final StringBuilder sb=new StringBuilder();
@@ -223,6 +340,12 @@ public final class StatementBuilder {
 		return sb;
 	}
 	
+	/**
+	 * Composes simple SQL statement to fetch all entities from mapped table for {@code cl}
+	 * @param cl class of entities to fetch 
+	 * @param skipID do not include primary key of entity, if true; false otherwise
+	 * @return SQL statement to fetch entities from given table for entity {@code cl}
+	 */
 	public static StringBuilder getFetchEntitiesStatement(final Class<? extends Entity> cl,final boolean skipID) {
 		return new StringBuilder(SELECT_CLAUSE).
 				append(getFieldList(Inspector.getSetters(cl,skipID),",")).
@@ -230,12 +353,25 @@ public final class StatementBuilder {
 				append(getTableName(cl));
 	}
 
+	/**
+	 * Simple method to compose SQL statement to fetch entities from mapped table for {@code cl} starting from {@code startElement} up to {@code endElement}
+	 * @param cl class of entities to fetch 
+	 * @param skipID do not include primary key of entity, if true; false otherwise
+	 * @param startElement starting element of query
+	 * @param endElement ending element of query
+	 * @return SQL statement to fetch entities from given table for entity {@code cl}
+	 */
 	public static StringBuilder getFetchEntitiesStatement(final Class<? extends Entity> cl,final boolean skipID,final long startElement,final long endElement) {
 		final StringBuilder sb=getFetchEntitiesStatement(cl,skipID);
 		appendLimiters(sb, startElement, endElement);
 		return sb;
 	}
-	
+
+	/**
+	 * Composes SQL statement to insert new tuple for given {@code entity}
+	 * @param entity entity object to insert into table
+	 * @return SQL statement for insertion operation
+	 */
 	public static StringBuilder getInsertStatement(final Entity entity) {
 		final List<Method> getters=Inspector.getGetters(entity.getClass(),true);
 		return new StringBuilder(INSERT_CLAUSE).
@@ -246,6 +382,12 @@ public final class StatementBuilder {
 				append(")");
 	}
 	
+	/**
+	 * Composes SQL statement to insert tuple in link table that couples {@code master} entity and {@code slaveClass} class
+	 * @param master master entity
+	 * @param slaveClass slave entity class
+	 * @return SQL statement for insertion operation
+	 */
 	public static StringBuilder getInsertLinksStatement(final Entity master,final Class<? extends Entity> slaveClass) {
 		return new StringBuilder(INSERT_CLAUSE).
 				append(getLinkTableName(master.getClass(),slaveClass)).append(" (").
@@ -255,6 +397,12 @@ public final class StatementBuilder {
 				append(")");
 	}
 	
+	/**
+	 * Composes SQL statement from table of slave entities linked to given {@code master} entity 
+	 * @param master master entity that slave entity are linked to
+	 * @param slaveClass slave entity class
+	 * @return SQL statement
+	 */
 	public static StringBuilder getFetchSlaveEntitiesStatement(final Entity master,final Class<? extends Entity> slaveClass) {
 		return new StringBuilder(SELECT_CLAUSE).
 				append(getFieldList(Inspector.getSetters(slaveClass,false),",","B")).
@@ -269,7 +417,15 @@ public final class StatementBuilder {
 				append(StatementBuilder.mapObjectToString(master.getId())).
 				append(" )");
 	}
-	
+
+	/**
+	 * Composes SQL statement which fetches list of master {@code masterClass} entities that are absent in {@code slaveClass} table, starting from {@code startElement} and ending at {@code endElement}
+	 * @param masterClass master class
+	 * @param slaveClass slave class
+	 * @param startElement starting element of query
+	 * @param endElement ending element of query
+	 * @return SQL statement to fetch list of master class entities missing in slave class table
+	 */
 	public static StringBuilder getSelectMissingEntitiesStatement(
 			final Class<? extends Entity> masterClass,final Class<? extends Entity> slaveClass,final long startElement,final long endElement) {
 
@@ -291,7 +447,16 @@ public final class StatementBuilder {
 			return sb;
 		}else throw new DataAccessException(String.format("can't find foreign reference from slave class %s to master class %s",slaveClass,masterClass));
 	}
-	
+
+	/**
+	 * Composes SQL statement which fetches list of master {@code masterClass} entities that are present in {@code slaveClass} table, filtered by {@code keyPairs}, starting from {@code startElement} and ending at {@code endElement}
+	 * @param masterClass master class
+	 * @param slaveClass slave class to join with
+	 * @param keyPairs map of filtering keys and values
+	 * @param startElement starting element of query
+	 * @param endElement ending element of query
+	 * @return SQL statement to fetch list of master class entities that are present in slave class table
+	 */
 	public static StringBuilder getSelectLinkedEntitiesStatement(
 			final Class<? extends Entity> masterClass,final Class<? extends Entity> slaveClass,final Map<String,?> keyPairs,final long startElement,final long endElement) {
 
@@ -314,6 +479,16 @@ public final class StatementBuilder {
 		}else throw new DataAccessException(String.format("can't find foreign reference from slave class %s to master class %s",slaveClass,masterClass));
 	}
 	
+	/**
+	 * Composes SQL statement which fetches list of master {@code masterClass} entities that are present in {@code slaveClass} table, but absent in {@code missingClass} table, filtered by {@code keyPairs} in slave class table, starting from {@code startElement} and ending at {@code endElement}
+	 * @param masterClass master class
+	 * @param slaveClass slave class to join with
+	 * @param keyPairs map of filtering keys and values
+	 * @param missingClass tuple from resulting list shouldn't be present in missing class table
+	 * @param startElement starting element of query
+	 * @param endElement ending element of query
+	 * @return SQL statement to fetch list of master class entities that are present in slave class table but missing in missing class table
+	 */
 	public static StringBuilder getSelectLinkedMissingEntitiesStatement(
 			final Class<? extends Entity> masterClass,final Class<? extends Entity> slaveClass,final Map<String,?> keyPairs,final Class<? extends Entity> missingClass,final long startElement,final long endElement) {
 
@@ -347,6 +522,11 @@ public final class StatementBuilder {
 		}else throw new DataAccessException(String.format("can't find foreign reference from slave class %s to master class %s",slaveClass,masterClass));
 	}
 	
+	/**
+	 * Composes SQL statement to delete entity from its table by primary key {@code entity.getId}
+	 * @param entity holds primary key used to locate tuple within table
+	 * @return SQL statement to delete entity
+	 */
 	public static StringBuilder getDeleteStatement(final Entity entity) {
 		return new StringBuilder(DELETE_CLAUSE).
 			append(getTableName(entity.getClass())).
@@ -357,6 +537,12 @@ public final class StatementBuilder {
 			append(" )");
 	}
 	
+	/**
+	 * Composes SQL statement to delete tuple from link table that couples {@code master} entity and {@code slaveClass} table
+	 * @param master master entity
+	 * @param slaveClass slave class
+	 * @return SQL statement
+	 */
 	public static StringBuilder getDeleteLinkStatement(final Entity master,final Class<? extends Entity> slaveClass) {
 		return new StringBuilder(DELETE_CLAUSE).
 			append(getLinkTableName(master.getClass(),slaveClass)).
@@ -367,6 +553,11 @@ public final class StatementBuilder {
 			append(" )");
 	}
 
+	/**
+	 * Helper method to convert given {@code value} to its string representation
+	 * @param value value to be converted to string
+	 * @return string representation of {@code value}
+	 */
 	public static String mapObjectToString(final Object value) {
 		if(Objects.isNull(value)) return NULL_VALUE_DENOMINATOR;
 		final StringBuilder sb=new StringBuilder();

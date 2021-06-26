@@ -25,6 +25,11 @@ import java.util.stream.Collectors;
 
 import edu.practice.finalproject.model.entity.Entity;
 
+/**
+ * Entity inspection and analysis class 
+ * @author Serhii Pylypenko
+ *
+ */
 public final class Inspector {
 	
 	private static final String[] ENTITY_BEANS_PACKAGE_PREFIXES={
@@ -81,6 +86,13 @@ public final class Inspector {
 		return getAccessors(cl, skipID, Inspector::isSetter);
 	}
 
+	/**
+	 * Fetches list of accessor methods for passed class {@code cl}
+	 * @param cl class to analyze
+	 * @param skipID include entity primary key ({@code Entity.getId}) if false, skip otherwise
+	 * @param checker checks if passed method reference is acceptable as either getter or setter
+	 * @return list of collected methods
+	 */
 	private static List<Method> getAccessors(final Class<? extends Entity> cl, final boolean skipID, final BiPredicate<Method,Boolean> checker) {
 		final List<Method> list=new LinkedList<>();
 		final Map<String,Method> methodMap = Arrays.stream(
@@ -129,7 +141,13 @@ public final class Inspector {
 	private static String getSetterName(final Field field) {
 		return "set"+field.getName().substring(0,1).toUpperCase()+field.getName().substring(1);
 	}
-	
+
+	/**
+	 * Tries to discover foreign reference located in {@code slaveClass} to entity of given class {@code masterClass}
+	 * @param masterClass target class
+	 * @param slaveClass class to be inspected
+	 * @return reference getter for master class or {@code Optional.empty} if not found 
+	 */
 	public static Optional<Method> getForeignReference(final Class<? extends Entity> masterClass,final Class<? extends Entity> slaveClass) {
 		final List<Method> getters=getGetters(slaveClass,true);
 		for(final Method getter:getters) {
@@ -150,6 +168,12 @@ public final class Inspector {
 		return getFieldName("",accessorName);
 	}
 	
+	/**
+	 * Returns qualified table field name that is associated with given entity accessor {@code accessorName}
+	 * @param prefix table's alias
+	 * @param accessorName getter/setter name
+	 * @return qualified name of table field name this {@accessorName} is to be mapped  
+	 */
 	public static String getFieldName(final String prefix,final String accessorName) {
 		final StringBuilder sb=new StringBuilder(prefix);
 		if(!prefix.isEmpty()) sb.append(".");
@@ -174,6 +198,11 @@ public final class Inspector {
 		return sb.toString();
 	}
 
+	/**
+	 * Fetches array of table data captions for given entity class {@code cl}
+	 * @param cl class to analyze
+	 * @return string array of field names 
+	 */
 	public static String[] getCaptions(final Class<? extends Entity> cl) {
 		final List<Method> getters=getGetters(cl,true);
 		final String[] captions=new String[getters.size()];
@@ -184,6 +213,11 @@ public final class Inspector {
 		return captions;
 	}
 	
+	/**
+	 * Converts accessor method {@code method} name to table column caption 
+	 * @param method caption's entity accessor
+	 * @return caption for passed {@code method}
+	 */
 	private static String getCaption(final Method method) {
 		final String str=Inspector.getFieldName(method);
 		final StringBuilder sb=new StringBuilder();
@@ -199,10 +233,21 @@ public final class Inspector {
 		return sb.toString();
 	}
 
+	/**
+	 * Evaluates entity properties icluding {@code Entity.getId} and collects them into resulting array 
+	 * @param entity object which fields are to be evaluated
+	 * @return array of entity values
+	 */
 	public static Object[] getValues(final Entity entity) {
 		return getValues(entity,getGetters(entity.getClass(),true));
 	}
-	
+
+	/**
+	 *  Evaluates entity properties icluding {@code Entity.getId} and collects them into resulting array
+	 * @param entity object which fields are to be evaluated
+	 * @param getters list of getters to evaluate
+	 * @return array of entity values
+	 */
 	public static Object[] getValues(final Entity entity,final List<Method> getters) {
 		final Object[] values=new Object[getters.size()];
 		int k=0;
@@ -212,6 +257,12 @@ public final class Inspector {
 		return values;
 	}
 	
+	/**
+	 * Converts passed {@code value} of type {@code type} into human readable string
+	 * @param type type of {@code value}
+	 * @param value value to convert
+	 * @return string representation for {@code value} of type {@code type}
+	 */
 	public static String getReadableValue(final Class<?> type,final Object value) {
 		if(type==Boolean.class || type==boolean.class) 	return ((Boolean)value).booleanValue()?Character.toString('\u2716'):" ";
 		if(type==LocalDate.class) return ((LocalDate)value).format(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT)); 	
@@ -219,6 +270,13 @@ public final class Inspector {
 		return value.toString();
 	}
 	
+	/**
+	 * Evaluates field values for every entity from {@code entities} and collects resulting arrays into list 
+	 * @param <E> type of entity
+	 * @param cl class of entity
+	 * @param entities list of entities to evaluate
+	 * @return list of array of field values for every entity from {@code entities}
+	 */
 	public static <E extends Entity> List<Object> getValuesForEntities(final Class<E> cl,final Iterable<E> entities) {
 		final List<Method> getters=getGetters(cl,true);
 		final List<Object> values=new LinkedList<>();
@@ -228,6 +286,11 @@ public final class Inspector {
 		return values;
 	}
 	
+	/**
+	 * Evaluates string representations for every constant of given enum class {@code cl} and collects them into resulting array 
+	 * @param cl enum class to analyze
+	 * @return string representation array of constants for given enum class {@code cl} 
+	 */
 	public static String[] getLabels(final Class<? extends Enum<?>> cl) {
 		final String[] labels=new String[cl.getEnumConstants().length];
 		int k=0;
@@ -237,6 +300,13 @@ public final class Inspector {
 		return labels;
 	}
 
+	/**
+	 * Finds enum class {@code cl} constant by given {@code label} 
+	 * @param <V> enum type
+	 * @param cl enum class
+	 * @param label string representation of enum constant to find
+	 * @return enum class constant to locate by {@code label}
+	 */
 	public static <V extends Enum<?>> Optional<V> getByLabel(final Class<V> cl,final String label){
 		if(Objects.isNull(label)) return Optional.empty();
 		for(final V value:cl.getEnumConstants()) {
@@ -246,9 +316,9 @@ public final class Inspector {
 	}
 
 	/**
-	 * Finds entity classes that are located within classpath and collects them in resulting set
-	 * @return set of entity classes
-	 * @throws EntityException incorrect URI or class file not found 
+	 * Scans entity packages with {@code packagePrefixes} and collects entity classes in resulting set
+	 * @return set of discovered entity classes
+	 * @throws EntityException in case of malformed URI 
 	 */
 	public static Set<Class<? extends Entity>> discoverEntityClasses(final String[] packagePrefixes) {
 		final Set<Class<? extends Entity>> entityClasses=new HashSet<>();
