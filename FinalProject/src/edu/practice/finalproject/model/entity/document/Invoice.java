@@ -6,6 +6,11 @@ import java.time.LocalDateTime;
 import edu.practice.finalproject.model.entity.NaturalKeyEntity;
 import edu.practice.finalproject.model.entity.userrole.Manager;
 
+/**
+ * Abstract entity that represents any invoice document
+ * @author Serhii Pylypenko
+ *
+ */
 public abstract class Invoice extends NaturalKeyEntity {
 
 	protected Manager manager;

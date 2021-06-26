@@ -5,6 +5,11 @@ import java.util.Objects;
 import edu.practice.finalproject.view.action.Action;
 import edu.practice.finalproject.view.action.ClientAction;
 
+/**
+ * Entity that represents user role of client
+ * @author Serhii Pylypenko
+ *
+ */
 public class Client extends User {
 	
 	public Client(String login, byte[] passwordDigest, String firstName, String lastName)  {

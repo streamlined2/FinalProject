@@ -44,7 +44,9 @@ public class CarBrowsingForm extends Form {
 		final Long lastElement=(Long)FCServlet.getAttribute(req, Names.LAST_PAGE_ELEMENT_ATTRIBUTE,firstElement+pageElements-1);
 
 		final List<Car> queryData=entityManager.fetchByCompositeKeyOrdered(Car.class,filterKeyPairs,orderKeys,firstElement,lastElement);
+		final Long queryCount=entityManager.countByCompositeKey(Car.class,filterKeyPairs);
 
+		FCServlet.setQueryElements(req, queryCount);
 		FCServlet.setAttribute(req, Names.PAGE_ITEMS_ATTRIBUTE,queryData);
 		FCServlet.setAttribute(req, Names.QUERY_BUTTONS_MAP_ATTRIBUTE, Map.of("select_car","Get"));
 		FCServlet.setAttribute(req, Names.QUERY_DATA_ATTRIBUTE, Inspector.getValuesForEntities(Car.class, queryData));
@@ -55,10 +57,11 @@ public class CarBrowsingForm extends Form {
 
 	@Override
 	public void destroy(final HttpServletRequest req) {
+		FCServlet.removeQueryElements(req);
 		FCServlet.removeAttribute(req, Names.PAGE_ITEMS_ATTRIBUTE);
+		FCServlet.removeAttribute(req, Names.QUERY_BUTTONS_MAP_ATTRIBUTE);
 		FCServlet.removeAttribute(req, Names.QUERY_DATA_ATTRIBUTE);
 		FCServlet.removeAttribute(req, Names.QUERY_HEADER_ATTRIBUTE);
-		FCServlet.removeAttribute(req, Names.QUERY_BUTTONS_MAP_ATTRIBUTE);
 		super.destroy(req);
 	}
 }

@@ -14,11 +14,12 @@ public class PreviousPageAction extends Action {
 
 	@Override
 	public boolean execute(final HttpServletRequest req, final EntityManager entityManager) {
-		final Integer numberOfElements=FCServlet.getPageElements(req);
-		final Long firstElement=(Long)FCServlet.getAttribute(req, Names.FIRST_PAGE_ELEMENT_ATTRIBUTE,Long.valueOf(numberOfElements));
-		final Long lastElement=Math.max(numberOfElements-1,firstElement-1);
-		FCServlet.setAttribute(req, Names.LAST_PAGE_ELEMENT_ATTRIBUTE,lastElement);
-		FCServlet.setAttribute(req, Names.FIRST_PAGE_ELEMENT_ATTRIBUTE,lastElement-numberOfElements+1);
+		final Integer numberOfElements = FCServlet.getPageElements(req);
+		final Long firstElement = (Long)FCServlet.getAttribute(req, Names.FIRST_PAGE_ELEMENT_ATTRIBUTE,Long.valueOf(numberOfElements));
+		final Long nextLastElement = Math.max(numberOfElements-1,firstElement-1);
+		final Long nextFirstElement = Math.max(nextLastElement-numberOfElements+1, 0L);
+		FCServlet.setAttribute(req, Names.LAST_PAGE_ELEMENT_ATTRIBUTE, nextLastElement);
+		FCServlet.setAttribute(req, Names.FIRST_PAGE_ELEMENT_ATTRIBUTE, nextFirstElement);
 		return true;
 	}
 }

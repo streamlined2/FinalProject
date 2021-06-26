@@ -34,6 +34,7 @@ public final class Names {
 	public static final String FIRST_PAGE_ELEMENT_ATTRIBUTE = "firstPageElement";
 	public static final String LAST_PAGE_ELEMENT_ATTRIBUTE = "lastPageElement";
 	public static final String PAGE_ELEMENTS_NUMBER_ATTRIBUTE = "pageElementsNumber";
+	public static final String QUERY_ELEMENTS_NUMBER_ATTRIBUTE = "queryElementsNumber";
 	public static final String PAGE_ITEMS_ATTRIBUTE = "pageItems"; 
 	public static final String SELECTED_CAR_ATTRIBUTE = "selectedCar";
 	public static final String SELECTED_ORDER_ATTRIBUTE = "selectedOrder";

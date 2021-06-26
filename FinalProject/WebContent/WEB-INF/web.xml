@@ -24,7 +24,7 @@
 	
 	<context-param>
 		<param-name>pageElements</param-name>
-		<param-value>7</param-value>
+		<param-value>5</param-value>
 	</context-param>
 
 	<resource-ref>

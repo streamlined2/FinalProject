@@ -10,6 +10,11 @@ import edu.practice.finalproject.model.entity.NaturalKeyEntity;
 import edu.practice.finalproject.model.entity.domain.Car;
 import edu.practice.finalproject.model.entity.userrole.Client;
 
+/**
+ * Entity that represents lease order document
+ * @author Serhii Pylypenko
+ *
+ */
 public class LeaseOrder extends NaturalKeyEntity {
 	private Client client;
 	private Car car;

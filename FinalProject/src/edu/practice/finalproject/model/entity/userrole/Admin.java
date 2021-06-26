@@ -5,6 +5,11 @@ import java.util.Objects;
 import edu.practice.finalproject.view.action.Action;
 import edu.practice.finalproject.view.action.AdminAction;
 
+/**
+ * Entity that represents user role of administrator
+ * @author Serhii Pylypenko
+ *
+ */
 public class Admin extends User {
 
 	public Admin(String login, byte[] passwordDigest, String firstName, String lastName)  {

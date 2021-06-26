@@ -7,6 +7,11 @@ import java.util.Objects;
 
 import edu.practice.finalproject.model.analysis.Inspector;
 
+/**
+ * Abstract root class of entity hierarchy
+ * @author Serhii Pylypenko
+ *
+ */
 public abstract class Entity implements Serializable, Iterable<Object> {
 
 	protected long id;
@@ -17,7 +22,7 @@ public abstract class Entity implements Serializable, Iterable<Object> {
 	
 	/**
 	 * Surrogate primary key based {@code equals} method
-	 * @return true if parameter is not null, it refers to another entity of the same class and has {@code getId} surrogate primary key
+	 * @return true if parameter is not null and refers to another entity of the same class and has same {@code getId} surrogate primary key
 	 */
 	@Override public boolean equals(final Object o) {
 		if(o==null) return false;
@@ -37,6 +42,9 @@ public abstract class Entity implements Serializable, Iterable<Object> {
 		return Inspector.toString(this);
 	}
 	
+	/**
+	 * Helper iterator to iterate through set of entity attributes 
+	 */
 	public Iterator<Object> iterator() {
 		return new Iterator<Object>() {
 			private final Object[] data=Inspector.getValues(Entity.this);

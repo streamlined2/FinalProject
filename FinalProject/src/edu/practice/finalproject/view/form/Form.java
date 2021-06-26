@@ -12,7 +12,7 @@ import edu.practice.finalproject.model.dataaccess.EntityManager;
 import edu.practice.finalproject.view.action.Action;
 
 /**
- * Represents interface form with basic functionality
+ * Base abstract class which represents interface form with basic functionality
  * @author Serhii Pylypenko
  *
  */
@@ -24,17 +24,36 @@ public abstract class Form {
 		this.name=name;
 	}
 	
+	/**
+	 * Post construction method to initialize form before it gets displayed to user. Necessary resources may be allocated, request/session attributes may be set. 
+	 * @param req servlet request
+	 * @param entityManager an EntityManager instance to operate data with
+	 */
 	public void init(HttpServletRequest req, final EntityManager entityManager) {}
+	
+	/**
+	 * Pre destruction method to release resources and clean unnecessary data before form gets destroyed
+	 * @param req servlet request
+	 */
 	public void destroy(HttpServletRequest req) {}
 	
 	public String getName() { return name;}
-	
+
+	/**
+	 * Basic action mapping behavior for every form
+	 * @param parameters request parameters
+	 * @return Action object determined by analysis of given {@code parameters}
+	 */
 	public Action getAction(Map<String,String[]> parameters) {	
 		if(FCServlet.isActionPresent(parameters,Names.LOCALE_PARAMETER)) return FormDispatcher.SWITCH_LOCALE_ACTION;
 		if(FCServlet.isActionPresent(parameters,Names.LOGOUT_PARAMETER)) return FormDispatcher.LOGOUT_ACTION;
 		return getDefaultAction();	
 	}
 	
+	/**
+	 * Default action object for this form class.
+	 * @return default action object
+	 */
 	public abstract Action getDefaultAction();
 
 	@Override

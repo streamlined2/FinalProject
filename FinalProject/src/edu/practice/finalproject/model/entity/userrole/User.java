@@ -9,6 +9,11 @@ import edu.practice.finalproject.model.analysis.EntityException;
 import edu.practice.finalproject.model.entity.NaturalKeyEntity;
 import edu.practice.finalproject.view.action.Action;
 
+/**
+ * Base abstract entity that represents any user role
+ * @author Serhii Pylypenko
+ *
+ */
 public abstract class User extends NaturalKeyEntity {
 	public enum Role {
 		CLIENT("client"),

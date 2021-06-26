@@ -10,6 +10,7 @@ import edu.practice.finalproject.controller.Names;
 import edu.practice.finalproject.controller.transition.FormDispatcher;
 import edu.practice.finalproject.model.analysis.Inspector;
 import edu.practice.finalproject.model.dataaccess.EntityManager;
+import edu.practice.finalproject.model.entity.domain.Car;
 import edu.practice.finalproject.model.entity.userrole.User;
 import edu.practice.finalproject.view.action.Action;
 import edu.practice.finalproject.utilities.Utils;
@@ -40,7 +41,9 @@ public class UserBlockingForm extends Form {
 		final String userType = (String)FCServlet.getAttribute(req, Names.SELECTED_ROLE_ATTRIBUTE, User.Role.CLIENT.getLabel());			
 		final Class<U> userClass = (Class<U>)Utils.mapUserRoleToClass(userType);
 		final List<U> queryData=entityManager.fetchEntities(userClass,false,firstElement,lastElement);
+		final Long queryCount=entityManager.countEntities(userClass);
 
+		FCServlet.setQueryElements(req, queryCount);
 		FCServlet.setAttribute(req, Names.PAGE_ITEMS_ATTRIBUTE,queryData);
 		FCServlet.setAttribute(req, Names.QUERY_DATA_ATTRIBUTE, Inspector.getValuesForEntities(userClass, queryData));
 		FCServlet.setAttribute(req, Names.QUERY_HEADER_ATTRIBUTE, Inspector.getCaptions(userClass));
@@ -61,6 +64,7 @@ public class UserBlockingForm extends Form {
 
 	@Override
 	public void destroy(HttpServletRequest req) {
+		FCServlet.removeQueryElements(req);
 		FCServlet.removeAttribute(req, Names.PAGE_ITEMS_ATTRIBUTE);
 		FCServlet.removeAttribute(req, Names.QUERY_DATA_ATTRIBUTE);
 		FCServlet.removeAttribute(req, Names.QUERY_HEADER_ATTRIBUTE);
