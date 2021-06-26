@@ -3,14 +3,17 @@ package edu.practice.finalproject.model.entity;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.StringJoiner;
 
 import edu.practice.finalproject.model.analysis.EntityException;
 import edu.practice.finalproject.model.analysis.Inspector;
 
+/**
+ * Abstract class for entity with composite natural key
+ * @author Serhii Pylypenko
+ *
+ */
 public abstract class NaturalKeyEntity extends Entity {
 
 	public abstract List<Method> keyGetters();
@@ -33,6 +36,10 @@ public abstract class NaturalKeyEntity extends Entity {
 			return naturalKeyValues().hashCode();
 	}
 
+	/**
+	 * Composes and returns list of natural key field values
+	 * @return list of natural key field values
+	 */
 	private List<Object> naturalKeyValues() {
 		try {
 			final List<Method> methods = keyGetters();

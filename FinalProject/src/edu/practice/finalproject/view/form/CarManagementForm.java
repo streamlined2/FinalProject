@@ -11,6 +11,9 @@ import edu.practice.finalproject.controller.Names;
 import edu.practice.finalproject.controller.transition.FormDispatcher;
 import edu.practice.finalproject.model.analysis.Inspector;
 import edu.practice.finalproject.model.dataaccess.EntityManager;
+import edu.practice.finalproject.model.entity.document.CarReview;
+import edu.practice.finalproject.model.entity.document.LeaseOrder;
+import edu.practice.finalproject.model.entity.document.OrderReview;
 import edu.practice.finalproject.model.entity.domain.Car;
 import edu.practice.finalproject.view.action.Action;
 
@@ -44,7 +47,9 @@ public class CarManagementForm extends Form {
 		final Long lastElement=(Long)FCServlet.getAttribute(req, Names.LAST_PAGE_ELEMENT_ATTRIBUTE,firstElement+pageElements-1);
 
 		final List<Car> queryData=entityManager.fetchEntities(Car.class,false,firstElement,lastElement);
+		final Long queryCount=entityManager.countEntities(Car.class);
 
+		FCServlet.setQueryElements(req, queryCount);
 		FCServlet.setAttribute(req, Names.PAGE_ITEMS_ATTRIBUTE,queryData);
 		Map<String, String> buttons = new LinkedHashMap<>();
 		buttons.put("modifyCar","Edit");
@@ -58,6 +63,7 @@ public class CarManagementForm extends Form {
 
 	@Override
 	public void destroy(HttpServletRequest req) {
+		FCServlet.removeQueryElements(req);
 		FCServlet.removeAttribute(req, Names.PAGE_ITEMS_ATTRIBUTE);
 		FCServlet.removeAttribute(req, Names.QUERY_BUTTONS_MAP_ATTRIBUTE);
 		FCServlet.removeAttribute(req, Names.QUERY_DATA_ATTRIBUTE);

@@ -18,6 +18,11 @@ import edu.practice.finalproject.model.entity.userrole.Client;
 import edu.practice.finalproject.model.entity.userrole.Manager;
 import edu.practice.finalproject.model.entity.userrole.User;
 
+/**
+ * Set of common purpose utility methods
+ * @author Serhii Pylypenko
+ *
+ */
 public final class Utils {
 	
 	private Utils() {}

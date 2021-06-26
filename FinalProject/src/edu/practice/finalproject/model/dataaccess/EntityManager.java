@@ -28,6 +28,7 @@ import edu.practice.finalproject.model.entity.NaturalKeyEntity;
  */
 public final class EntityManager {
 	
+	private static final String RESULT_SET_OF_COUNTING_STATEMENT_DOESN_T_CONTAIN_ANY_DATA = "Result set of counting statement doesn't contain any data";
 	private static final String DATASOURCE_SHOULDNT_BE_NULL = "Provide non-null datasource parameter for constructor";
 	
 	private final DataSource dataSource;
@@ -310,6 +311,26 @@ public final class EntityManager {
 	}
 	
 	/**
+	 * Executes given SQL statement and returns resulting count
+	 * @param clause SQL statement to execute
+	 * @param <E> entity type
+	 * @return counting result from SQL statement
+	 * @throws DataAccessException if error occurs during execution
+	 */
+	private <E extends Entity> Long getCountFromQuery(final StringBuilder clause) {
+		try (
+				final Connection conn=dataSource.getConnection();
+				final Statement statement=conn.createStatement();
+				final ResultSet rs=statement.executeQuery(clause.toString())){
+			if(rs.next()) {
+				return rs.getLong(1);
+			}else throw new DataAccessException(RESULT_SET_OF_COUNTING_STATEMENT_DOESN_T_CONTAIN_ANY_DATA);
+		} catch (SQLException e) {
+			throw new DataAccessException(e);
+		}
+	}
+	
+	/**
 	 * Fetches data from entity class {@code cl} table and composes entity list
 	 * @param <E> entity type
 	 * @param cl entity class
@@ -360,6 +381,18 @@ public final class EntityManager {
 	}
 
 	/**
+	 * Count tuples from entity class {@code masterClass} table that absent in {@code slaveClass} table
+	 * @param <M> master entity type
+	 * @param masterClass master class
+	 * @param slaveClass slave class
+	 * @return count of entities from table mapped to {@code masterClass} entity class
+	 */
+	public <M extends Entity> Long countMissingEntities(final Class<M> masterClass,final Class<? extends Entity> slaveClass){
+		final StringBuilder clause=StatementBuilder.getCountMissingEntitiesStatement(masterClass,slaveClass);
+		return getCountFromQuery(clause);
+	}
+
+	/**
 	 * Fetches tuples from entity class {@code masterClass} table that present in {@code slaveClass} table filtered by {@code keyPairs}, selects from {@code startElement} to {@code endElement}, and then composes entity list
 	 * @param <M> master entity type
 	 * @param masterClass master class
@@ -398,11 +431,48 @@ public final class EntityManager {
 	 * @param orderKeys list of key fields of entity class {@code cl} table to order by
 	 * @param startElement number of first element of query
 	 * @param endElement number of last element of query
-	 * @return list of entities from table mapped to {@code masterClass} entity class
+	 * @return list of entities from table mapped to {@code cl} entity class
 	 */
 	public <E extends Entity> List<E> fetchByCompositeKeyOrdered(final Class<E> cl,final Map<String,?> keyPairs,final Map<String,Boolean> orderKeys,final long startElement,final long endElement) {
 		final StringBuilder clause=StatementBuilder.getSelectByKeyOrderedStatement(cl,keyPairs,orderKeys,startElement,endElement);
 		return formEntityListFromQuery(cl,false,clause);
+	}
+
+	/**
+	 * Counts tuples from entity class {@code cl} table filtered by {@code keyPairs}
+	 * @param <E> entity type
+	 * @param cl entity class
+	 * @param keyPairs set of filtering key/value pairs for entity class {@code cl} table
+	 * @return count of entities from table mapped to {@code cl} entity class
+	 */
+	public <E extends Entity> Long countByCompositeKey(final Class<E> cl,final Map<String,?> keyPairs) {
+		final StringBuilder clause=StatementBuilder.getCountByKeyStatement(cl,keyPairs);
+		return getCountFromQuery(clause);
+	}
+
+	/**
+	 * Count tuples from entity class {@code masterClass} table that present in {@code slaveClass} table filtered by {@code keyPairs}, missing in {@code missingClass} table
+	 * @param <M> master entity type
+	 * @param masterClass master class
+	 * @param slaveClass slave class
+	 * @param keyPairs set of filtering key/value pairs for {@code slaveClass} table
+	 * @param missingClass entity class for missing tuples table
+	 * @return count of entities from table mapped to {@code masterClass} entity class
+	 */
+	public <M extends Entity> Long countLinkedMissingEntities(final Class<M> masterClass,final Class<? extends Entity> slaveClass,final Map<String,?> keyPairs,final Class<? extends Entity> missingClass){
+		final StringBuilder clause=StatementBuilder.getCountLinkedMissingEntitiesStatement(masterClass,slaveClass,keyPairs,missingClass);
+		return getCountFromQuery(clause);
+	}
+
+	/**
+	 * Count tuples from entity class {@code cl} table
+	 * @param <E> entity type
+	 * @param cl entity class
+	 * @return count of entities from table mapped to {@code cl}
+	 */
+	public <E extends Entity> Long countEntities(final Class<E> cl){
+		final StringBuilder clause=StatementBuilder.getCountByKeyStatement(cl,Map.of());
+		return getCountFromQuery(clause);
 	}
 
 	/**

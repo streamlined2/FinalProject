@@ -8,6 +8,11 @@ import java.util.List;
 import edu.practice.finalproject.model.analysis.EntityException;
 import edu.practice.finalproject.model.entity.NaturalKeyEntity;
 
+/**
+ * Domain entity that represents car available for leasing 
+ * @author Serhii Pylypenko
+ *
+ */
 public class Car extends NaturalKeyEntity {
 	public enum Manufacturer { 
 		BMW("BMW"), 

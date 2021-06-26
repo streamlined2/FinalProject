@@ -201,8 +201,20 @@ public class FCServlet extends HttpServlet {
 		}
 	}
 	
-	public static Integer getPageElements(final HttpServletRequest req) {
+	public static Integer getPageElements(HttpServletRequest req) {
 		return Objects.requireNonNullElse((Integer)req.getServletContext().getAttribute(Names.PAGE_ELEMENTS_NUMBER_ATTRIBUTE), Integer.valueOf(7));
+	}
+	
+	public static Long getQueryElements(HttpServletRequest req) {
+		return Objects.requireNonNullElse((Long)getAttribute(req, Names.QUERY_ELEMENTS_NUMBER_ATTRIBUTE), Long.valueOf(0));
+	}
+
+	public static void setQueryElements(HttpServletRequest req, Long count) {
+		setAttribute(req, Names.QUERY_ELEMENTS_NUMBER_ATTRIBUTE, count);
+	}
+	
+	public static void removeQueryElements(HttpServletRequest req) {
+		removeAttribute(req, Names.QUERY_ELEMENTS_NUMBER_ATTRIBUTE);
 	}
 
 	public static Locale getDefaultLocale() {

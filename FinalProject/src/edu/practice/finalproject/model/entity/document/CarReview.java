@@ -8,6 +8,11 @@ import edu.practice.finalproject.model.analysis.EntityException;
 import edu.practice.finalproject.model.entity.NaturalKeyEntity;
 import edu.practice.finalproject.model.entity.userrole.Manager;
 
+/**
+ * Entity that represents car review document
+ * @author Serhii Pylypenko
+ *
+ */
 public class CarReview extends NaturalKeyEntity {
 	public enum CarCondition { PERFECT, NEEDS_MAINTENANCE}
 

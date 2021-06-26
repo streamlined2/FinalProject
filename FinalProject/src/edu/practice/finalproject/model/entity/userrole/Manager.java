@@ -5,6 +5,11 @@ import java.util.Objects;
 import edu.practice.finalproject.view.action.Action;
 import edu.practice.finalproject.view.action.ManagerAction;
 
+/**
+ * Entity that represents user role of manager
+ * @author Serhii Pylypenko
+ *
+ */
 public class Manager extends User {
 
 	public Manager(String login, byte[] passwordDigest, String firstName, String lastName)  {

@@ -41,6 +41,9 @@ public final class StatementBuilder {
 	private static final String LIMIT_CLAUSE = " LIMIT ";
 	private static final String INNER_JOIN_CLAUSE = " INNER JOIN ";
 	private static final String NULL_VALUE_DENOMINATOR = "NULL";
+	private static final String COUNT_CLAUSE = " COUNT(*) ";
+
+	private static final String CANT_FIND_FOREIGN_REFERENCE_FROM_SLAVE_TO_MASTER_CLASS = "Can't find foreign reference from slave class %s to master class %s";
 
 	private StatementBuilder() {}
 	
@@ -266,6 +269,85 @@ public final class StatementBuilder {
 	}
 	
 	/**
+	 * Composes SQL statement to count entities for class {@code cl} filtered by {@code keyPairs}
+	 * @param cl entity class to fetch
+	 * @param keyPairs map of filtering keys and values
+	 * @return string representation of SQL statement for entity counting
+	 */
+	public static StringBuilder getCountByKeyStatement(final Class<? extends Entity> cl,final Map<String,?> keyPairs) {
+		final StringBuilder sb=new StringBuilder(SELECT_CLAUSE).
+				append(COUNT_CLAUSE).
+				append(FROM_CLAUSE).
+				append(getTableName(cl));
+		if(Objects.nonNull(keyPairs) && !keyPairs.isEmpty()) {
+			sb.append(WHERE_CLAUSE).append(getKeyPairWhereClause(keyPairs));
+		}
+		return sb;
+	}
+
+	/**
+	 * Composes SQL statement to count entities for class {@code cl} filtered by {@code keyPairs}
+	 * @param cl entity class to fetch
+	 * @param keyPairs map of filtering keys and values
+	 * @return string representation of SQL statement for entity counting
+	 */
+	public static StringBuilder getCountMissingEntitiesStatement(final Class<? extends Entity> masterClass,final Class<? extends Entity> slaveClass) {
+		final Optional<Method> foreignRef = Inspector.getForeignReference(masterClass,slaveClass);
+		if(foreignRef.isPresent()) {
+			return new StringBuilder(SELECT_CLAUSE).
+					append(COUNT_CLAUSE).
+					append(FROM_CLAUSE).
+					append(getTableName(masterClass)).append(" B ").
+					append(WHERE_CLAUSE).
+					append(getQualifiedAttribute("B",Entity.ID_FIELD)).
+					append(NOT_IN_CLAUSE).
+						append(SELECT_CLAUSE).
+						append(getFieldList(List.of(foreignRef.get()),",","A")).
+						append(FROM_CLAUSE).
+						append(getTableName(slaveClass)).append(" A ").
+					append(" )");
+		}else throw new DataAccessException(String.format(CANT_FIND_FOREIGN_REFERENCE_FROM_SLAVE_TO_MASTER_CLASS,slaveClass,masterClass));
+	}
+
+	/**
+	 * Composes SQL statement to count entities for class {@code masterClass} present in {@code slaveClass} filtered by {@code keyPairs} and missing in {@code missingClass}
+	 * @param masterClass master class
+	 * @param slaveClass slave class
+	 * @param keyPairs map of filtering keys and values
+	 * @param missingClass missing class
+	 * @return string representation of SQL statement for entity counting
+	 */
+	public static StringBuilder getCountLinkedMissingEntitiesStatement(final Class<? extends Entity> masterClass,final Class<? extends Entity> slaveClass,final Map<String,?> keyPairs,final Class<? extends Entity> missingClass) {
+		final Optional<Method> foreignRef = Inspector.getForeignReference(masterClass,slaveClass);
+		final Optional<Method> missingFRef = Inspector.getForeignReference(masterClass,missingClass);
+		if(foreignRef.isPresent()) {
+			if(missingFRef.isPresent()) {
+				final StringBuilder sb = new StringBuilder(SELECT_CLAUSE).
+						append(COUNT_CLAUSE).
+						append(FROM_CLAUSE).
+						append(getTableName(masterClass)).append(" B ").
+						append(INNER_JOIN_CLAUSE).
+						append(getTableName(slaveClass)).append(" A ").
+						append(ON_CLAUSE).
+						append(getQualifiedAttribute("B",Entity.ID_FIELD)).append("=").
+						append(getFieldList(List.of(foreignRef.get()),",","A")).
+						append(WHERE_CLAUSE).
+						append(getQualifiedAttribute("B",Entity.ID_FIELD)).
+						append(NOT_IN_CLAUSE).
+							append(SELECT_CLAUSE).
+							append(getFieldList(List.of(missingFRef.get()),",","C")).
+							append(FROM_CLAUSE).
+							append(getTableName(missingClass)).append(" C ").
+						append(" )");
+				if(Objects.nonNull(keyPairs) && !keyPairs.isEmpty()) {
+				    sb.append(AND_CLAUSE).append(getKeyPairWhereClause(keyPairs,'A'));
+				}
+				return sb;
+			}else  throw new DataAccessException(String.format(CANT_FIND_FOREIGN_REFERENCE_FROM_SLAVE_TO_MASTER_CLASS,missingClass,masterClass));
+		}else throw new DataAccessException(String.format(CANT_FIND_FOREIGN_REFERENCE_FROM_SLAVE_TO_MASTER_CLASS,slaveClass,masterClass));
+	}
+
+	/**
 	 * Composes SQL statement to fetch ordered entity list of class {@code cl} filtered by {@code keyPairs}, ordered by {@code orderKeys}, starting from {@code startElement} and ending at {@code endElement}
 	 * @param cl entity class to fetch
 	 * @param keyPairs map of filtering keys and values
@@ -445,7 +527,7 @@ public final class StatementBuilder {
 					append(" )");
 			appendLimiters(sb, startElement, endElement);
 			return sb;
-		}else throw new DataAccessException(String.format("can't find foreign reference from slave class %s to master class %s",slaveClass,masterClass));
+		}else throw new DataAccessException(String.format(CANT_FIND_FOREIGN_REFERENCE_FROM_SLAVE_TO_MASTER_CLASS,slaveClass,masterClass));
 	}
 
 	/**
@@ -476,7 +558,7 @@ public final class StatementBuilder {
 			}
 			appendLimiters(sb, startElement, endElement);
 			return sb;
-		}else throw new DataAccessException(String.format("can't find foreign reference from slave class %s to master class %s",slaveClass,masterClass));
+		}else throw new DataAccessException(String.format(CANT_FIND_FOREIGN_REFERENCE_FROM_SLAVE_TO_MASTER_CLASS,slaveClass,masterClass));
 	}
 	
 	/**
@@ -518,8 +600,8 @@ public final class StatementBuilder {
 				}
 				appendLimiters(sb, startElement, endElement);
 				return sb;
-			}else  throw new DataAccessException(String.format("can't find foreign reference from slave class %s to master class %s",missingClass,masterClass));
-		}else throw new DataAccessException(String.format("can't find foreign reference from slave class %s to master class %s",slaveClass,masterClass));
+			}else  throw new DataAccessException(String.format(CANT_FIND_FOREIGN_REFERENCE_FROM_SLAVE_TO_MASTER_CLASS,missingClass,masterClass));
+		}else throw new DataAccessException(String.format(CANT_FIND_FOREIGN_REFERENCE_FROM_SLAVE_TO_MASTER_CLASS,slaveClass,masterClass));
 	}
 	
 	/**

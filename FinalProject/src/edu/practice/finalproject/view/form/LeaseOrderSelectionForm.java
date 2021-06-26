@@ -45,7 +45,9 @@ public class LeaseOrderSelectionForm extends Form {
 
 		final Map<String,?> keyPairs = Map.of("orderStatus",OrderStatus.APPROVED);
 		final List<LeaseOrder> queryData=entityManager.fetchLinkedMissingEntities(LeaseOrder.class,OrderReview.class,keyPairs,CarReview.class,firstElement,lastElement);
+		final Long queryCount=entityManager.countLinkedMissingEntities(LeaseOrder.class,OrderReview.class,keyPairs,CarReview.class);
 
+		FCServlet.setQueryElements(req, queryCount);
 		FCServlet.setAttribute(req, Names.PAGE_ITEMS_ATTRIBUTE,queryData);
 		FCServlet.setAttribute(req, Names.QUERY_BUTTONS_MAP_ATTRIBUTE, Map.of("reviewOrder","Select"));
 		FCServlet.setAttribute(req, Names.QUERY_DATA_ATTRIBUTE, Inspector.getValuesForEntities(LeaseOrder.class, queryData));
@@ -56,6 +58,7 @@ public class LeaseOrderSelectionForm extends Form {
 
 	@Override
 	public void destroy(HttpServletRequest req) {
+		FCServlet.removeQueryElements(req);
 		FCServlet.removeAttribute(req, Names.PAGE_ITEMS_ATTRIBUTE);
 		FCServlet.removeAttribute(req, Names.QUERY_BUTTONS_MAP_ATTRIBUTE);
 		FCServlet.removeAttribute(req, Names.QUERY_DATA_ATTRIBUTE);

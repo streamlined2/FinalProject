@@ -39,7 +39,7 @@
 		<input type="submit" value="Next" formaction="main?action=nextPage" formmethod="post"/>
 		<input type="submit" value="Previous" formaction="main?action=previousPage" formmethod="post"/>
 		<input type="submit" value="First" formaction="main?action=firstPage" formmethod="post"/>
-		<!-- <input type="submit" value="Last" formaction="main?action=lastPage" formmethod="post"/> -->
+		<input type="submit" value="Last" formaction="main?action=lastPage" formmethod="post"/>
 		<input type="submit" value="Back" formaction="main?action=back" formmethod="post" formnovalidate/>
 	</form>
 </body>

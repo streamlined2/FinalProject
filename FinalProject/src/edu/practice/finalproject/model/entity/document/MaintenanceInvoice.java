@@ -9,6 +9,11 @@ import java.util.StringJoiner;
 import edu.practice.finalproject.model.analysis.EntityException;
 import edu.practice.finalproject.model.entity.userrole.Manager;
 
+/**
+ * Entity that represents maintenance invoice document
+ * @author Serhii Pylypenko
+ *
+ */
 public class MaintenanceInvoice extends Invoice {
 	
 	private LeaseOrder leaseOrder;
