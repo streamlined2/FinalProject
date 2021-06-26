@@ -55,7 +55,7 @@ public class FCServlet extends HttpServlet {
 	}
 	
 	/**
-	 * Locates and injects external resource references, reads and Initializes servlet's parameters 
+	 * Locates and injects external resource references, reads and initializes servlet's parameters, sets application attributes
 	 */
     @Override
 	public void init() throws ServletException {
@@ -90,10 +90,10 @@ public class FCServlet extends HttpServlet {
 
     /**
      * Main servlet method which processes request by selecting and initializing next user interface form, 
-     * checking permissions, performing action, and forwarding to chosen form  
-     * @param req
-     * @param resp
-     * @throws ServletException
+     * checking permissions, getting and performing action, and forwarding to selected form  
+     * @param req request
+     * @param resp response
+     * @throws ServletException wraps underlying layer exceptions such as SecurityException, IOException
      */
     private void process(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException {
     	initLocale(req);

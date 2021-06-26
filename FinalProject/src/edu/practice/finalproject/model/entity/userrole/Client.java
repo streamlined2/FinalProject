@@ -4,7 +4,6 @@ import java.util.Objects;
 
 import edu.practice.finalproject.view.action.Action;
 import edu.practice.finalproject.view.action.ClientAction;
-import edu.practice.finalproject.view.action.ManagerAction;
 
 public class Client extends User {
 	
