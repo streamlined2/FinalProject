@@ -34,7 +34,6 @@ import edu.practice.finalproject.utilities.Utils;
 public class FCServlet extends HttpServlet {
 	
 	private EntityManager entityManager;
-	private FormDispatcher formDispatcher;
 	
 	private static final Locale UKRAINIAN_LOCALE = Locale.forLanguageTag("uk");
 	private static final List<Locale> availableLocales= List.of(Locale.ENGLISH,UKRAINIAN_LOCALE);
@@ -63,8 +62,6 @@ public class FCServlet extends HttpServlet {
 			final Context envContext=(Context)new InitialContext().lookup("java:/comp/env");
 			entityManager = new EntityManager((DataSource)envContext.lookup("jdbc/autoleasing"));
 			
-			formDispatcher = FormDispatcher.getInstance();
-
 			final Admin primaryAdmin = new Admin(
 					getServletContext().getInitParameter("adminUserName"),
 					Utils.getDigest(getServletContext().getInitParameter("adminPassword").getBytes()),
@@ -102,14 +99,14 @@ public class FCServlet extends HttpServlet {
 		
 		Form currentForm=getForm(req);
 		if(currentForm==null) {
-			currentForm=getFormDispatcher().getInitialForm();
+			currentForm=FormDispatcher.getInstance().getInitialForm();
 		}else {
 			Action action=currentForm.getAction(req.getParameterMap());
 			try{
 				checkAccess(req, action);
 				boolean succeeded=action.execute(req, entityManager);
 				currentForm.destroy(req);
-				Form nextForm=getFormDispatcher().getNextForm(getUser(req), currentForm, action, succeeded);
+				Form nextForm=getNextForm(req, currentForm, action, succeeded);
 				if(nextForm!=null) {
 					currentForm=nextForm;
 				} else {
@@ -129,13 +126,17 @@ public class FCServlet extends HttpServlet {
 		setForm(req, currentForm);
 		currentForm.init(req, entityManager);
 		try {
-			getServletContext().getRequestDispatcher(currentForm.getName()).forward(req,resp);
+			req.getRequestDispatcher(currentForm.getName()).forward(req,resp);
 		} catch (IOException e) {
 			logger.fatal(CANT_TRANSFER_TO_NEXT_FORM_MSG, e);
 			throw new ServletException(e);
 		}
 	}
     
+	public Form getNextForm(HttpServletRequest req,Form form,Action action,boolean actionSucceeded) {
+		return FormDispatcher.getInstance().getNextForm(getUser(req), form, action, actionSucceeded);
+	}
+	
 	@Override
 	protected void doGet(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException {
 		process(req,resp);
@@ -145,8 +146,6 @@ public class FCServlet extends HttpServlet {
 	protected void doPost(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException {
 		process(req,resp);
 	}
-	
-	public FormDispatcher getFormDispatcher() { return formDispatcher;}
 	
 	private static void checkAccess(HttpServletRequest req, Action action) throws SecurityException {
 		User user=getUser(req);

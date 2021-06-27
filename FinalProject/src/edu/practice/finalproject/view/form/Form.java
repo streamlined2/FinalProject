@@ -1,5 +1,6 @@
 package edu.practice.finalproject.view.form;
 
+import java.io.Serializable;
 import java.util.Map;
 import java.util.Objects;
 
@@ -16,7 +17,7 @@ import edu.practice.finalproject.view.action.Action;
  * @author Serhii Pylypenko
  *
  */
-public abstract class Form {
+public abstract class Form implements Serializable {
 	
 	protected final String name;
 	
