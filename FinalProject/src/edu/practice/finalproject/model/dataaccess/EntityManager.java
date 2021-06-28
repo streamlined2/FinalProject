@@ -20,6 +20,7 @@ import javax.sql.DataSource;
 import edu.practice.finalproject.model.analysis.Inspector;
 import edu.practice.finalproject.model.entity.Entity;
 import edu.practice.finalproject.model.entity.NaturalKeyEntity;
+import edu.practice.finalproject.model.entity.domain.Car;
 
 /**
  * Generic data access manager
@@ -461,6 +462,18 @@ public final class EntityManager {
 	 */
 	public <M extends Entity> Long countLinkedMissingEntities(final Class<M> masterClass,final Class<? extends Entity> slaveClass,final Map<String,?> keyPairs,final Class<? extends Entity> missingClass){
 		final StringBuilder clause=StatementBuilder.getCountLinkedMissingEntitiesStatement(masterClass,slaveClass,keyPairs,missingClass);
+		return getCountFromQuery(clause);
+	}
+	
+	/**
+	 * Composes and executes query to count tuples of lease orders that has already been confirmed by manager for given {@code car} and time period [{@code startTime}..{@code dueTime}]
+	 * @param car car for lease
+	 * @param startTime lease order start time
+	 * @param dueTime lease order end time
+	 * @return count of tuples that suit given condition 
+	 */
+	public Long countConfirmedCarOrders(Car car,LocalDateTime startTime,LocalDateTime dueTime) {
+		StringBuilder clause = StatementBuilder.getCountConfirmedCarOrdersStatement(car,startTime,dueTime);
 		return getCountFromQuery(clause);
 	}
 
