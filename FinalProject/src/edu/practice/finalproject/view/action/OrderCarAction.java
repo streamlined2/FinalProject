@@ -34,6 +34,7 @@ public class OrderCarAction extends ClientAction {
 	private static final String WRONG_CAR = "You should select car first";
 	private static final String CANT_SAVE_LEASE_ORDER_MSG = "Cannot save lease order";
 	private static final String LEASE_ORDER_SAVED_MSG = "Lease order saved";
+	private static final String AT_LEAST_ONE_ORDER_ALREADY_BEEN_CONFIRMED_FOR_THIS_CAR_AND_TIME_PERIOD = "At least one order already has been confirmed for this car %s and time period [%tF..%tF]";
 
 	@Override
 	public boolean execute(HttpServletRequest req, EntityManager entityManager) {
@@ -69,6 +70,12 @@ public class OrderCarAction extends ClientAction {
 			
 			if(dueTime.get().isBefore(startTime.get())) {
 				FCServlet.setError(req, String.format(WRONG_DUE_TIME, startTime.get(), dueTime.get()));
+				return false;
+			}
+			
+			Long count = entityManager.countConfirmedCarOrders(car,startTime.get(),dueTime.get());
+			if(count>0) {
+				FCServlet.setError(req, String.format(AT_LEAST_ONE_ORDER_ALREADY_BEEN_CONFIRMED_FOR_THIS_CAR_AND_TIME_PERIOD, car.getModel(), startTime.get(), dueTime.get()));
 				return false;
 			}
 			

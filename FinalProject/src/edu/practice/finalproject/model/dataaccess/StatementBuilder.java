@@ -15,6 +15,10 @@ import java.util.function.Function;
 import edu.practice.finalproject.model.analysis.Inspector;
 import edu.practice.finalproject.model.entity.Entity;
 import edu.practice.finalproject.model.entity.NaturalKeyEntity;
+import edu.practice.finalproject.model.entity.document.LeaseOrder;
+import edu.practice.finalproject.model.entity.document.OrderReview;
+import edu.practice.finalproject.model.entity.document.OrderReview.OrderStatus;
+import edu.practice.finalproject.model.entity.domain.Car;
 import edu.practice.finalproject.utilities.Utils;
 
 /**
@@ -42,6 +46,9 @@ public final class StatementBuilder {
 	private static final String INNER_JOIN_CLAUSE = " INNER JOIN ";
 	private static final String NULL_VALUE_DENOMINATOR = "NULL";
 	private static final String COUNT_CLAUSE = " COUNT(*) ";
+	private static final String NOT_CLAUSE = " NOT ( ";
+	private static final String OR_CLAUSE = " OR ";
+	private static final String LT_OPERATOR = "<";
 
 	private static final String CANT_FIND_FOREIGN_REFERENCE_FROM_SLAVE_TO_MASTER_CLASS = "Can't find foreign reference from slave class %s to master class %s";
 
@@ -602,6 +609,44 @@ public final class StatementBuilder {
 				return sb;
 			}else  throw new DataAccessException(String.format(CANT_FIND_FOREIGN_REFERENCE_FROM_SLAVE_TO_MASTER_CLASS,missingClass,masterClass));
 		}else throw new DataAccessException(String.format(CANT_FIND_FOREIGN_REFERENCE_FROM_SLAVE_TO_MASTER_CLASS,slaveClass,masterClass));
+	}
+
+	/**
+	 * Composes SQL statement to count tuples of lease orders that has already been confirmed by manager for given {@code car} and time period [{@code startTime}..{@code dueTime}]
+	 * @param car car for lease
+	 * @param startTime lease order start time
+	 * @param dueTime lease order end time
+	 * @return SQL statement to count tuples that suit given condition 
+	 */
+	public static StringBuilder getCountConfirmedCarOrdersStatement(Car car,LocalDateTime startTime,LocalDateTime dueTime) {
+		final Optional<Method> foreignRef = Inspector.getForeignReference(Car.class,LeaseOrder.class);
+		final Optional<Method> missingFRef = Inspector.getForeignReference(LeaseOrder.class,OrderReview.class);
+		if(foreignRef.isPresent()) {
+			if(missingFRef.isPresent()) {
+				return new StringBuilder(SELECT_CLAUSE).
+						append(COUNT_CLAUSE).
+						append(FROM_CLAUSE).
+						append(getTableName(Car.class)).append(" B ").
+						append(INNER_JOIN_CLAUSE).
+						append(getTableName(LeaseOrder.class)).append(" A ").
+						append(ON_CLAUSE).
+						append(getQualifiedAttribute("B",Entity.ID_FIELD)).append("=").
+						append(getFieldList(List.of(foreignRef.get()),",","A")).
+						append(INNER_JOIN_CLAUSE).
+						append(getTableName(OrderReview.class)).append(" C ").
+						append(ON_CLAUSE).
+						append(getQualifiedAttribute("A",Entity.ID_FIELD)).append("=").
+						append(getFieldList(List.of(missingFRef.get()),",","C")).
+						append(WHERE_CLAUSE).
+						append(getQualifiedAttribute("B",Entity.ID_FIELD)).append("=").append(car.getId()).append(AND_CLAUSE).
+						append(getQualifiedAttribute("C","orderstatus")).append("=").append(mapObjectToString(OrderStatus.APPROVED)).append(AND_CLAUSE).
+						append(NOT_CLAUSE).
+							append(getQualifiedAttribute("A","ENDTIME")).append(LT_OPERATOR).append(mapObjectToString(startTime)).
+							append(OR_CLAUSE).
+							append(mapObjectToString(dueTime)).append(LT_OPERATOR).append(getQualifiedAttribute("A","STARTTIME")).
+						append(")");
+			}else  throw new DataAccessException(String.format(CANT_FIND_FOREIGN_REFERENCE_FROM_SLAVE_TO_MASTER_CLASS,OrderReview.class,Car.class));
+		}else throw new DataAccessException(String.format(CANT_FIND_FOREIGN_REFERENCE_FROM_SLAVE_TO_MASTER_CLASS,LeaseOrder.class,Car.class));
 	}
 	
 	/**
