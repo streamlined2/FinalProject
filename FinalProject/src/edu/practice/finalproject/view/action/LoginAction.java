@@ -1,7 +1,6 @@
 package edu.practice.finalproject.view.action;
 
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 
@@ -26,11 +25,10 @@ public class LoginAction extends Action {
 		super(name);
 	}
 
-	private static final String HELLO_EN = "Hi";
-	private static final String HELLO_UK = "Привіт";
-	private static final String ERROR_MSG="Incorrect login or password. Please try again";
-	private static final String USER_BLOCKED_MSG = "Your account is blocked by administrator";
-	private static final String CAN_FIND_USER_MSG = "Cannot find user";
+	private static final String HELLO_MSG = "login.hello.message";
+	private static final String ERROR_MSG="login.error.message";
+	private static final String USER_BLOCKED_MSG = "login.user-blocked.message";
+	private static final String CANT_FIND_USER_MSG = "login.cant-find-user.message";
 	
 	@Override
 	public boolean execute(final HttpServletRequest req,final EntityManager entityManager) {
@@ -55,22 +53,22 @@ public class LoginAction extends Action {
 			
 			if(user.isPresent()) {
 				if(user.get().getBlocked()) {
-					FCServlet.setError(req, USER_BLOCKED_MSG);
+					FCServlet.setError(req, FCServlet.localize(req, USER_BLOCKED_MSG));
 					return false;
 				}
 				FCServlet.setUser(req, user.get());
-				FCServlet.setMessage(req, String.format("%s, %s %s!", FCServlet.getLocale(req)==Locale.ENGLISH?HELLO_EN:HELLO_UK,user.get().getFirstName(),user.get().getLastName()));
+				FCServlet.setMessage(req, String.format("%s, %s %s!", FCServlet.localize(req, HELLO_MSG),user.get().getFirstName(),user.get().getLastName()));
 				return true;
 			}else {
-				FCServlet.setError(req, ERROR_MSG);
+				FCServlet.setError(req, FCServlet.localize(req, ERROR_MSG));
 				return false;
 			}
 		} catch(DataAccessException e) {
-			logger.error(CAN_FIND_USER_MSG, e);
-			FCServlet.setError(req, CAN_FIND_USER_MSG);
+			logger.error(CANT_FIND_USER_MSG, e);
+			FCServlet.setError(req, FCServlet.localize(req, CANT_FIND_USER_MSG));
 		} catch (Exception e) {
 			logger.error(String.format("%s: %s",ERROR_MSG,e.getMessage()), e);
-			FCServlet.setError(req, String.format("%s: %s",ERROR_MSG,e.getMessage()));
+			FCServlet.setError(req, String.format("%s: %s",FCServlet.localize(req, ERROR_MSG),e.getMessage()));
 		}
 		return false;
 	}

@@ -28,20 +28,20 @@ public class OrderCarAction extends ClientAction {
 		super(name);
 	}
 	
-	private static final String WRONG_DUE_TIME = "Lease start time %tF should precede due time %tF";
-	private static final String WRONG_START_TIME = "Lease start time %tF should follow current time %tF";
-	private static final String WRONG_USER = "You should be logged as a client";
-	private static final String WRONG_CAR = "You should select car first";
-	private static final String CANT_SAVE_LEASE_ORDER_MSG = "Cannot save lease order";
-	private static final String LEASE_ORDER_SAVED_MSG = "Lease order saved";
-	private static final String AT_LEAST_ONE_ORDER_ALREADY_BEEN_CONFIRMED_FOR_THIS_CAR_AND_TIME_PERIOD = "At least one order already has been confirmed for this car %s and time period [%tF..%tF]";
+	private static final String WRONG_DUE_TIME = "orderCarAction.wrong-due-time";
+	private static final String WRONG_START_TIME = "orderCarAction.wrong-start-time";
+	private static final String WRONG_USER = "orderCarAction.wrong-user";
+	private static final String WRONG_CAR = "orderCarAction.wrong-car";
+	private static final String CANT_SAVE_LEASE_ORDER_MSG = "orderCarAction.cannot-save-lease-order";
+	private static final String LEASE_ORDER_SAVED_MSG = "orderCarAction.lease-order-saved";
+	private static final String AT_LEAST_ONE_ORDER_ALREADY_BEEN_CONFIRMED_FOR_THIS_CAR_AND_TIME_PERIOD = "orderCarAction.already-confirmed-lease-order";
 
 	@Override
 	public boolean execute(HttpServletRequest req, EntityManager entityManager) {
 		try {
 			final User user=FCServlet.getUser(req);
 			if(!(user instanceof Client)) {
-				FCServlet.setError(req, WRONG_USER);
+				FCServlet.setError(req, FCServlet.localize(req, WRONG_USER));
 				return false;
 			}
 			
@@ -49,7 +49,7 @@ public class OrderCarAction extends ClientAction {
 
 			final Car car = (Car)FCServlet.getAttribute(req, Names.SELECTED_CAR_ATTRIBUTE);
 			if(Objects.isNull(car)) {
-				FCServlet.setError(req, WRONG_CAR);
+				FCServlet.setError(req, FCServlet.localize(req, WRONG_CAR));
 				return false;
 			}
 
@@ -64,18 +64,18 @@ public class OrderCarAction extends ClientAction {
 			
 			final LocalDateTime now = LocalDateTime.now();
 			if(startTime.get().isBefore(now)) {
-				FCServlet.setError(req, String.format(WRONG_START_TIME, startTime.get(), now));
+				FCServlet.setError(req, String.format(FCServlet.localize(req, WRONG_START_TIME), startTime.get(), now));
 				return false;
 			}
 			
 			if(dueTime.get().isBefore(startTime.get())) {
-				FCServlet.setError(req, String.format(WRONG_DUE_TIME, startTime.get(), dueTime.get()));
+				FCServlet.setError(req, String.format(FCServlet.localize(req, WRONG_DUE_TIME), startTime.get(), dueTime.get()));
 				return false;
 			}
 			
 			Long count = entityManager.countConfirmedCarOrders(car,startTime.get(),dueTime.get());
 			if(count>0) {
-				FCServlet.setError(req, String.format(AT_LEAST_ONE_ORDER_ALREADY_BEEN_CONFIRMED_FOR_THIS_CAR_AND_TIME_PERIOD, car.getModel(), startTime.get(), dueTime.get()));
+				FCServlet.setError(req, String.format(FCServlet.localize(req, AT_LEAST_ONE_ORDER_ALREADY_BEEN_CONFIRMED_FOR_THIS_CAR_AND_TIME_PERIOD), car.getModel(), startTime.get(), dueTime.get()));
 				return false;
 			}
 			
@@ -89,11 +89,11 @@ public class OrderCarAction extends ClientAction {
 			entityManager.persist(order);
 
 			FCServlet.setAttribute(req, Names.SELECTED_ORDER_ATTRIBUTE, order);
-			FCServlet.setMessage(req, LEASE_ORDER_SAVED_MSG);
+			FCServlet.setMessage(req, FCServlet.localize(req, LEASE_ORDER_SAVED_MSG));
 			return true;
 		} catch(EntityException | DataAccessException e) {
 			logger.error(CANT_SAVE_LEASE_ORDER_MSG, e);
-			FCServlet.setError(req, CANT_SAVE_LEASE_ORDER_MSG);
+			FCServlet.setError(req, FCServlet.localize(req, CANT_SAVE_LEASE_ORDER_MSG));
 		}catch(Exception e) {
 			logger.error(CANT_SAVE_LEASE_ORDER_MSG, e);
 			FCServlet.setError(req, String.format("%s: %s",CANT_SAVE_LEASE_ORDER_MSG,e.getMessage()));

@@ -14,6 +14,7 @@ import edu.practice.finalproject.controller.transition.FormDispatcher;
 import edu.practice.finalproject.view.action.Action;
 import edu.practice.finalproject.view.form.Form;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 import java.io.IOException;
@@ -84,7 +85,24 @@ public class FCServletTestCase {
 		servlet.doGet(req, resp);
 		verify(req, atLeastOnce()).getSession();
 		verify(dispatcher).forward(req, resp);
-		verify(session).setAttribute(eq(Names.FORM_ATTRIBUTE), any());
+		verify(session).setAttribute(eq(Names.FORM_ATTRIBUTE), eq(newForm));
 	}
 
+	@Test
+	public void testForFormAttributePresentActionFailed() throws ServletException, IOException {
+		HttpSession session = mock(HttpSession.class);
+		when(req.getSession()).thenReturn(session);
+		Form form = mock(Form.class);
+		when(session.getAttribute(Names.FORM_ATTRIBUTE)).thenReturn(form);
+		Action action  = mock(Action.class);
+		when(form.getAction(any())).thenReturn(action);
+		Form newForm = mock(Form.class);
+		FCServlet servletMock = mock(FCServlet.class);
+		when(servletMock.getNextForm(req, form, action, true)).thenReturn(newForm);
+		when(req.getRequestDispatcher(newForm.getName())).thenReturn(dispatcher);
+		servlet.doGet(req, resp);
+		verify(req, atLeastOnce()).getSession();
+		verify(dispatcher).forward(req, resp);
+		assertEquals(form.getName(),newForm.getName());
+	}
 }
