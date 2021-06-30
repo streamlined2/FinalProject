@@ -11,7 +11,7 @@ import edu.practice.finalproject.model.entity.domain.Car;
 
 public class SelectCarAction extends ClientAction {
 	
-	public static final String INCORRECT_CAR_MSG = "Incorrect car selected!";
+	public static final String INCORRECT_CAR_MSG = "selectCarAction.incorrect-car-selected";
 
 	public SelectCarAction(String name) {
 		super(name);
@@ -25,7 +25,7 @@ public class SelectCarAction extends ClientAction {
 			FCServlet.setAttribute(req, Names.SELECTED_CAR_ATTRIBUTE, queryData.get(number));
 			return true;
 		}
-		FCServlet.setError(req, INCORRECT_CAR_MSG);
+		FCServlet.setError(req, FCServlet.localize(req, INCORRECT_CAR_MSG));
 		return false;
 	}
 }

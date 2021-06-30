@@ -37,7 +37,7 @@ public class TableViewTag extends SimpleTagSupport {
 			sb.append("<th>&nbsp;</th>");
 		}
 		for(String header:queryHeader) {
-			sb.append("<th>").append(header).append("</th>");
+			sb.append("<th>").append(FCServlet.localize("table-view.header."+header.replace(" ", "-"))).append("</th>");
 		}
 		sb.append("</tr>").append("</thead>");
 		return sb;
@@ -53,7 +53,7 @@ public class TableViewTag extends SimpleTagSupport {
 				sb.append("<td>");
 				sb.
 					append("<input type=\"submit\" value=\"").
-					append(button.getValue()).
+					append(FCServlet.localize("table-view.button."+button.getKey())).
 					append("\" formaction=\"").
 					append(FCServlet.MAPPING_PATTERN).
 					append("?action=").

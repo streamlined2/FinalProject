@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.ResourceBundle;
+
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -303,5 +305,15 @@ public class FCServlet extends HttpServlet {
 		if(session!=null) {
 			session.invalidate();
 		}
+	}
+	
+	public static String localize(HttpServletRequest req, String key) {
+		ResourceBundle bundle = ResourceBundle.getBundle("resources.messages", getLocale(req));
+		return bundle.getString(key); 
+	}
+
+	public static String localize(String key) {
+		ResourceBundle bundle = ResourceBundle.getBundle("resources.messages", Locale.getDefault());
+		return bundle.getString(key); 
 	}
 }

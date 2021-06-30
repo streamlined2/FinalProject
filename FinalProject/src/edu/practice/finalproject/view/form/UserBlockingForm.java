@@ -10,7 +10,6 @@ import edu.practice.finalproject.controller.Names;
 import edu.practice.finalproject.controller.transition.FormDispatcher;
 import edu.practice.finalproject.model.analysis.Inspector;
 import edu.practice.finalproject.model.dataaccess.EntityManager;
-import edu.practice.finalproject.model.entity.domain.Car;
 import edu.practice.finalproject.model.entity.userrole.User;
 import edu.practice.finalproject.view.action.Action;
 import edu.practice.finalproject.utilities.Utils;
