@@ -31,22 +31,24 @@
 			<tr>
 				<th>&nbsp;</th>
 				<th>&nbsp;</th>
-				<th>Login</th>
-				<th>First name</th>
-				<th>Last name</th>
+				<th><fmt:message key="user.blocking.form.login" bundle="${localeBundle}"/></th>
+				<th><fmt:message key="user.blocking.form.first-name" bundle="${localeBundle}"/></th>
+				<th><fmt:message key="user.blocking.form.last-name" bundle="${localeBundle}"/></th>
 			</tr>
 			</thead>
 			<tbody>
+				<fmt:message key="user.blocking.form.unblockButton" bundle="${localeBundle}" var="unblockButton"/>
+				<fmt:message key="user.blocking.form.blockButton" bundle="${localeBundle}" var="blockButton"/>
 				<c:set var="number" value="0"/>
 				<c:forEach items="${pageItems}" var="entity">
 					<tr>
 						<td>
 							<c:choose>
 							<c:when test="${entity.blocked}">
-								<input type="submit" value="Unblock" formaction="main?action=blockUser&userNumber=${number}" formmethod="post"/>
+								<input type="submit" value="${unblockButton}" formaction="main?action=blockUser&userNumber=${number}" formmethod="post"/>
 							</c:when>
 							<c:otherwise>
-								<input type="submit" value="Block" formaction="main?action=blockUser&userNumber=${number}" formmethod="post"/>
+								<input type="submit" value="${blockButton}" formaction="main?action=blockUser&userNumber=${number}" formmethod="post"/>
 							</c:otherwise>
 							</c:choose>
 						</td>
@@ -60,11 +62,16 @@
 			</tbody>
 		</table>
 		<hr>
-		<input type="submit" value="Next" formaction="main?action=nextPage" formmethod="post"/>
-		<input type="submit" value="Previous" formaction="main?action=previousPage" formmethod="post"/>
-		<input type="submit" value="First" formaction="main?action=firstPage" formmethod="post"/>
-		<input type="submit" value="Last" formaction="main?action=lastPage" formmethod="post"/>
-		<input type="submit" value="Back" formaction="main?action=back" formmethod="post" formnovalidate/>
+		<fmt:message key="user.blocking.form.nextButton" bundle="${localeBundle}" var="nextButton"/>
+		<input type="submit" value="${nextButton}" formaction="main?action=nextPage" formmethod="post"/>
+		<fmt:message key="user.blocking.form.previousButton" bundle="${localeBundle}" var="previousButton"/>
+		<input type="submit" value="${previousButton}" formaction="main?action=previousPage" formmethod="post"/>
+		<fmt:message key="user.blocking.form.firstButton" bundle="${localeBundle}" var="firstButton"/>
+		<input type="submit" value="${firstButton}" formaction="main?action=firstPage" formmethod="post"/>
+		<fmt:message key="user.blocking.form.lastButton" bundle="${localeBundle}" var="lastButton"/>
+		<input type="submit" value="${lastButton}" formaction="main?action=lastPage" formmethod="post"/>
+		<fmt:message key="user.blocking.form.backButton" bundle="${localeBundle}" var="backButton"/>
+		<input type="submit" value="${backButton}" formaction="main?action=back" formmethod="post" formnovalidate/>
 	</form>
 </body>
 </html>

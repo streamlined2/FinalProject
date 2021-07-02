@@ -11,7 +11,7 @@ import edu.practice.finalproject.model.entity.domain.Car;
 
 public class ModifyCarAction extends AdminAction {
 
-	private static final String INCORRECT_CAR_MSG = "Incorrect car selected";
+	private static final String INCORRECT_CAR_MSG = "modify.car.action.incorrect-car";
 
 	public ModifyCarAction(String name) {
 		super(name);
@@ -27,7 +27,7 @@ public class ModifyCarAction extends AdminAction {
 			FCServlet.setAttribute(req, Names.NEW_CAR_ATTRIBUTE, Boolean.FALSE);
 			return true;
 		}
-		FCServlet.setError(req, INCORRECT_CAR_MSG);
+		FCServlet.setError(req, FCServlet.localize(INCORRECT_CAR_MSG));
 		return false;
 	}
 

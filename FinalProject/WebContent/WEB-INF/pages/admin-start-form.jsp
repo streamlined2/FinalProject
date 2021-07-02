@@ -11,23 +11,24 @@
 	<%@include file="common-controls.jsp" %>
 	<form>
 	<fieldset>
-		<legend>Administrative tasks</legend>
+		<legend><fmt:message key="admin.start.form.title" bundle="${localeBundle}"/></legend>
 		<table>
 		<tr>
-		<td><label for="carManagement">Car management</label></td>
+		<td><label for="carManagement"><fmt:message key="admin.start.form.car-management" bundle="${localeBundle}"/></label></td>
 		<td><input type="radio" id="carManagement" name="adminTask" value="carManagement" checked/></td>
 		</tr>
 		<tr>
-		<td><label for="userBlocking">User blocking</label></td>
+		<td><label for="userBlocking"><fmt:message key="admin.start.form.user-blocking" bundle="${localeBundle}"/></label></td>
 		<td><input type="radio" id="userBlocking" name="adminTask" value="userBlocking"/></td>
 		</tr>
 		<tr>
-		<td><label for="managerRegistration">Manager registration</label></td>
+		<td><label for="managerRegistration"><fmt:message key="admin.start.form.manager-registration" bundle="${localeBundle}"/></label></td>
 		<td><input type="radio" id="managerRegistration" name="adminTask" value="managerRegistration"/></td>
 		</tr>
 		</table>
 		<hr>
-		<input type="submit" value="Next" formaction="main?action=next" formmethod="post"/>
+		<fmt:message key="admin.start.form.nextButton" bundle="${localeBundle}" var="nextButton"/>
+		<input type="submit" value="${nextButton}" formaction="main?action=next" formmethod="post"/>
 	</fieldset>
 	</form>
 </body>
