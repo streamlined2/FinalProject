@@ -22,9 +22,9 @@ public class RejectOrderAction extends ManagerAction {
 
 	private static final Logger logger = LogManager.getLogger();
 
-	private static final String EMPTY_REJECTION_REASON_MSG = "Reason for rejection shouldn't be empty";
-	private static final String CANT_SAVE_ORDER_REVIEW_MSG = "Cannot save order review";
-	private static final String ORDER_REVIEW_SAVED_MSG = "Order review saved";
+	private static final String EMPTY_REJECTION_REASON_MSG = "reject.order.action.empty-rejection-reason";
+	private static final String CANT_SAVE_ORDER_REVIEW_MSG = "reject.order.action.cant-save-order-review";
+	private static final String ORDER_REVIEW_SAVED_MSG = "reject.order.action.order-review-saved";
 
 	public RejectOrderAction(String name) {
 		super(name);
@@ -37,7 +37,7 @@ public class RejectOrderAction extends ManagerAction {
 		final String rejectionReason = FCServlet.getParameterValue(req, Names.REJECTION_REASON_PARAMETER);
 		
 		if(rejectionReason.trim().isEmpty()) {
-			FCServlet.setError(req, EMPTY_REJECTION_REASON_MSG);
+			FCServlet.setError(req, FCServlet.localize(EMPTY_REJECTION_REASON_MSG));
 			return false;
 		}
 
@@ -51,11 +51,11 @@ public class RejectOrderAction extends ManagerAction {
 			entityManager.persist(orderReview);
 
 			FCServlet.setAttribute(req, Names.ORDER_REVIEW_ATTRIBUTE, orderReview);
-			FCServlet.setMessage(req, ORDER_REVIEW_SAVED_MSG);
+			FCServlet.setMessage(req, FCServlet.localize(ORDER_REVIEW_SAVED_MSG));
 			return true;
 		} catch(EntityException | DataAccessException e) {
 			logger.error(CANT_SAVE_ORDER_REVIEW_MSG, e);
-			FCServlet.setError(req, CANT_SAVE_ORDER_REVIEW_MSG);
+			FCServlet.setError(req, FCServlet.localize(CANT_SAVE_ORDER_REVIEW_MSG));
 			return false;
 		}
 	}

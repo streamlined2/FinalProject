@@ -13,28 +13,6 @@
 	
 	<form>
 		<tv:table-view buttons="${buttonsMap}" queryHeader="${queryHeader}" queryData="${queryData}" order="carNumber"/>
-<!-- 	<table>
-			<thead><tr>
-				<th>&nbsp;</th>
-				<c:forEach items="${queryHeader}" var="column">
-					<th>${column}</th>
-				</c:forEach>
-			</tr></thead>
-			<tbody>
-				<c:set var="number" value="0"/>
-				<c:forEach items="${queryData}" var="entity">
-					<tr>
-						<td>
-							<input type="submit" value="Get" formaction="main?action=select_car&carNumber=${number}" formmethod="post"/>
-						</td>
-						<c:forEach items="${entity}" var="value">
-							<td>${value}</td>
-						</c:forEach>
-					</tr>
-					<c:set var="number" value="${number+1}"/>
-				</c:forEach>
-			</tbody>
-		</table> -->
 		<hr>
 		<fmt:message key="form.dispatch.next" bundle="${localeBundle}" var="formDispatchNext"/>
 		<input type="submit" value="${formDispatchNext}" formaction="main?action=nextPage" formmethod="post"/>

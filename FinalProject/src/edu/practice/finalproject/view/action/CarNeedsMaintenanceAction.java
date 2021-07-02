@@ -21,7 +21,7 @@ import edu.practice.finalproject.model.entity.userrole.Manager;
 public class CarNeedsMaintenanceAction extends ManagerAction {
 
 	private static final Logger logger = LogManager.getLogger();
-	private static final String CANT_SAVE_CAR_REVIEW_MSG = "Cannot save car review";
+	private static final String CANT_SAVE_CAR_REVIEW_MSG = "car.needs.maintenance.action.cant-save-car-review";
 
 	public CarNeedsMaintenanceAction(String name) {
 		super(name);
@@ -44,7 +44,7 @@ public class CarNeedsMaintenanceAction extends ManagerAction {
 			return true;
 		} catch(EntityException | DataAccessException e) {
 			logger.error(CANT_SAVE_CAR_REVIEW_MSG, e);
-			FCServlet.setError(req, CANT_SAVE_CAR_REVIEW_MSG);
+			FCServlet.setError(req, FCServlet.localize(CANT_SAVE_CAR_REVIEW_MSG));
 			return false;
 		}
 	}

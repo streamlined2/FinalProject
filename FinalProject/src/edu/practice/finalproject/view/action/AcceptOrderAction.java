@@ -21,7 +21,7 @@ import edu.practice.finalproject.model.entity.userrole.Manager;
 public class AcceptOrderAction extends ManagerAction {
 
 	private static final Logger logger = LogManager.getLogger();
-	private static final String CANT_SAVE_ORDER_MSG = "Cannot save order";
+	private static final String CANT_SAVE_ORDER_MSG = "accept.order.action.cant-save-order";
 
 	public AcceptOrderAction(String name) {
 		super(name);
@@ -44,7 +44,7 @@ public class AcceptOrderAction extends ManagerAction {
 			return true;
 		} catch(EntityException | DataAccessException e) {
 			logger.error(CANT_SAVE_ORDER_MSG, e);
-			FCServlet.setError(req, CANT_SAVE_ORDER_MSG);
+			FCServlet.setError(req, FCServlet.localize(CANT_SAVE_ORDER_MSG));
 			return false;
 		}
 	}

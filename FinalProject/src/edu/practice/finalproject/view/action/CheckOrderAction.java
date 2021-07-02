@@ -11,7 +11,7 @@ import edu.practice.finalproject.model.entity.document.LeaseOrder;
 
 public class CheckOrderAction extends ManagerAction {
 	
-	private static final String INCORRECT_ORDER_MSG = "Wrong number of selected order";
+	private static final String INCORRECT_ORDER_MSG = "check.order.action.wrong-order";
 
 	public CheckOrderAction(String name) {
 		super(name);
@@ -25,7 +25,7 @@ public class CheckOrderAction extends ManagerAction {
 			FCServlet.setAttribute(req, Names.SELECTED_ORDER_ATTRIBUTE, queryData.get(number));
 			return true;
 		}
-		FCServlet.setError(req, INCORRECT_ORDER_MSG);
+		FCServlet.setError(req, FCServlet.localize(INCORRECT_ORDER_MSG));
 		return false;
 	}
 }

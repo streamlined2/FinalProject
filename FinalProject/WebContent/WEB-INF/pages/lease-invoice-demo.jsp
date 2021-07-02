@@ -11,23 +11,24 @@
 	<%@include file="common-controls.jsp" %>
 	<form>
 	<fieldset>
-		<legend>Lease invoice</legend>
+		<legend><fmt:message key="lease.invoice.demo.form" bundle="${localeBundle}"/></legend>
 		<table>
 		<tr>
-			<td>Order ${leaseInvoice.leaseOrder}</td>
+			<td><fmt:message key="lease.invoice.demo.order" bundle="${localeBundle}"/>${leaseInvoice.leaseOrder}</td>
 		</tr>
 		<tr>
-			<td>Signed on ${leaseInvoice.signTime} by ${leaseInvoice.manager}</td>
+			<td><fmt:message key="lease.invoice.demo.signed-on" bundle="${localeBundle}"/>${leaseInvoice.signTime}<fmt:message key="lease.invoice.demo.by" bundle="${localeBundle}"/>${leaseInvoice.manager}</td>
 		</tr>
 		<tr>
-			<td>Bank account ${leaseInvoice.account}</td>
+			<td><fmt:message key="lease.invoice.demo.bank-account" bundle="${localeBundle}"/>${leaseInvoice.account}</td>
 		</tr>
 		<tr>
-			<td>Due sum ${leaseInvoice.sum}</td>
+			<td><fmt:message key="lease.invoice.demo.due-sum" bundle="${localeBundle}"/>${leaseInvoice.sum}</td>
 		</tr>
 		</table>
 		<hr>
-		<input type="submit" value="Done" formaction="main?action=back" formmethod="post" formnovalidate/>
+		<fmt:message key="lease.invoice.demo.done" bundle="${localeBundle}" var="leaseInvoiceDone"/>
+		<input type="submit" value="${leaseInvoiceDone}" formaction="main?action=back" formmethod="post" formnovalidate/>
 	</fieldset>
 	</form>
 </body>

@@ -11,25 +11,26 @@
 	<%@include file="common-controls.jsp" %>
 	<form>
 	<fieldset>
-		<legend>Maintenance invoice</legend>
+		<legend><fmt:message key="maintenance.invoice.demo.title" bundle="${localeBundle}"/></legend>
 		<table>
 		<tr>
-			<td>Order ${maintenanceInvoice.leaseOrder}</td>
+			<td><fmt:message key="maintenance.invoice.demo.order" bundle="${localeBundle}"/>${maintenanceInvoice.leaseOrder}</td>
 		</tr>
 		<tr>
-			<td>Signed on ${maintenanceInvoice.signTime} by ${maintenanceInvoice.manager}</td>
+			<td><fmt:message key="maintenance.invoice.demo.signedon" bundle="${localeBundle}"/>${maintenanceInvoice.signTime}<fmt:message key="maintenance.invoice.demo.by" bundle="${localeBundle}"/>${maintenanceInvoice.manager}</td>
 		</tr>
 		<tr>
-			<td>Bank account ${maintenanceInvoice.account}</td>
+			<td><fmt:message key="maintenance.invoice.demo.bank-account" bundle="${localeBundle}"/>${maintenanceInvoice.account}</td>
 		</tr>
 		<tr>
-			<td>Due sum ${maintenanceInvoice.sum}</td>
+			<td><fmt:message key="maintenance.invoice.demo.due-sum" bundle="${localeBundle}"/>${maintenanceInvoice.sum}</td>
 		</tr>
-		<tr><td>Maintenance to be done</td></tr>
+		<tr><td><fmt:message key="maintenance.invoice.demo.to-be-done" bundle="${localeBundle}"/></td></tr>
 		<tr><td>${maintenanceInvoice.repairs}</td></tr>
 		</table>
 		<hr>
-		<input type="submit" value="Done" formaction="main?action=back" formmethod="post" formnovalidate/>
+		<fmt:message key="maintenance.invoice.demo.done" bundle="${localeBundle}" var="doneButton"/>
+		<input type="submit" value="${doneButton}" formaction="main?action=back" formmethod="post" formnovalidate/>
 	</fieldset>
 	</form>
 </body>

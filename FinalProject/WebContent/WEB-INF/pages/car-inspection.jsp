@@ -11,22 +11,23 @@
 	<%@include file="common-controls.jsp" %>
 	<form>
 	<fieldset>
-		<legend>Please check car condition</legend>
+		<legend><fmt:message key="car.inspection.title" bundle="${localeBundle}"/></legend>
 		<table>
 		<tr>
-		<td><label for="perfect">Perfect</label></td>
+		<td><label for="perfect"><fmt:message key="car.inspection.perfect" bundle="${localeBundle}"/></label></td>
 		<td><input type="radio" id="perfect" name="carEvaluationResult" value="perfectCondition" checked/></td>
 		</tr>
 		<tr>
-		<td><label for="needsMaintenance">Needs maintenance</label></td>
+		<td><label for="needsMaintenance"><fmt:message key="car.inspection.needs-maintenance" bundle="${localeBundle}"/></label></td>
 		<td><input type="radio" id="needsMaintenance" name="carEvaluationResult" value="needsMaintenance"/></td>
 		</tr>
 		</table>
 		<hr>
-		<input type="submit" value="Proceed" formaction="main?action=next" formmethod="post"/>
-		<input type="submit" value="Back" formaction="main?action=back" formmethod="post" formnovalidate/>
+		<fmt:message key="car.inspection.proceed" bundle="${localeBundle}" var="proceedButton"/>
+		<input type="submit" value="${proceedButton}" formaction="main?action=next" formmethod="post"/>
+		<fmt:message key="car.inspection.back" bundle="${localeBundle}" var="backButton"/>
+		<input type="submit" value="${backButton}" formaction="main?action=back" formmethod="post" formnovalidate/>
 	</fieldset>
 	</form>
-
 </body>
 </html>

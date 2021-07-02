@@ -11,24 +11,28 @@
 	<%@include file="common-controls.jsp" %>
 	<form>
 	<fieldset>
-		<legend>Lease invoice form</legend>
+		<legend><fmt:message key="new.lease.invoice.title" bundle="${localeBundle}"/></legend>
 		<table>
 		<tr>
-			<td><label>Order</label></td>
+			<td><label><fmt:message key="new.lease.invoice.order" bundle="${localeBundle}"/></label></td>
 			<td>${orderReview.leaseOrder}</td>
 		</tr>
 		<tr>
-			<td><label for="account">Account</label></td>
-			<td><input type="text" id="account" name="account" value="" size="34" required pattern="${requestScope.accountPattern}" title="Please enter up to 34 letters and digits of bank account"/></td>
+			<td><label for="account"><fmt:message key="new.lease.invoice.account" bundle="${localeBundle}"/></label></td>
+			<fmt:message key="new.lease.invoice.account-prompt" bundle="${localeBundle}" var="accountPrompt"/>
+			<td><input type="text" id="account" name="account" value="" size="34" required pattern="${requestScope.accountPattern}" title="${accountPrompt}"/></td>
 		</tr>
 		<tr>
-			<td><label for="invoiceSum">Sum</label></td>
-			<td><input type="number" id="invoiceSum" name="invoiceSum" value="${initialInvoiceSum}" defaultValue="${initialInvoiceSum}" min="0" size="18" title="Please enter due sum" required/></td>
+			<td><label for="invoiceSum"><fmt:message key="new.lease.invoice.sum" bundle="${localeBundle}"/></label></td>
+			<fmt:message key="new.lease.invoice.sum-title" bundle="${localeBundle}" var="sumTitle"/>
+			<td><input type="number" id="invoiceSum" name="invoiceSum" value="${initialInvoiceSum}" defaultValue="${initialInvoiceSum}" min="0" size="18" title="${sumTitle}" required/></td>
 		</tr>
 		</table>
 		<hr>
-		<input type="submit" value="Send" formaction="main?action=sendLeaseInvoice" formmethod="post"/>
-		<input type="reset" value="Clear" />
+		<fmt:message key="new.lease.invoice.send" bundle="${localeBundle}" var="sendButton"/>
+		<input type="submit" value="${sendButton}" formaction="main?action=sendLeaseInvoice" formmethod="post"/>
+		<fmt:message key="new.lease.invoice.clear" bundle="${localeBundle}" var="clearButton"/>
+		<input type="reset" value="${clearButton}" />
 	</fieldset>
 	</form>
 </body>
