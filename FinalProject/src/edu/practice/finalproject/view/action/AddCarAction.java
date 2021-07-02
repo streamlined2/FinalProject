@@ -15,7 +15,7 @@ import edu.practice.finalproject.model.entity.domain.Car;
 public class AddCarAction extends AdminAction {
 	
 	private static final Logger logger = LogManager.getLogger();
-	private static final String CANT_CREATE_ENTITY_MSG = "Cannot create entity";
+	private static final String CANT_CREATE_ENTITY_MSG = "add.car.action.cant-create-entity";
 
 	public AddCarAction(String name) {
 		super(name);
@@ -30,7 +30,7 @@ public class AddCarAction extends AdminAction {
 			return true;
 		} catch(EntityException e) {
 			logger.error(CANT_CREATE_ENTITY_MSG, e);
-			FCServlet.setError(req, CANT_CREATE_ENTITY_MSG);
+			FCServlet.setError(req, FCServlet.localize(CANT_CREATE_ENTITY_MSG));
 			return false;
 		}
 	}

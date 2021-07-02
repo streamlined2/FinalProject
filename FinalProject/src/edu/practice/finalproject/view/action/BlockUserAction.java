@@ -17,8 +17,8 @@ public class BlockUserAction extends AdminAction {
 
 	private static final Logger logger = LogManager.getLogger();
 
-	private static final String INCORRECT_USER_MSG = "Wrong user selected";
-	private static final String CANT_UPDATE_USER_STATUS_MSG = "Can't update user status";
+	private static final String INCORRECT_USER_MSG = "block.user.action.incorrect-user";
+	private static final String CANT_UPDATE_USER_STATUS_MSG = "block.user.action.cant-update-user-status";
 
 	public BlockUserAction(String name) {
 		super(name);
@@ -34,15 +34,15 @@ public class BlockUserAction extends AdminAction {
 			try {
 				boolean success = entityManager.merge(user);
 				if(success) return true; 
-				FCServlet.setError(req, CANT_UPDATE_USER_STATUS_MSG);
+				FCServlet.setError(req, FCServlet.localize(CANT_UPDATE_USER_STATUS_MSG));
 				return false;
 			} catch(DataAccessException e) {
 				logger.error(CANT_UPDATE_USER_STATUS_MSG, e);
-				FCServlet.setError(req, CANT_UPDATE_USER_STATUS_MSG);
+				FCServlet.setError(req, FCServlet.localize(CANT_UPDATE_USER_STATUS_MSG));
 				return false;
 			}
 		}
-		FCServlet.setError(req, INCORRECT_USER_MSG);
+		FCServlet.setError(req, FCServlet.localize(INCORRECT_USER_MSG));
 		return false;
 	}
 }

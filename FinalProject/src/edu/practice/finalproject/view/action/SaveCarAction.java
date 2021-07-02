@@ -26,17 +26,17 @@ public class SaveCarAction extends AdminAction {
 
 	private static final Logger logger = LogManager.getLogger();
 
-	private static final String WRONG_CAR_MODEL_MSG = "Wrong car model";
-	private static final String WRONG_RENT_COST_MSG = "Wrong rent cost value";
-	private static final String WRONG_MANUFACTURER_MSG = "Wrong manufacturer";
-	private static final String WRONG_QUALITY_GRADE_MSG = "Wrong quality grade";
-	private static final String WRONG_COLOR_MSG = "Wrong color";
-	private static final String WRONG_STYLE_MSG = "Wrong style";
-	private static final String CANT_SAVE_CAR_MSG = "Cannot save car";
-	private static final String COST_SHOULD_BE_POSITIVE_MSG = "Lease cost should be positive value";
-	private static final String WRONG_PRODUCTION_DATE_FORMAT_MSG = "Wrong car production date";
-	private static final String WRONG_PRODUCTION_DATE_VALUE_MSG = "Production date %tF should precede current date %tF";
-	private static final String CAR_SAVED_MSG = "Car saved";
+	private static final String WRONG_CAR_MODEL_MSG = "save.car.action.wrong-car-model";
+	private static final String WRONG_RENT_COST_MSG = "save.car.action.wrong-rent-cost";
+	private static final String WRONG_MANUFACTURER_MSG = "save.car.action.wrong-manufacturer";
+	private static final String WRONG_QUALITY_GRADE_MSG = "save.car.action.wrong-quality-grade";
+	private static final String WRONG_COLOR_MSG = "save.car.action.wrong-color";
+	private static final String WRONG_STYLE_MSG = "save.car.action.wrong-style";
+	private static final String CANT_SAVE_CAR_MSG = "save.car.action.cant-save-car";
+	private static final String COST_SHOULD_BE_POSITIVE_MSG = "save.car.action.negative-lease-cost";
+	private static final String WRONG_PRODUCTION_DATE_FORMAT_MSG = "save.car.action.wrong-car-production-date";
+	private static final String WRONG_PRODUCTION_DATE_VALUE_MSG = "save.car.action.production-before-current-date";
+	private static final String CAR_SAVED_MSG = "save.car.action.car-saved";
 	
 	public SaveCarAction(String name) {
 		super(name);
@@ -45,7 +45,7 @@ public class SaveCarAction extends AdminAction {
 	@Override
 	public boolean execute(HttpServletRequest req, EntityManager entityManager) {
 		if(!Utils.checkIfValid(req,Names.CAR_MODEL_PARAMETER,Utils::checkCarModel)) {
-			FCServlet.setError(req, WRONG_CAR_MODEL_MSG);
+			FCServlet.setError(req, FCServlet.localize(WRONG_CAR_MODEL_MSG));
 			return false;
 		}
 		final String model=FCServlet.getParameterValue(req,Names.CAR_MODEL_PARAMETER);		
@@ -53,28 +53,28 @@ public class SaveCarAction extends AdminAction {
 		final String manufacturer=FCServlet.getParameterValue(req,Names.MANUFACTURER_PARAMETER);		
 		final Optional<Manufacturer> manufacturerValue = Inspector.getByLabel(Manufacturer.class, manufacturer);
 		if(!manufacturerValue.isPresent()) {
-			FCServlet.setError(req, WRONG_MANUFACTURER_MSG);
+			FCServlet.setError(req, FCServlet.localize(WRONG_MANUFACTURER_MSG));
 			return false;
 		}
 		
 		final String qualityGrade=FCServlet.getParameterValue(req,Names.QUALITY_GRADE_PARAMETER);
 		final Optional<QualityGrade> qualityGradeValue = Inspector.getByLabel(QualityGrade.class, qualityGrade);
 		if(!qualityGradeValue.isPresent()) {
-			FCServlet.setError(req, WRONG_QUALITY_GRADE_MSG);
+			FCServlet.setError(req, FCServlet.localize(WRONG_QUALITY_GRADE_MSG));
 			return false;			
 		}
 
 		final String color=FCServlet.getParameterValue(req,Names.COLOR_PARAMETER);		
 		final Optional<Color> colorValue = Inspector.getByLabel(Color.class, color);
 		if(!colorValue.isPresent()) {
-			FCServlet.setError(req, WRONG_COLOR_MSG);
+			FCServlet.setError(req, FCServlet.localize(WRONG_COLOR_MSG));
 			return false;
 		}
 
 		final String style=FCServlet.getParameterValue(req,Names.STYLE_PARAMETER);
 		final Optional<Style> styleValue = Inspector.getByLabel(Style.class, style);
 		if(!styleValue.isPresent()) {
-			FCServlet.setError(req, WRONG_STYLE_MSG);
+			FCServlet.setError(req, FCServlet.localize(WRONG_STYLE_MSG));
 			return false;
 		}
 		
@@ -82,7 +82,7 @@ public class SaveCarAction extends AdminAction {
 			final String rentCost=FCServlet.getParameterValue(req,Names.CAR_RENT_COST_PARAMETER);
 			final BigDecimal costValue = new BigDecimal(rentCost);
 			if(costValue.compareTo(BigDecimal.ZERO)<=0) {
-				FCServlet.setError(req, COST_SHOULD_BE_POSITIVE_MSG);
+				FCServlet.setError(req, FCServlet.localize(COST_SHOULD_BE_POSITIVE_MSG));
 				return false;
 			}
 			
@@ -92,7 +92,7 @@ public class SaveCarAction extends AdminAction {
 			final LocalDate prodDateValue = LocalDate.parse(productionDate);
 			final LocalDate now = LocalDate.now();
 			if(createNew.booleanValue() && now.isBefore(prodDateValue)) {
-				FCServlet.setError(req, String.format(WRONG_PRODUCTION_DATE_VALUE_MSG, prodDateValue, now));
+				FCServlet.setError(req, String.format(FCServlet.localize(WRONG_PRODUCTION_DATE_VALUE_MSG), prodDateValue, now));
 				return false;
 			}
 			
@@ -112,17 +112,17 @@ public class SaveCarAction extends AdminAction {
 				success = entityManager.merge(car);
 			}
 			if(!success) {
-				FCServlet.setError(req, CANT_SAVE_CAR_MSG);
+				FCServlet.setError(req, FCServlet.localize(CANT_SAVE_CAR_MSG));
 				return false;
 			}
-			FCServlet.setMessage(req, CAR_SAVED_MSG);
+			FCServlet.setMessage(req, FCServlet.localize(CAR_SAVED_MSG));
 			return true;
 		} catch(NumberFormatException e) {
 			logger.error(WRONG_RENT_COST_MSG, e);
-			FCServlet.setError(req, WRONG_RENT_COST_MSG);
+			FCServlet.setError(req, FCServlet.localize(WRONG_RENT_COST_MSG));
 		} catch(DateTimeParseException e) {
 			logger.error(WRONG_PRODUCTION_DATE_FORMAT_MSG, e);
-			FCServlet.setError(req, WRONG_PRODUCTION_DATE_FORMAT_MSG);
+			FCServlet.setError(req, FCServlet.localize(WRONG_PRODUCTION_DATE_FORMAT_MSG));
 		} catch(DataAccessException e) {
 			logger.error(CANT_SAVE_CAR_MSG, e);
 			FCServlet.setError(req, CANT_SAVE_CAR_MSG);			

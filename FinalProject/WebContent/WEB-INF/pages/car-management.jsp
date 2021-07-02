@@ -13,39 +13,19 @@
 	
 	<form>
 		<tv:table-view buttons="${buttonsMap}" queryHeader="${queryHeader}" queryData="${queryData}" order="carNumber"/>
-<!-- 	<table>
-			<thead><tr>
-				<th>&nbsp;</th>
-				<th>&nbsp;</th>
-				<c:forEach items="${queryHeader}" var="column">
-					<th>${column}</th>
-				</c:forEach>
-			</tr></thead>
-			<tbody>
-				<c:set var="number" value="0"/>
-				<c:forEach items="${queryData}" var="entity">
-					<tr>
-						<td>
-							<input type="submit" value="Edit" formaction="main?action=modifyCar&carNumber=${number}" formmethod="post"/>
-						</td>
-						<td>
-							<input type="submit" value="Delete" formaction="main?action=deleteCar&carNumber=${number}" formmethod="post"/>
-						</td>
-						<c:forEach items="${entity}" var="value">
-							<td>${value}</td>
-						</c:forEach>
-					</tr>
-					<c:set var="number" value="${number+1}"/>
-				</c:forEach>
-			</tbody>
-		</table> -->
 		<hr>
-		<input type="submit" value="New" formaction="main?action=newCar" formmethod="post"/>
-		<input type="submit" value="Next" formaction="main?action=nextPage" formmethod="post"/>
-		<input type="submit" value="Previous" formaction="main?action=previousPage" formmethod="post"/>
-		<input type="submit" value="First" formaction="main?action=firstPage" formmethod="post"/>
-		<input type="submit" value="Last" formaction="main?action=lastPage" formmethod="post"/>
-		<input type="submit" value="Back" formaction="main?action=back" formmethod="post" formnovalidate/>
+		<fmt:message key="car.management.newButton" bundle="${localeBundle}" var="newButton"/>
+		<input type="submit" value="${newButton}" formaction="main?action=newCar" formmethod="post"/>
+		<fmt:message key="car.management.nextButton" bundle="${localeBundle}" var="nextButton"/>
+		<input type="submit" value="${nextButton}" formaction="main?action=nextPage" formmethod="post"/>
+		<fmt:message key="car.management.previousButton" bundle="${localeBundle}" var="previousButton"/>
+		<input type="submit" value="${previousButton}" formaction="main?action=previousPage" formmethod="post"/>
+		<fmt:message key="car.management.firstButton" bundle="${localeBundle}" var="firstButton"/>
+		<input type="submit" value="${firstButton}" formaction="main?action=firstPage" formmethod="post"/>
+		<fmt:message key="car.management.lastButton" bundle="${localeBundle}" var="lastButton"/>
+		<input type="submit" value="${lastButton}" formaction="main?action=lastPage" formmethod="post"/>
+		<fmt:message key="car.management.backButton" bundle="${localeBundle}" var="backButton"/>
+		<input type="submit" value="${backButton}" formaction="main?action=back" formmethod="post" formnovalidate/>
 	</form>
 </body>
 </html>
