@@ -11,23 +11,27 @@
 	<%@include file="common-controls.jsp" %>
 	<form>
 	<fieldset>
-		<legend>Charge for maintenance</legend>
+		<legend><fmt:message key="maintenance.charge.title" bundle="${localeBundle}"/></legend>
 		<table>
 		<tr>
-			<td><label for="account">Account</label></td>
-			<td><input type="text" id="account" name="account" value="" size="34" required pattern="${requestScope.accountPattern}" title="Please enter up to 34 letters and digits of bank account"/></td>
+			<td><label for="account"><fmt:message key="maintenance.charge.account" bundle="${localeBundle}"/></label></td>
+			<fmt:message key="maintenance.charge.account-prompt" bundle="${localeBundle}" var="accountPrompt"/>
+			<td><input type="text" id="account" name="account" value="" size="34" required pattern="${requestScope.accountPattern}" title="${accountPrompt}"/></td>
 		</tr>
 		<tr>
-			<td><label for="invoiceSum">Sum</label></td>
-			<td><input type="number" id="invoiceSum" name="invoiceSum" value="0" defaultValue="0" min="0" size="18" title="Please enter due sum" required/></td>
+			<td><label for="invoiceSum"><fmt:message key="maintenance.charge.invoiceSum" bundle="${localeBundle}"/></label></td>
+			<fmt:message key="maintenance.charge.sum-prompt" bundle="${localeBundle}" var="sumPrompt"/>
+			<td><input type="number" id="invoiceSum" name="invoiceSum" value="0" defaultValue="0" min="0" size="18" title="${sumPrompt}" required/></td>
 		</tr>
 		<tr>
-			<td><label for="repairs">List of repairs</label></td>
-			<td><textarea id="repairs" name="repairs" rows="6" cols="60" placeholder="Please enter reasons for repair here"  wrap="soft" value="" required></textarea></td>
+			<td><label for="repairs"><fmt:message key="maintenance.charge.repairs-list" bundle="${localeBundle}"/></label></td>
+			<fmt:message key="maintenance.charge.repairs-list.prompt" bundle="${localeBundle}" var="repairsPrompt"/>
+			<td><textarea id="repairs" name="repairs" rows="6" cols="60" placeholder="${repairsPrompt}"  wrap="soft" value="" required></textarea></td>
 		</tr>
 		</table>
 		<hr>
-		<input type="submit" value="Send" formaction="main?action=sendMaintenanceInvoice" formmethod="post"/>
+		<fmt:message key="maintenance.charge.send" bundle="${localeBundle}" var="buttonSend"/>
+		<input type="submit" value="${buttonSend}" formaction="main?action=sendMaintenanceInvoice" formmethod="post"/>
 	</fieldset>
 	</form>
 </body>

@@ -308,12 +308,10 @@ public class FCServlet extends HttpServlet {
 	}
 	
 	public static String localize(HttpServletRequest req, String key) {
-		ResourceBundle bundle = ResourceBundle.getBundle("resources.messages", getLocale(req));
-		return bundle.getString(key); 
+		return ResourceBundle.getBundle("resources.messages", getLocale(req)).getString(key); 
 	}
 
 	public static String localize(String key) {
-		ResourceBundle bundle = ResourceBundle.getBundle("resources.messages", Locale.getDefault());
-		return bundle.getString(key); 
+		return ResourceBundle.getBundle("resources.messages", Locale.getDefault()).getString(key); 
 	}
 }

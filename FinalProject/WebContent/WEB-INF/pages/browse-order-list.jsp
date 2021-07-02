@@ -13,34 +13,17 @@
 	
 	<form>
 		<tv:table-view buttons="${buttonsMap}" queryHeader="${queryHeader}" queryData="${queryData}" order="orderNumber"/>
-<!-- 	<table>
-			<thead><tr>
-				<th>&nbsp;</th>
-				<c:forEach items="${queryHeader}" var="column">
-					<th>${column}</th>
-				</c:forEach>
-			</tr></thead>
-			<tbody>
-				<c:set var="number" value="0"/>
-				<c:forEach items="${queryData}" var="entity">
-					<tr>
-						<td>
-							<input type="submit" value="Review" formaction="main?action=reviewOrder&orderNumber=${number}" formmethod="post"/>
-						</td>
-						<c:forEach items="${entity}" var="value">
-							<td>${value}</td>
-						</c:forEach>
-					</tr>
-					<c:set var="number" value="${number+1}"/>
-				</c:forEach>
-			</tbody>
-		</table> -->
 		<hr>
-		<input type="submit" value="Next" formaction="main?action=nextPage" formmethod="post"/>
-		<input type="submit" value="Previous" formaction="main?action=previousPage" formmethod="post"/>
-		<input type="submit" value="First" formaction="main?action=firstPage" formmethod="post"/>
-		<input type="submit" value="Last" formaction="main?action=lastPage" formmethod="post"/>
-		<input type="submit" value="Back" formaction="main?action=back" formmethod="post" formnovalidate/>
+		<fmt:message key="browse.order.next" bundle="${localeBundle}" var="nextButton"/>
+		<input type="submit" value="${nextButton}" formaction="main?action=nextPage" formmethod="post"/>
+		<fmt:message key="browse.order.previous" bundle="${localeBundle}" var="previousButton"/>
+		<input type="submit" value="${previousButton}" formaction="main?action=previousPage" formmethod="post"/>
+		<fmt:message key="browse.order.first" bundle="${localeBundle}" var="firstButton"/>
+		<input type="submit" value="${firstButton}" formaction="main?action=firstPage" formmethod="post"/>
+		<fmt:message key="browse.order.last" bundle="${localeBundle}" var="lastButton"/>
+		<input type="submit" value="${lastButton}" formaction="main?action=lastPage" formmethod="post"/>
+		<fmt:message key="browse.order.back" bundle="${localeBundle}" var="backButton"/>
+		<input type="submit" value="${backButton}" formaction="main?action=back" formmethod="post" formnovalidate/>
 	</form>
 </body>
 </html>

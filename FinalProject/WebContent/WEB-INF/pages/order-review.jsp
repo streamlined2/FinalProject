@@ -11,24 +11,28 @@
 	<%@include file="common-controls.jsp" %>
 	<form>
 	<fieldset>
-		<legend>Review order</legend>
+		<legend><fmt:message key="order.review.review-order" bundle="${localeBundle}"/></legend>
 		<table>
 		<tr>
-			<td><label>Selected order</label></td>
+			<td><label><fmt:message key="order.review.selected-order" bundle="${localeBundle}"/></label></td>
 			<td>${selectedOrder}</td>
 		</tr>
 		<tr>
-			<td><label for="reason">Reason for rejection</label></td>
-			<td><textarea id="reason" name="rejectionReason" rows="6" cols="60" placeholder="Please enter reason for rejection here"  wrap="soft" value=""></textarea></td>
+			<td><label for="reason"><fmt:message key="order.review.rejection-reason" bundle="${localeBundle}"/></label></td>
+			<fmt:message key="order.review.rejection-placeholder" bundle="${localeBundle}" var="rejectionPlaceholder"/>
+			<td><textarea id="reason" name="rejectionReason" rows="6" cols="60" placeholder="${rejectionPlaceholder}"  wrap="soft" value=""></textarea></td>
 		</tr>
 		</table>
 		<hr>
-		<input type="submit" value="Accept" formaction="main?action=acceptOrder" formmethod="post"/>
-		<input type="submit" value="Reject" formaction="main?action=rejectOrder" formmethod="post"/>
-		<input type="reset" value="Clear" />
-		<input type="submit" value="Back" formaction="main?action=back" formmethod="post" formnovalidate/>
+		<fmt:message key="order.review.accept" bundle="${localeBundle}" var="acceptAction"/>
+		<input type="submit" value="${acceptAction}" formaction="main?action=acceptOrder" formmethod="post"/>
+		<fmt:message key="order.review.reject" bundle="${localeBundle}" var="rejectAction"/>
+		<input type="submit" value="${rejectAction}" formaction="main?action=rejectOrder" formmethod="post"/>
+		<fmt:message key="order.review.clear" bundle="${localeBundle}" var="clearAction"/>
+		<input type="reset" value="${clearAction}" />
+		<fmt:message key="order.review.back" bundle="${localeBundle}" var="backAction"/>
+		<input type="submit" value="${backAction}" formaction="main?action=back" formmethod="post" formnovalidate/>
 	</fieldset>
 	</form>
-
 </body>
 </html>

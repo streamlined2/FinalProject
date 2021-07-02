@@ -22,10 +22,10 @@ public class LeaseInvoiceSubmitAction extends ManagerAction {
 
 	private static final Logger logger = LogManager.getLogger();
 
-	private static final String INCORRECT_INVOICE_SUM_VALUE_MSG = "The value of invoice sum is incorrect";
-	private static final String INCORRECT_ACCOUNT_VALUE_MSG = "You entered incorrect bank account";
-	private static final String CANT_SAVE_LEASE_INVOICE_MSG = "Cannot save lease invoice";
-	private static final String LEASE_INVOICE_SAVED_MSG = "Lease invoice saved";
+	private static final String INCORRECT_INVOICE_SUM_VALUE_MSG = "lease.invoice.submit.action.incorrect-invoice-sum";
+	private static final String INCORRECT_ACCOUNT_VALUE_MSG = "lease.invoice.submit.action.incorrect-account";
+	private static final String CANT_SAVE_LEASE_INVOICE_MSG = "lease.invoice.submit.action.cant-save-lease-invoice";
+	private static final String LEASE_INVOICE_SAVED_MSG = "lease.invoice.submit.action.lease-invoice-saved";
 
 	public LeaseInvoiceSubmitAction(String name) {
 		super(name);
@@ -37,7 +37,7 @@ public class LeaseInvoiceSubmitAction extends ManagerAction {
 		final OrderReview orderReview = (OrderReview)FCServlet.getAttribute(req, Names.ORDER_REVIEW_ATTRIBUTE);
 
 		if(!Utils.checkIfValid(req,Names.ACCOUNT_PARAMETER,Utils::checkAccount)) {
-			FCServlet.setError(req, INCORRECT_ACCOUNT_VALUE_MSG);
+			FCServlet.setError(req, FCServlet.localize(INCORRECT_ACCOUNT_VALUE_MSG));
 			return false;
 		}
 
@@ -54,15 +54,15 @@ public class LeaseInvoiceSubmitAction extends ManagerAction {
 			invoice.setManager(manager);
 			entityManager.persist(invoice);
 			FCServlet.setAttribute(req, Names.LEASE_INVOICE_ATTRIBUTE, invoice);
-			FCServlet.setMessage(req, LEASE_INVOICE_SAVED_MSG);
+			FCServlet.setMessage(req, FCServlet.localize(LEASE_INVOICE_SAVED_MSG));
 			return true;
-		} catch (NumberFormatException e) {
+		} catch(NumberFormatException e) {
 			logger.error(INCORRECT_INVOICE_SUM_VALUE_MSG, e);
-			FCServlet.setError(req, INCORRECT_INVOICE_SUM_VALUE_MSG);
+			FCServlet.setError(req, FCServlet.localize(INCORRECT_INVOICE_SUM_VALUE_MSG));
 			return false;
 		} catch(EntityException | DataAccessException e) {
 			logger.error(CANT_SAVE_LEASE_INVOICE_MSG, e);
-			FCServlet.setError(req, CANT_SAVE_LEASE_INVOICE_MSG);
+			FCServlet.setError(req, FCServlet.localize(CANT_SAVE_LEASE_INVOICE_MSG));
 			return false;
 		}
 	}

@@ -11,17 +11,17 @@
 	<%@include file="common-controls.jsp" %>
 	<form>
 	<fieldset>
-		<legend>Notification of rejection </legend>
+		<legend><fmt:message key="rejection.notification.title" bundle="${localeBundle}"/></legend>
 		<table>
-		<tr><td><h2>Order ${orderReview.leaseOrder} has been cancelled</h2></td>	</tr>
-		<tr><td>by ${orderReview.manager}</td></tr>
-		<tr><td>on ${orderReview.reviewTime}</td></tr>
-		<tr><td>because of this reason: ${orderReview.reasonNote}</td></tr>
+		<tr><td><h2><fmt:message key="rejection.notification.order" bundle="${localeBundle}"/>${orderReview.leaseOrder}<fmt:message key="rejection.notification.cancelled" bundle="${localeBundle}"/></h2></td></tr>
+		<tr><td><fmt:message key="rejection.notification.by" bundle="${localeBundle}"/>${orderReview.manager}</td></tr>
+		<tr><td><fmt:message key="rejection.notification.on" bundle="${localeBundle}"/>${orderReview.reviewTime}</td></tr>
+		<tr><td><fmt:message key="rejection.notification.because-reason" bundle="${localeBundle}"/>${orderReview.reasonNote}</td></tr>
 		</table>
 		<hr>
-		<input type="submit" value="Back" formaction="main?action=back" formmethod="post" formnovalidate/>
+		<fmt:message key="rejection.notification.back" bundle="${localeBundle}" var="backButton"/>
+		<input type="submit" value="${backButton}" formaction="main?action=back" formmethod="post" formnovalidate/>
 	</fieldset>
 	</form>
-
 </body>
 </html>

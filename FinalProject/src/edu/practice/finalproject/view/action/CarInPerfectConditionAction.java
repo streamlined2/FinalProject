@@ -22,8 +22,8 @@ public class CarInPerfectConditionAction extends ManagerAction {
 	
 	private static final Logger logger = LogManager.getLogger();
 
-	private static final String CAR_REVIEWED_AS_BEING_IN_PERFECT_CONDITION = "Car %s reviewed as being in perfect condition";
-	private static final String CANT_SAVE_CAR_REVIEW_MSG = "Cannot save car review";
+	private static final String CAR_REVIEWED_AS_BEING_IN_PERFECT_CONDITION = "car.in.perfect.condition.action.perfect-condition";
+	private static final String CANT_SAVE_CAR_REVIEW_MSG = "car.in.perfect.condition.action.cant-save-car-review";
 
 	public CarInPerfectConditionAction(String name) {
 		super(name);
@@ -43,11 +43,11 @@ public class CarInPerfectConditionAction extends ManagerAction {
 			entityManager.persist(carReview);
 
 			FCServlet.setAttribute(req, Names.CAR_REVIEW_ATTRIBUTE, carReview);
-			FCServlet.setMessage(req, String.format(CAR_REVIEWED_AS_BEING_IN_PERFECT_CONDITION, carReview.getLeaseOrder().getCar()));
+			FCServlet.setMessage(req, String.format(FCServlet.localize(CAR_REVIEWED_AS_BEING_IN_PERFECT_CONDITION), carReview.getLeaseOrder().getCar()));
 			return true;
 		} catch(EntityException | DataAccessException e) {
 			logger.error(CANT_SAVE_CAR_REVIEW_MSG, e);
-			FCServlet.setError(req, CANT_SAVE_CAR_REVIEW_MSG);
+			FCServlet.setError(req, FCServlet.localize(CANT_SAVE_CAR_REVIEW_MSG));
 			return false;
 		}
 	}
