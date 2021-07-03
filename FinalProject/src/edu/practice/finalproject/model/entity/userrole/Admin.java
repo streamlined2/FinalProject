@@ -2,6 +2,7 @@ package edu.practice.finalproject.model.entity.userrole;
 
 import java.util.Objects;
 
+import edu.practice.finalproject.utilities.Utils;
 import edu.practice.finalproject.view.action.Action;
 import edu.practice.finalproject.view.action.AdminAction;
 
@@ -20,7 +21,7 @@ public class Admin extends User {
 
 	@Override
 	public void checkPermission(Action action) throws SecurityException {
-		Objects.requireNonNull(action, PASSED_ACTION_SHOULDNT_BE_NULL);
+		Objects.requireNonNull(action, Utils.message(PASSED_ACTION_SHOULDNT_BE_NULL));
 		if(action.getClass().getSuperclass()!=Action.class && !(action instanceof AdminAction)) throw new SecurityException(String.format("Administrator can't perform this action %s!",action));
 	}
 

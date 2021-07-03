@@ -50,7 +50,7 @@ public final class StatementBuilder {
 	private static final String OR_CLAUSE = " OR ";
 	private static final String LT_OPERATOR = "<";
 
-	private static final String CANT_FIND_FOREIGN_REFERENCE_FROM_SLAVE_TO_MASTER_CLASS = "Can't find foreign reference from slave class %s to master class %s";
+	private static final String CANT_FIND_FOREIGN_REFERENCE_FROM_SLAVE_TO_MASTER_CLASS = "statement.builder.cant-find-foreign-reference";
 
 	private StatementBuilder() {}
 	
@@ -313,7 +313,7 @@ public final class StatementBuilder {
 						append(FROM_CLAUSE).
 						append(getTableName(slaveClass)).append(" A ").
 					append(" )");
-		}else throw new DataAccessException(String.format(CANT_FIND_FOREIGN_REFERENCE_FROM_SLAVE_TO_MASTER_CLASS,slaveClass,masterClass));
+		}else throw new DataAccessException(Utils.format(CANT_FIND_FOREIGN_REFERENCE_FROM_SLAVE_TO_MASTER_CLASS,slaveClass,masterClass));
 	}
 
 	/**
@@ -350,7 +350,7 @@ public final class StatementBuilder {
 				    sb.append(AND_CLAUSE).append(getKeyPairWhereClause(keyPairs,'A'));
 				}
 				return sb;
-			}else  throw new DataAccessException(String.format(CANT_FIND_FOREIGN_REFERENCE_FROM_SLAVE_TO_MASTER_CLASS,missingClass,masterClass));
+			}else  throw new DataAccessException(String.format(Utils.message(CANT_FIND_FOREIGN_REFERENCE_FROM_SLAVE_TO_MASTER_CLASS),missingClass,masterClass));
 		}else throw new DataAccessException(String.format(CANT_FIND_FOREIGN_REFERENCE_FROM_SLAVE_TO_MASTER_CLASS,slaveClass,masterClass));
 	}
 
@@ -403,7 +403,7 @@ public final class StatementBuilder {
 		return sb;
 	}
 	
-	private static <V> StringBuilder getKeyPairWhereClause(final Map<String,V> entries) {
+	private static StringBuilder getKeyPairWhereClause(final Map<String,?> entries) {
 		return getKeyPairWhereClause(entries,null);
 	}
 
@@ -534,7 +534,7 @@ public final class StatementBuilder {
 					append(" )");
 			appendLimiters(sb, startElement, endElement);
 			return sb;
-		}else throw new DataAccessException(String.format(CANT_FIND_FOREIGN_REFERENCE_FROM_SLAVE_TO_MASTER_CLASS,slaveClass,masterClass));
+		}else throw new DataAccessException(Utils.format(CANT_FIND_FOREIGN_REFERENCE_FROM_SLAVE_TO_MASTER_CLASS,slaveClass,masterClass));
 	}
 
 	/**
@@ -565,7 +565,7 @@ public final class StatementBuilder {
 			}
 			appendLimiters(sb, startElement, endElement);
 			return sb;
-		}else throw new DataAccessException(String.format(CANT_FIND_FOREIGN_REFERENCE_FROM_SLAVE_TO_MASTER_CLASS,slaveClass,masterClass));
+		}else throw new DataAccessException(Utils.format(CANT_FIND_FOREIGN_REFERENCE_FROM_SLAVE_TO_MASTER_CLASS,slaveClass,masterClass));
 	}
 	
 	/**
@@ -607,8 +607,8 @@ public final class StatementBuilder {
 				}
 				appendLimiters(sb, startElement, endElement);
 				return sb;
-			}else  throw new DataAccessException(String.format(CANT_FIND_FOREIGN_REFERENCE_FROM_SLAVE_TO_MASTER_CLASS,missingClass,masterClass));
-		}else throw new DataAccessException(String.format(CANT_FIND_FOREIGN_REFERENCE_FROM_SLAVE_TO_MASTER_CLASS,slaveClass,masterClass));
+			}else  throw new DataAccessException(Utils.format(CANT_FIND_FOREIGN_REFERENCE_FROM_SLAVE_TO_MASTER_CLASS,missingClass,masterClass));
+		}else throw new DataAccessException(Utils.format(CANT_FIND_FOREIGN_REFERENCE_FROM_SLAVE_TO_MASTER_CLASS,slaveClass,masterClass));
 	}
 
 	/**
@@ -645,8 +645,8 @@ public final class StatementBuilder {
 							append(OR_CLAUSE).
 							append(mapObjectToString(dueTime)).append(LT_OPERATOR).append(getQualifiedAttribute("A","STARTTIME")).
 						append(")");
-			}else  throw new DataAccessException(String.format(CANT_FIND_FOREIGN_REFERENCE_FROM_SLAVE_TO_MASTER_CLASS,OrderReview.class,Car.class));
-		}else throw new DataAccessException(String.format(CANT_FIND_FOREIGN_REFERENCE_FROM_SLAVE_TO_MASTER_CLASS,LeaseOrder.class,Car.class));
+			}else  throw new DataAccessException(Utils.format(CANT_FIND_FOREIGN_REFERENCE_FROM_SLAVE_TO_MASTER_CLASS,OrderReview.class,Car.class));
+		}else throw new DataAccessException(Utils.format(CANT_FIND_FOREIGN_REFERENCE_FROM_SLAVE_TO_MASTER_CLASS,LeaseOrder.class,Car.class));
 	}
 	
 	/**

@@ -12,6 +12,7 @@ import edu.practice.finalproject.controller.Names;
 import edu.practice.finalproject.model.dataaccess.DataAccessException;
 import edu.practice.finalproject.model.dataaccess.EntityManager;
 import edu.practice.finalproject.model.entity.userrole.User;
+import edu.practice.finalproject.utilities.Utils;
 
 public class BlockUserAction extends AdminAction {
 
@@ -34,15 +35,15 @@ public class BlockUserAction extends AdminAction {
 			try {
 				boolean success = entityManager.merge(user);
 				if(success) return true; 
-				FCServlet.setError(req, FCServlet.localize(CANT_UPDATE_USER_STATUS_MSG));
+				FCServlet.setError(req, CANT_UPDATE_USER_STATUS_MSG);
 				return false;
 			} catch(DataAccessException e) {
-				logger.error(CANT_UPDATE_USER_STATUS_MSG, e);
-				FCServlet.setError(req, FCServlet.localize(CANT_UPDATE_USER_STATUS_MSG));
+				logger.error(Utils.message(CANT_UPDATE_USER_STATUS_MSG), e);
+				FCServlet.setError(req, CANT_UPDATE_USER_STATUS_MSG);
 				return false;
 			}
 		}
-		FCServlet.setError(req, FCServlet.localize(INCORRECT_USER_MSG));
+		FCServlet.setError(req, INCORRECT_USER_MSG);
 		return false;
 	}
 }

@@ -24,6 +24,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import edu.practice.finalproject.model.entity.Entity;
+import edu.practice.finalproject.utilities.Utils;
 
 /**
  * Entity inspection and analysis class 
@@ -32,6 +33,8 @@ import edu.practice.finalproject.model.entity.Entity;
  */
 public final class Inspector {
 	
+	private static final String INCORRECT_LABEL_FOR_ENUM_CLASS = "inspector.incorrect-label-for-enum";
+
 	private static final String[] ENTITY_BEANS_PACKAGE_PREFIXES={
 			"edu.practice.finalproject.model.entity.",
 			"edu.practice.finalproject.model.entity.userrole.",
@@ -312,7 +315,7 @@ public final class Inspector {
 		for(final V value:cl.getEnumConstants()) {
 			if(label.equals(value.toString())) return Optional.of(value);
 		}
-		throw new IllegalArgumentException("incorrect label "+label+" for enum class "+cl.getName());
+		throw new IllegalArgumentException(Utils.format(INCORRECT_LABEL_FOR_ENUM_CLASS, label,cl.getName()));
 	}
 
 	/**

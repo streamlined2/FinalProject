@@ -98,7 +98,7 @@ public class FCServletTestCase {
 		when(form.getAction(any())).thenReturn(action);
 		Form newForm = mock(Form.class);
 		FCServlet servletMock = mock(FCServlet.class);
-		when(servletMock.getNextForm(req, form, action, true)).thenReturn(newForm);
+		when(servletMock.getNextForm(req, form, action, false)).thenReturn(newForm);
 		when(req.getRequestDispatcher(newForm.getName())).thenReturn(dispatcher);
 		servlet.doGet(req, resp);
 		verify(req, atLeastOnce()).getSession();

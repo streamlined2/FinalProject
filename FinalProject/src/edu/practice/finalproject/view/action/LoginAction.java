@@ -36,7 +36,6 @@ public class LoginAction extends Action {
 			if(!Utils.checkIfValid(req,Names.USER_PARAMETER,Utils::checkLogin)) return false;
 			if(!Utils.checkIfValid(req,Names.PASSWORD_PARAMETER,Utils::checkPassword)) return false;
 
-			//final String role=FCServlet.getParameterValue(req,Names.ROLE_PARAMETER);
 			final String login=FCServlet.getParameterValue(req,Names.USER_PARAMETER);
 			final byte[] passwordDigest=Utils.getDigest(FCServlet.getParameterValue(req, Names.PASSWORD_PARAMETER).getBytes());
 			
@@ -48,27 +47,27 @@ public class LoginAction extends Action {
 				final Map<String,Object> keyPairs=new HashMap<>();
 				keyPairs.put("login", login);
 				keyPairs.put("passwordDigest", passwordDigest);
-				user=entityManager.findByCompositeKey(User.class,keyPairs);//Utils.mapUserRoleToClass(role)
+				user=entityManager.findByCompositeKey(User.class,keyPairs);
 			}
 			
 			if(user.isPresent()) {
 				if(user.get().getBlocked()) {
-					FCServlet.setError(req, FCServlet.localize(req, USER_BLOCKED_MSG));
+					FCServlet.setError(req, USER_BLOCKED_MSG);
 					return false;
 				}
 				FCServlet.setUser(req, user.get());
-				FCServlet.setMessage(req, String.format("%s, %s %s!", FCServlet.localize(req, HELLO_MSG),user.get().getFirstName(),user.get().getLastName()));
+				FCServlet.setMessage(req, HELLO_MSG,user.get().getFirstName(),user.get().getLastName());
 				return true;
 			}else {
-				FCServlet.setError(req, FCServlet.localize(req, ERROR_MSG));
+				FCServlet.setError(req, ERROR_MSG);
 				return false;
 			}
 		} catch(DataAccessException e) {
-			logger.error(CANT_FIND_USER_MSG, e);
-			FCServlet.setError(req, FCServlet.localize(req, CANT_FIND_USER_MSG));
+			logger.error(Utils.message(CANT_FIND_USER_MSG), e);
+			FCServlet.setError(req, CANT_FIND_USER_MSG);
 		} catch (Exception e) {
-			logger.error(String.format("%s: %s",ERROR_MSG,e.getMessage()), e);
-			FCServlet.setError(req, String.format("%s: %s",FCServlet.localize(req, ERROR_MSG),e.getMessage()));
+			logger.error(Utils.format(ERROR_MSG,e.getMessage()), e);
+			FCServlet.setError(req, ERROR_MSG);
 		}
 		return false;
 	}

@@ -1,5 +1,6 @@
 package edu.practice.finalproject.view.action;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Optional;
 
@@ -40,23 +41,23 @@ public class RegisterNewAction extends Action {
 	public boolean execute(final HttpServletRequest req, final EntityManager entityManager) {
 		try {
 			if(!Utils.checkIfValid(req,Names.FIRSTNAME_PARAMETER,Utils::checkName)) {
-				FCServlet.setError(req, FCServlet.localize(WRONG_FIRSTNAME_MSG));
+				FCServlet.setError(req, WRONG_FIRSTNAME_MSG);
 				return false;
 			}
 			if(!Utils.checkIfValid(req,Names.LASTNAME_PARAMETER,Utils::checkName)) {
-				FCServlet.setError(req, FCServlet.localize(WRONG_LASTNAME_MSG));
+				FCServlet.setError(req, WRONG_LASTNAME_MSG);
 				return false;
 			}
 			if(!Utils.checkIfValid(req,Names.USER_PARAMETER,Utils::checkLogin)) {
-				FCServlet.setError(req, FCServlet.localize(WRONG_USER_MSG));
+				FCServlet.setError(req, WRONG_USER_MSG);
 				return false;
 			}
 			if(!Utils.checkIfValid(req,Names.PASSWORD_PARAMETER,Utils::checkPassword)) {
-				FCServlet.setError(req, FCServlet.localize(WRONG_PASSWORD_MSG));
+				FCServlet.setError(req, WRONG_PASSWORD_MSG);
 				return false;
 			}
 			if(!Utils.checkIfValid(req,Names.PASSWORD2_PARAMETER,Utils::checkPassword)) {
-				FCServlet.setError(req, FCServlet.localize(WRONG_PASSWORD2_MSG));
+				FCServlet.setError(req, WRONG_PASSWORD2_MSG);
 				return false;
 			}
 
@@ -71,13 +72,13 @@ public class RegisterNewAction extends Action {
 			final byte[] password2=FCServlet.getParameterValue(req,Names.PASSWORD2_PARAMETER).getBytes();
 			
 			if(!Arrays.equals(password, password2)) {
-				FCServlet.setError(req, FCServlet.localize(DIFFERENT_PASSWORDS));
+				FCServlet.setError(req, DIFFERENT_PASSWORDS);
 				return false;
 			}
 			
 			final Optional<? extends User> checkUser=entityManager.findByKey(Utils.mapUserRoleToClass(role),login);
 			if(checkUser.isPresent()) {
-				FCServlet.setError(req, FCServlet.localize(USER_ALREADY_REGISTERED));
+				FCServlet.setError(req, USER_ALREADY_REGISTERED);
 				return false;
 			}
 			
@@ -91,14 +92,11 @@ public class RegisterNewAction extends Action {
 			if(!(FCServlet.getUser(req) instanceof Admin)) {
 				FCServlet.setUser(req, user);
 			}
-			FCServlet.setMessage(req, FCServlet.localize(USER_SUCCESSFULLY_REGISTERED));
+			FCServlet.setMessage(req, USER_SUCCESSFULLY_REGISTERED);
 			return true;				
-		} catch(EntityException | DataAccessException e) {
-			logger.error(CANT_SAVE_NEW_USER_MSG, e);
-			FCServlet.setError(req, FCServlet.localize(CANT_SAVE_NEW_USER_MSG));				
-		} catch(Exception e) {
-			logger.error(CANT_SAVE_NEW_USER_MSG, e);
-			FCServlet.setError(req, String.format("%s: %s",FCServlet.localize(CANT_SAVE_NEW_USER_MSG),e.getMessage()));
+		} catch(EntityException | DataAccessException | NoSuchAlgorithmException e) {
+			logger.error(Utils.message(CANT_SAVE_NEW_USER_MSG), e);
+			FCServlet.setError(req, CANT_SAVE_NEW_USER_MSG);				
 		}
 		return false;
 	}

@@ -17,6 +17,7 @@ import edu.practice.finalproject.model.entity.document.LeaseOrder;
 import edu.practice.finalproject.model.entity.document.OrderReview;
 import edu.practice.finalproject.model.entity.document.OrderReview.OrderStatus;
 import edu.practice.finalproject.model.entity.userrole.Manager;
+import edu.practice.finalproject.utilities.Utils;
 
 public class AcceptOrderAction extends ManagerAction {
 
@@ -43,8 +44,8 @@ public class AcceptOrderAction extends ManagerAction {
 			FCServlet.setAttribute(req, Names.ORDER_REVIEW_ATTRIBUTE, orderReview);
 			return true;
 		} catch(EntityException | DataAccessException e) {
-			logger.error(CANT_SAVE_ORDER_MSG, e);
-			FCServlet.setError(req, FCServlet.localize(CANT_SAVE_ORDER_MSG));
+			logger.error(Utils.message(CANT_SAVE_ORDER_MSG), e);
+			FCServlet.setError(req, CANT_SAVE_ORDER_MSG);
 			return false;
 		}
 	}

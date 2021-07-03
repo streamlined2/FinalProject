@@ -12,6 +12,7 @@ import edu.practice.finalproject.model.entity.userrole.Admin;
 import edu.practice.finalproject.model.entity.userrole.Client;
 import edu.practice.finalproject.model.entity.userrole.Manager;
 import edu.practice.finalproject.model.entity.userrole.User;
+import edu.practice.finalproject.utilities.Utils;
 import edu.practice.finalproject.view.action.Action;
 import edu.practice.finalproject.view.form.Form;
 
@@ -113,7 +114,7 @@ public final class TransitionRuleMap {
 	 *
 	 */
 	private static class TransitionRuleKey {
-		private static final String PARAMETER_KEY_SHOULD_NOT_BE_NULL = "parameter key should not be null";
+		private static final String PARAMETER_KEY_SHOULD_NOT_BE_NULL = "transition.rule.map.key-not-null";
 		
 		private final Class<? extends User> userClass;
 		private final Form form;
@@ -146,7 +147,7 @@ public final class TransitionRuleMap {
 		 * @return true if {@code this.key} is more general and accepts given parameter {@code key} as sub-rule
 		 */
 		public boolean encompasses(final TransitionRuleKey key) {
-			Objects.requireNonNull(key,PARAMETER_KEY_SHOULD_NOT_BE_NULL);
+			Objects.requireNonNull(key,Utils.message(PARAMETER_KEY_SHOULD_NOT_BE_NULL));
 			boolean suits = true;
 			if(userClass!=null)	
 				suits = userClass.isAssignableFrom(key.userClass);

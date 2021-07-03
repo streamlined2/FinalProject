@@ -27,7 +27,7 @@ public class ModifyCarAction extends AdminAction {
 			FCServlet.setAttribute(req, Names.NEW_CAR_ATTRIBUTE, Boolean.FALSE);
 			return true;
 		}
-		FCServlet.setError(req, FCServlet.localize(INCORRECT_CAR_MSG));
+		FCServlet.setError(req, INCORRECT_CAR_MSG);
 		return false;
 	}
 

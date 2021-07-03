@@ -32,7 +32,7 @@ public class DropCarAction extends AdminAction {
 			final Car car = queryData.get(number);
 			try {
 				if(entityManager.remove(car)) {
-					FCServlet.setMessage(req, String.format(FCServlet.localize(CAR_DROPPED_MSG),car.toString()));
+					FCServlet.setMessage(req, CAR_DROPPED_MSG,car.toString());
 					return true;
 				} else {
 					FCServlet.setError(req, CANT_DROP_CAR_MSG);
@@ -40,11 +40,11 @@ public class DropCarAction extends AdminAction {
 				}
 			} catch(DataAccessException e) {
 				logger.error(CANT_DROP_CAR_MSG, e);
-				FCServlet.setError(req, FCServlet.localize(CANT_DROP_CAR_MSG));
+				FCServlet.setError(req, CANT_DROP_CAR_MSG);
 				return false;
 			}
 		}
-		FCServlet.setError(req, FCServlet.localize(INCORRECT_CAR_MSG));
+		FCServlet.setError(req, INCORRECT_CAR_MSG);
 		return false;
 	}
 }

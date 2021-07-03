@@ -37,7 +37,7 @@ public class LeaseInvoiceSubmitAction extends ManagerAction {
 		final OrderReview orderReview = (OrderReview)FCServlet.getAttribute(req, Names.ORDER_REVIEW_ATTRIBUTE);
 
 		if(!Utils.checkIfValid(req,Names.ACCOUNT_PARAMETER,Utils::checkAccount)) {
-			FCServlet.setError(req, FCServlet.localize(INCORRECT_ACCOUNT_VALUE_MSG));
+			FCServlet.setError(req, INCORRECT_ACCOUNT_VALUE_MSG);
 			return false;
 		}
 
@@ -54,15 +54,15 @@ public class LeaseInvoiceSubmitAction extends ManagerAction {
 			invoice.setManager(manager);
 			entityManager.persist(invoice);
 			FCServlet.setAttribute(req, Names.LEASE_INVOICE_ATTRIBUTE, invoice);
-			FCServlet.setMessage(req, FCServlet.localize(LEASE_INVOICE_SAVED_MSG));
+			FCServlet.setMessage(req, LEASE_INVOICE_SAVED_MSG);
 			return true;
 		} catch(NumberFormatException e) {
-			logger.error(INCORRECT_INVOICE_SUM_VALUE_MSG, e);
-			FCServlet.setError(req, FCServlet.localize(INCORRECT_INVOICE_SUM_VALUE_MSG));
+			logger.error(Utils.message(INCORRECT_INVOICE_SUM_VALUE_MSG), e);
+			FCServlet.setError(req, INCORRECT_INVOICE_SUM_VALUE_MSG);
 			return false;
 		} catch(EntityException | DataAccessException e) {
-			logger.error(CANT_SAVE_LEASE_INVOICE_MSG, e);
-			FCServlet.setError(req, FCServlet.localize(CANT_SAVE_LEASE_INVOICE_MSG));
+			logger.error(Utils.message(CANT_SAVE_LEASE_INVOICE_MSG), e);
+			FCServlet.setError(req, CANT_SAVE_LEASE_INVOICE_MSG);
 			return false;
 		}
 	}

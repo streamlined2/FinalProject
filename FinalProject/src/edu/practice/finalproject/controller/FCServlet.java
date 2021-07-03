@@ -43,11 +43,11 @@ public class FCServlet extends HttpServlet {
 	private static final Logger logger = LogManager.getLogger();
 	
 	private static final int NO_APPROPRIATE_FORM_MAPPING_CODE=1;
-	private static final String NO_APPROPRIATE_FORM_MAPPING_MSG="No appropriate mapping for given user, form and action!";
-	private static final String CANT_TRANSFER_TO_ERROR_PAGE_MSG = "Can't transfer to error page"; 
-	private static final String SERVLET_INITIALIZATION_ERROR_MSG = "Servlet cannot be initialized properly";
-	private static final String CANT_TRANSFER_TO_NEXT_FORM_MSG = "Can't transfer to next form page";
-	private static final String ACCESS_VIOLATION_MSG = "Access violation";
+	private static final String NO_APPROPRIATE_FORM_MAPPING_MSG="fcservlet.no-mapping";
+	private static final String CANT_TRANSFER_TO_ERROR_PAGE_MSG = "fcservlet.cant-transfer-error-page"; 
+	private static final String SERVLET_INITIALIZATION_ERROR_MSG = "fcservlet.cant-initialize-servlet";
+	private static final String CANT_TRANSFER_TO_NEXT_FORM_MSG = "fcservlet.cant-transfer-next-form";
+	private static final String ACCESS_VIOLATION_MSG = "fcservlet.access-violation";
 	
 	public static final String MAPPING_PATTERN = "main";
 	
@@ -82,8 +82,9 @@ public class FCServlet extends HttpServlet {
 			Locale.setDefault(getDefaultLocale());
 			
 		}catch(NamingException | NoSuchAlgorithmException e) {
-			logger.fatal(SERVLET_INITIALIZATION_ERROR_MSG, e);
-			throw new ServletException(e);
+			final String message = Utils.message(SERVLET_INITIALIZATION_ERROR_MSG);
+			logger.fatal(message, e);
+			throw new ServletException(message, e);
 		}
 	}
 
@@ -112,16 +113,19 @@ public class FCServlet extends HttpServlet {
 				if(nextForm!=null) {
 					currentForm=nextForm;
 				} else {
-					setError(req,NO_APPROPRIATE_FORM_MAPPING_MSG);
-					logger.fatal(NO_APPROPRIATE_FORM_MAPPING_MSG);
-					resp.sendError(NO_APPROPRIATE_FORM_MAPPING_CODE,NO_APPROPRIATE_FORM_MAPPING_MSG);
+					setError(req, NO_APPROPRIATE_FORM_MAPPING_MSG);
+					final String message = message(req, NO_APPROPRIATE_FORM_MAPPING_MSG);
+					logger.fatal(message);
+					resp.sendError(NO_APPROPRIATE_FORM_MAPPING_CODE,message);
 				}
 			} catch(SecurityException e) {
-				logger.fatal(ACCESS_VIOLATION_MSG, e);
-				throw new ServletException(e);
+				final String message = message(req, ACCESS_VIOLATION_MSG);
+				logger.fatal(message, e);
+				throw new ServletException(message, e);
 			} catch(IOException e) {
-				logger.fatal(CANT_TRANSFER_TO_ERROR_PAGE_MSG, e);
-				throw new ServletException(e);
+				final String message = message(req, CANT_TRANSFER_TO_ERROR_PAGE_MSG);
+				logger.fatal(message, e);
+				throw new ServletException(message, e);
 			}
 		}
 		
@@ -130,8 +134,9 @@ public class FCServlet extends HttpServlet {
 		try {
 			req.getRequestDispatcher(currentForm.getName()).forward(req,resp);
 		} catch (IOException e) {
-			logger.fatal(CANT_TRANSFER_TO_NEXT_FORM_MSG, e);
-			throw new ServletException(e);
+			final String message = Utils.message(CANT_TRANSFER_TO_NEXT_FORM_MSG);
+			logger.fatal(message, e);
+			throw new ServletException(message, e);
 		}
 	}
     
@@ -180,16 +185,20 @@ public class FCServlet extends HttpServlet {
 		removeAttribute(req, Names.USER_ATTRIBUTE);
 	}
 
-	public static void setError(final HttpServletRequest req,final String message) {
-		setAttribute(req,Names.ERROR_ATTRIBUTE,message);
+	private static String message(HttpServletRequest req, String key) {
+		return ResourceBundle.getBundle(Utils.MESSAGES_BUNDLE, getLocale(req)).getString(key); 
+	}
+
+	public static void setError(HttpServletRequest req, String key, Object...params) {
+		setAttribute(req,Names.ERROR_ATTRIBUTE,String.format(message(req, key),params));
 	}
 	
 	public static void clearError(final HttpServletRequest req) {
 		removeAttribute(req,Names.ERROR_ATTRIBUTE);
 	}
 	
-	public static void setMessage(final HttpServletRequest req,final String message) {
-		setAttribute(req,Names.MESSAGE_ATTRIBUTE,message);
+	public static void setMessage(HttpServletRequest req, String key, Object...params) {
+		setAttribute(req,Names.MESSAGE_ATTRIBUTE,String.format(message(req, key),params));
 	}
 	
 	public static void clearMessage(final HttpServletRequest req) {
@@ -305,13 +314,5 @@ public class FCServlet extends HttpServlet {
 		if(session!=null) {
 			session.invalidate();
 		}
-	}
-	
-	public static String localize(HttpServletRequest req, String key) {
-		return ResourceBundle.getBundle("resources.messages", getLocale(req)).getString(key); 
-	}
-
-	public static String localize(String key) {
-		return ResourceBundle.getBundle("resources.messages", Locale.getDefault()).getString(key); 
 	}
 }
