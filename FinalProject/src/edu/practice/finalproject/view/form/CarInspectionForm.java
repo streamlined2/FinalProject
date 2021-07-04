@@ -2,27 +2,32 @@ package edu.practice.finalproject.view.form;
 
 import java.util.Map;
 
-import edu.practice.finalproject.controller.FCServlet;
 import edu.practice.finalproject.controller.Names;
 import edu.practice.finalproject.controller.transition.FormDispatcher;
 import edu.practice.finalproject.view.action.Action;
 
-public class CarInspectionForm extends Form {
+public class CarInspectionForm extends ActionMapForm {
+	
+	private static final Map<String,Action> ACTION_MAP = Map.of(
+			Names.BACK_PARAMETER,FormDispatcher.BACK_ACTION
+	);
+	
+	private static final Map<ParameterValue,Action> PARAMETER_MAP = Map.of(
+			new ParameterValue(Names.CAR_INSPECTION_RESULT_PARAMETER,Names.CAR_IN_PERFECT_CONDITION_PARAMETER),FormDispatcher.CAR_IN_PERFECT_CONDITION_ACTION,
+			new ParameterValue(Names.CAR_INSPECTION_RESULT_PARAMETER,Names.CAR_NEEDS_MAINTENANCE_PARAMETER),FormDispatcher.CAR_NEEDS_MAINTENANCE_ACTION
+	);
 
 	public CarInspectionForm(String name) {
 		super(name);
 	}
 
 	@Override
-	public Action getAction(final Map<String,String[]> parameters) {
-		if(FCServlet.isActionPresent(parameters,Names.BACK_PARAMETER)) return FormDispatcher.BACK_ACTION;
-		if(FCServlet.ifParameterEquals(parameters,Names.CAR_INSPECTION_RESULT_PARAMETER,Names.CAR_IN_PERFECT_CONDITION_PARAMETER)) return FormDispatcher.CAR_IN_PERFECT_CONDITION_ACTION;
-		if(FCServlet.ifParameterEquals(parameters,Names.CAR_INSPECTION_RESULT_PARAMETER,Names.CAR_NEEDS_MAINTENANCE_PARAMETER)) return FormDispatcher.CAR_NEEDS_MAINTENANCE_ACTION;
-		return super.getAction(parameters);
+	protected Map<ParameterValue, Action> getParameterValueMap() {
+		return PARAMETER_MAP;
 	}
 
 	@Override
-	public Action getDefaultAction() {
-		return FormDispatcher.BACK_ACTION;
+	protected Map<String, Action> getActionMap() {
+		return ACTION_MAP;
 	}
 }

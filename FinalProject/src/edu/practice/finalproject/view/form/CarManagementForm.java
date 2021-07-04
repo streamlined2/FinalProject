@@ -11,33 +11,28 @@ import edu.practice.finalproject.controller.Names;
 import edu.practice.finalproject.controller.transition.FormDispatcher;
 import edu.practice.finalproject.model.analysis.Inspector;
 import edu.practice.finalproject.model.dataaccess.EntityManager;
-import edu.practice.finalproject.model.entity.document.CarReview;
-import edu.practice.finalproject.model.entity.document.LeaseOrder;
-import edu.practice.finalproject.model.entity.document.OrderReview;
 import edu.practice.finalproject.model.entity.domain.Car;
 import edu.practice.finalproject.view.action.Action;
 
-public class CarManagementForm extends Form {
+public class CarManagementForm extends ActionMapForm {
+
+	private static final Map<String, Action> ACTION_MAP = Map.of(
+			Names.MODIFY_CAR_PARAMETER, FormDispatcher.MODIFY_CAR_ACTION,
+			Names.DELETE_CAR_PARAMETER, FormDispatcher.DROP_CAR_ACTION,
+			Names.NEW_CAR_PARAMETER, FormDispatcher.ADD_CAR_ACTION,
+			Names.NEXT_PAGE_PARAMETER, FormDispatcher.NEXT_PAGE_ACTION,
+			Names.PREVIOUS_PAGE_PARAMETER, FormDispatcher.PREVIOUS_PAGE_ACTION,
+			Names.FIRST_PAGE_PARAMETER, FormDispatcher.FIRST_PAGE_ACTION,
+			Names.LAST_PAGE_PARAMETER, FormDispatcher.LAST_PAGE_ACTION
+	);
 
 	public CarManagementForm(String name) {
 		super(name);
 	}
 
 	@Override
-	public Action getDefaultAction() {
-		return FormDispatcher.BACK_ACTION;
-	}
-
-	@Override
-	public Action getAction(final Map<String,String[]> parameters) {
-		if(FCServlet.isActionPresent(parameters,Names.MODIFY_CAR_PARAMETER)) return FormDispatcher.MODIFY_CAR_ACTION;
-		if(FCServlet.isActionPresent(parameters,Names.DELETE_CAR_PARAMETER)) return FormDispatcher.DROP_CAR_ACTION;
-		if(FCServlet.isActionPresent(parameters,Names.NEW_CAR_PARAMETER)) return FormDispatcher.ADD_CAR_ACTION;
-		if(FCServlet.isActionPresent(parameters,Names.NEXT_PAGE_PARAMETER)) return FormDispatcher.NEXT_PAGE_ACTION;
-		if(FCServlet.isActionPresent(parameters,Names.PREVIOUS_PAGE_PARAMETER)) return FormDispatcher.PREVIOUS_PAGE_ACTION;
-		if(FCServlet.isActionPresent(parameters,Names.FIRST_PAGE_PARAMETER)) return FormDispatcher.FIRST_PAGE_ACTION;
-		if(FCServlet.isActionPresent(parameters,Names.LAST_PAGE_PARAMETER)) return FormDispatcher.LAST_PAGE_ACTION;
-		return super.getAction(parameters);
+	protected Map<String, Action> getActionMap() {
+		return ACTION_MAP;
 	}
 
 	@Override
@@ -52,8 +47,8 @@ public class CarManagementForm extends Form {
 		FCServlet.setQueryElements(req, queryCount);
 		FCServlet.setAttribute(req, Names.PAGE_ITEMS_ATTRIBUTE,queryData);
 		Map<String, String> buttons = new LinkedHashMap<>();
-		buttons.put("modifyCar","Edit");
-		buttons.put("deleteCar","Delete");
+		buttons.put(Names.MODIFY_CAR_PARAMETER,"Edit");
+		buttons.put(Names.DELETE_CAR_PARAMETER,"Delete");
 		FCServlet.setAttribute(req, Names.QUERY_BUTTONS_MAP_ATTRIBUTE, buttons);
 		FCServlet.setAttribute(req, Names.QUERY_DATA_ATTRIBUTE, Inspector.getValuesForEntities(Car.class, queryData));
 		FCServlet.setAttribute(req, Names.QUERY_HEADER_ATTRIBUTE, Inspector.getCaptions(Car.class));

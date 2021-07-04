@@ -16,25 +16,23 @@ import edu.practice.finalproject.model.entity.document.OrderReview;
 import edu.practice.finalproject.model.entity.document.OrderReview.OrderStatus;
 import edu.practice.finalproject.view.action.Action;
 
-public class LeaseOrderSelectionForm extends Form {
+public class LeaseOrderSelectionForm extends ActionMapForm {
+
+	private static final Map<String,Action> ACTION_MAP = Map.of(
+			Names.REVIEW_ORDER_PARAMETER,FormDispatcher.SELECT_LEASE_ORDER_ACTION,
+			Names.NEXT_PAGE_PARAMETER,FormDispatcher.NEXT_PAGE_ACTION,
+			Names.PREVIOUS_PAGE_PARAMETER,FormDispatcher.PREVIOUS_PAGE_ACTION,
+			Names.FIRST_PAGE_PARAMETER,FormDispatcher.FIRST_PAGE_ACTION,
+			Names.LAST_PAGE_PARAMETER,FormDispatcher.LAST_PAGE_ACTION
+	);
 
 	public LeaseOrderSelectionForm(String name) {
 		super(name);
 	}
 
 	@Override
-	public Action getAction(final Map<String,String[]> parameters) {
-		if(FCServlet.isActionPresent(parameters,Names.REVIEW_ORDER_PARAMETER)) return FormDispatcher.SELECT_LEASE_ORDER_ACTION;
-		if(FCServlet.isActionPresent(parameters,Names.NEXT_PAGE_PARAMETER)) return FormDispatcher.NEXT_PAGE_ACTION;
-		if(FCServlet.isActionPresent(parameters,Names.PREVIOUS_PAGE_PARAMETER)) return FormDispatcher.PREVIOUS_PAGE_ACTION;
-		if(FCServlet.isActionPresent(parameters,Names.FIRST_PAGE_PARAMETER)) return FormDispatcher.FIRST_PAGE_ACTION;
-		if(FCServlet.isActionPresent(parameters,Names.LAST_PAGE_PARAMETER)) return FormDispatcher.LAST_PAGE_ACTION;
-		return super.getAction(parameters);
-	}
-
-	@Override
-	public Action getDefaultAction() {
-		return FormDispatcher.BACK_ACTION;
+	protected Map<String, Action> getActionMap() {
+		return ACTION_MAP;
 	}
 
 	@Override
@@ -49,7 +47,7 @@ public class LeaseOrderSelectionForm extends Form {
 
 		FCServlet.setQueryElements(req, queryCount);
 		FCServlet.setAttribute(req, Names.PAGE_ITEMS_ATTRIBUTE,queryData);
-		FCServlet.setAttribute(req, Names.QUERY_BUTTONS_MAP_ATTRIBUTE, Map.of("selectOrder","Select"));
+		FCServlet.setAttribute(req, Names.QUERY_BUTTONS_MAP_ATTRIBUTE, Map.of(Names.REVIEW_ORDER_PARAMETER,"Select"));
 		FCServlet.setAttribute(req, Names.QUERY_DATA_ATTRIBUTE, Inspector.getValuesForEntities(LeaseOrder.class, queryData));
 		FCServlet.setAttribute(req, Names.QUERY_HEADER_ATTRIBUTE, Inspector.getCaptions(LeaseOrder.class));
 		

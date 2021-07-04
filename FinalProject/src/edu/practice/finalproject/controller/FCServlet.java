@@ -231,6 +231,10 @@ public class FCServlet extends HttpServlet {
 		return Locale.ENGLISH;
 	}
 	
+	public static Locale getAcceptableLocale(Locale locale) {
+		return availableLocales.contains(locale)?locale:getDefaultLocale();
+	}
+	
 	public static Locale getAcceptableLocale(final String language){
 		if(Objects.isNull(language)) return getDefaultLocale();
 		final Locale locale=Locale.forLanguageTag(language);

@@ -133,7 +133,7 @@ public final class Utils {
 	}
 
 	public static String message(String key) {
-		return ResourceBundle.getBundle(MESSAGES_BUNDLE, Locale.getDefault()).getString(key); 
+		return ResourceBundle.getBundle(MESSAGES_BUNDLE, FCServlet.getAcceptableLocale(Locale.getDefault())).getString(key); 
 	}
 	
 	public static String format(String key, Object... params) {
