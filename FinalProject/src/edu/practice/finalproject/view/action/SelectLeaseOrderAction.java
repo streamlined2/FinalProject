@@ -25,7 +25,7 @@ public class SelectLeaseOrderAction extends ManagerAction {
 			FCServlet.setAttribute(req, Names.SELECTED_ORDER_ATTRIBUTE, queryData.get(number));
 			return true;
 		}
-		FCServlet.setError(req, FCServlet.localize(INCORRECT_ORDER_MSG));
+		FCServlet.setError(req, INCORRECT_ORDER_MSG);
 		return false;
 	}
 }

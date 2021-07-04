@@ -23,7 +23,7 @@ public class ConfirmCarCriteriaAction extends ClientAction {
 		super(name);
 	}
 	
-	private static <V> void addFilterKeyValue(final Map<String,Object> keyPairs,final String flag,final String key,final Optional<V> value) {
+	private static void addFilterKeyValue(final Map<String,Object> keyPairs,final String flag,final String key,final Optional<?> value) {
 		if(Objects.nonNull(flag) && !flag.isEmpty() && value.isPresent()) {
 			keyPairs.put(key, value.get());
 		}

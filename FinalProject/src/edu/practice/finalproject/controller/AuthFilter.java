@@ -16,6 +16,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import edu.practice.finalproject.utilities.Utils;
+
 /**
  * Servlet filter which checks for incorrect references within JSP pages 
  * that do not refer to front controller servlet and prevents unauthorized access
@@ -24,7 +26,7 @@ import org.apache.logging.log4j.Logger;
 public class AuthFilter implements Filter {
 	
 	private static final Logger logger = LogManager.getLogger();
-	private static final String WRONG_REQUEST_MSG = "Access to the page %s is prohibited";
+	private static final String WRONG_REQUEST_MSG = "auth.filter.wrong-request";
 	
 	private static final String WELCOME_PAGE_PARAMETER = "welcomePage";
 	private static final String SERVLET_PATH_PARAMETER = "servletPath";
@@ -62,8 +64,9 @@ public class AuthFilter implements Filter {
 			chain.doFilter(req, resp);
 		} else {
 			FCServlet.invalidateSession(req);
-			logger.error(WRONG_REQUEST_MSG,req.getRequestURI());
-			throw new ServletException(String.format(WRONG_REQUEST_MSG,req.getRequestURI()));
+			final String message = Utils.message(WRONG_REQUEST_MSG);
+			logger.error(message,req.getRequestURI());
+			throw new ServletException(String.format(message,req.getRequestURI()));
 		}
 	}
 

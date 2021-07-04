@@ -25,7 +25,7 @@ public class SelectCarAction extends ClientAction {
 			FCServlet.setAttribute(req, Names.SELECTED_CAR_ATTRIBUTE, queryData.get(number));
 			return true;
 		}
-		FCServlet.setError(req, FCServlet.localize(req, INCORRECT_CAR_MSG));
+		FCServlet.setError(req, INCORRECT_CAR_MSG);
 		return false;
 	}
 }

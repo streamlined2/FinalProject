@@ -21,6 +21,7 @@ import edu.practice.finalproject.model.analysis.Inspector;
 import edu.practice.finalproject.model.entity.Entity;
 import edu.practice.finalproject.model.entity.NaturalKeyEntity;
 import edu.practice.finalproject.model.entity.domain.Car;
+import edu.practice.finalproject.utilities.Utils;
 
 /**
  * Generic data access manager
@@ -29,13 +30,13 @@ import edu.practice.finalproject.model.entity.domain.Car;
  */
 public final class EntityManager {
 	
-	private static final String RESULT_SET_OF_COUNTING_STATEMENT_DOESN_T_CONTAIN_ANY_DATA = "Result set of counting statement doesn't contain any data";
-	private static final String DATASOURCE_SHOULDNT_BE_NULL = "Provide non-null datasource parameter for constructor";
+	private static final String RESULT_SET_OF_COUNTING_STATEMENT_DOESNT_CONTAIN_ANY_DATA = "entity.manager.empty-result-set";
+	private static final String DATASOURCE_SHOULDNT_BE_NULL = "entity.manager.non-null-datasource";
 	
 	private final DataSource dataSource;
 	
 	public EntityManager(final DataSource dataSource) {
-		Objects.requireNonNull(dataSource,DATASOURCE_SHOULDNT_BE_NULL);
+		Objects.requireNonNull(dataSource,Utils.message(DATASOURCE_SHOULDNT_BE_NULL));
 		this.dataSource=dataSource;
 	}
 	
@@ -325,7 +326,7 @@ public final class EntityManager {
 				final ResultSet rs=statement.executeQuery(clause.toString())){
 			if(rs.next()) {
 				return rs.getLong(1);
-			}else throw new DataAccessException(RESULT_SET_OF_COUNTING_STATEMENT_DOESN_T_CONTAIN_ANY_DATA);
+			}else throw new DataAccessException(Utils.message(RESULT_SET_OF_COUNTING_STATEMENT_DOESNT_CONTAIN_ANY_DATA));
 		} catch (SQLException e) {
 			throw new DataAccessException(e);
 		}

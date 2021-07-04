@@ -10,6 +10,7 @@ import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
 
 import edu.practice.finalproject.controller.FCServlet;
+import edu.practice.finalproject.utilities.Utils;
 
 public class TableViewTag extends SimpleTagSupport {
 	
@@ -37,7 +38,7 @@ public class TableViewTag extends SimpleTagSupport {
 			sb.append("<th>&nbsp;</th>");
 		}
 		for(String header:queryHeader) {
-			sb.append("<th>").append(FCServlet.localize("table-view.header."+header.replace(" ", "-"))).append("</th>");
+			sb.append("<th>").append(Utils.message("table-view.header."+header.replace(" ", "-"))).append("</th>");
 		}
 		sb.append("</tr>").append("</thead>");
 		return sb;
@@ -53,7 +54,7 @@ public class TableViewTag extends SimpleTagSupport {
 				sb.append("<td>");
 				sb.
 					append("<input type=\"submit\" value=\"").
-					append(FCServlet.localize("table-view.button."+button.getKey())).
+					append(Utils.message("table-view.button."+button.getKey())).
 					append("\" formaction=\"").
 					append(FCServlet.MAPPING_PATTERN).
 					append("?action=").

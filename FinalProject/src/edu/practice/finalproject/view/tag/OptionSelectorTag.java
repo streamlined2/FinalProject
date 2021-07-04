@@ -7,8 +7,10 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
 
+import edu.practice.finalproject.utilities.Utils;
+
 public class OptionSelectorTag extends SimpleTagSupport {
-	private static final String VALUES_PARAMETER_SHOULD_CONTAIN_AT_LEAST_1_ITEM = "values parameters should contain at least 1 item";
+	private static final String VALUES_PARAMETER_SHOULD_CONTAIN_AT_LEAST_1_ITEM = "option.selector.tag.values-contain-one-item";
 
 	private String name;
 	private String[] values;
@@ -44,7 +46,7 @@ public class OptionSelectorTag extends SimpleTagSupport {
 	
 	@Override
 	public void doTag() throws JspException, IOException {
-		if(values.length<1) throw new JspException(VALUES_PARAMETER_SHOULD_CONTAIN_AT_LEAST_1_ITEM);
+		if(values.length<1) throw new JspException(Utils.message(VALUES_PARAMETER_SHOULD_CONTAIN_AT_LEAST_1_ITEM));
 		selectedValue = Objects.requireNonNullElse(selectedValue, values[0]);
 		
 		JspWriter out = getJspContext().getOut();

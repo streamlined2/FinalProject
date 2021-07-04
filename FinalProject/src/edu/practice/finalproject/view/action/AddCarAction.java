@@ -11,6 +11,7 @@ import edu.practice.finalproject.model.analysis.EntityException;
 import edu.practice.finalproject.model.analysis.Inspector;
 import edu.practice.finalproject.model.dataaccess.EntityManager;
 import edu.practice.finalproject.model.entity.domain.Car;
+import edu.practice.finalproject.utilities.Utils;
 
 public class AddCarAction extends AdminAction {
 	
@@ -29,8 +30,8 @@ public class AddCarAction extends AdminAction {
 			FCServlet.setAttribute(req, Names.NEW_CAR_ATTRIBUTE, Boolean.TRUE);
 			return true;
 		} catch(EntityException e) {
-			logger.error(CANT_CREATE_ENTITY_MSG, e);
-			FCServlet.setError(req, FCServlet.localize(CANT_CREATE_ENTITY_MSG));
+			logger.error(Utils.message(CANT_CREATE_ENTITY_MSG), e);
+			FCServlet.setError(req, CANT_CREATE_ENTITY_MSG);
 			return false;
 		}
 	}

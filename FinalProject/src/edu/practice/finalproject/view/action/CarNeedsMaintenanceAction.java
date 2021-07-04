@@ -17,6 +17,7 @@ import edu.practice.finalproject.model.entity.document.CarReview;
 import edu.practice.finalproject.model.entity.document.LeaseOrder;
 import edu.practice.finalproject.model.entity.document.CarReview.CarCondition;
 import edu.practice.finalproject.model.entity.userrole.Manager;
+import edu.practice.finalproject.utilities.Utils;
 
 public class CarNeedsMaintenanceAction extends ManagerAction {
 
@@ -43,8 +44,8 @@ public class CarNeedsMaintenanceAction extends ManagerAction {
 			FCServlet.setAttribute(req, Names.CAR_REVIEW_ATTRIBUTE, carReview);
 			return true;
 		} catch(EntityException | DataAccessException e) {
-			logger.error(CANT_SAVE_CAR_REVIEW_MSG, e);
-			FCServlet.setError(req, FCServlet.localize(CANT_SAVE_CAR_REVIEW_MSG));
+			logger.error(Utils.message(CANT_SAVE_CAR_REVIEW_MSG), e);
+			FCServlet.setError(req, CANT_SAVE_CAR_REVIEW_MSG);
 			return false;
 		}
 	}

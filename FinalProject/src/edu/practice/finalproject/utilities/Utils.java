@@ -9,6 +9,7 @@ import java.time.format.FormatStyle;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.ResourceBundle;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
@@ -28,6 +29,12 @@ import edu.practice.finalproject.model.entity.userrole.User;
  */
 public final class Utils {
 	
+	public static final String MESSAGES_BUNDLE = "resources.messages";
+	private static final String WRONG_USER_ROLE = "utils.map-user-to-class.wrong-user-role";
+	private static final String WRONG_USER_ROLE_VALUE_NULL = "utils.map-user-to-class.null-user-role";
+	private static final String WRONG_VALUE_OF_PARAMETER = "utils.check-if-valid.wrong-parameter-value";
+	private static final String PARAMETER_SHOULDNT_BE_NULL = "utils.check-if-valid.non-null-parameter";
+
 	private Utils() {}
 
 	public static final String SHA_256="SHA-256";
@@ -93,23 +100,23 @@ public final class Utils {
 	}
 
 	public static boolean checkIfValid(final HttpServletRequest req,final String parameter,final Predicate<String> checker) {
-		if(Objects.isNull(parameter)) throw new IllegalArgumentException("parameter "+parameter+" shouldn't be null");
+		if(Objects.isNull(parameter)) throw new IllegalArgumentException(Utils.format(PARAMETER_SHOULDNT_BE_NULL,parameter));
 		final String value=FCServlet.getParameterValue(req,parameter);
 		if(Objects.isNull(value)) return false;
 		if(!checker.test(value)) {
-			FCServlet.setError(req, String.format("wrong value %s of parameter %s", value, parameter));
+			FCServlet.setError(req, WRONG_VALUE_OF_PARAMETER, value, parameter);
 			return false;	
 		}
 		return true;
 	}
 
 	public static Class<? extends User> mapUserRoleToClass(final String name){
-		if(Objects.isNull(name)) throw new IllegalArgumentException("wrong user role value: null");
+		if(Objects.isNull(name)) throw new IllegalArgumentException(Utils.message(WRONG_USER_ROLE_VALUE_NULL));
 		switch(name) {
 			case Names.CLIENT_ROLE_PARAMETER: return Client.class;
 			case Names.MANAGER_ROLE_PARAMETER: return Manager.class;
 			case Names.ADMIN_ROLE_PARAMETER: return Admin.class;
-			default: throw new IllegalArgumentException("wrong user role");
+			default: throw new IllegalArgumentException(Utils.message(WRONG_USER_ROLE));
 		}
 	}
 
@@ -123,5 +130,13 @@ public final class Utils {
 	
 	public static String escapeQuote(final String str) {
 		return str.replace("'", "''");
+	}
+
+	public static String message(String key) {
+		return ResourceBundle.getBundle(MESSAGES_BUNDLE, Locale.getDefault()).getString(key); 
+	}
+	
+	public static String format(String key, Object... params) {
+		return String.format(message(key), params);
 	}
 }

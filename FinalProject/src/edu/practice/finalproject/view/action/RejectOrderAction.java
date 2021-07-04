@@ -17,6 +17,7 @@ import edu.practice.finalproject.model.entity.document.LeaseOrder;
 import edu.practice.finalproject.model.entity.document.OrderReview;
 import edu.practice.finalproject.model.entity.document.OrderReview.OrderStatus;
 import edu.practice.finalproject.model.entity.userrole.Manager;
+import edu.practice.finalproject.utilities.Utils;
 
 public class RejectOrderAction extends ManagerAction {
 
@@ -37,7 +38,7 @@ public class RejectOrderAction extends ManagerAction {
 		final String rejectionReason = FCServlet.getParameterValue(req, Names.REJECTION_REASON_PARAMETER);
 		
 		if(rejectionReason.trim().isEmpty()) {
-			FCServlet.setError(req, FCServlet.localize(EMPTY_REJECTION_REASON_MSG));
+			FCServlet.setError(req, EMPTY_REJECTION_REASON_MSG);
 			return false;
 		}
 
@@ -51,11 +52,11 @@ public class RejectOrderAction extends ManagerAction {
 			entityManager.persist(orderReview);
 
 			FCServlet.setAttribute(req, Names.ORDER_REVIEW_ATTRIBUTE, orderReview);
-			FCServlet.setMessage(req, FCServlet.localize(ORDER_REVIEW_SAVED_MSG));
+			FCServlet.setMessage(req, ORDER_REVIEW_SAVED_MSG);
 			return true;
 		} catch(EntityException | DataAccessException e) {
-			logger.error(CANT_SAVE_ORDER_REVIEW_MSG, e);
-			FCServlet.setError(req, FCServlet.localize(CANT_SAVE_ORDER_REVIEW_MSG));
+			logger.error(Utils.message(CANT_SAVE_ORDER_REVIEW_MSG), e);
+			FCServlet.setError(req, CANT_SAVE_ORDER_REVIEW_MSG);
 			return false;
 		}
 	}

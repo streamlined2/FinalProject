@@ -45,7 +45,7 @@ public class SaveCarAction extends AdminAction {
 	@Override
 	public boolean execute(HttpServletRequest req, EntityManager entityManager) {
 		if(!Utils.checkIfValid(req,Names.CAR_MODEL_PARAMETER,Utils::checkCarModel)) {
-			FCServlet.setError(req, FCServlet.localize(WRONG_CAR_MODEL_MSG));
+			FCServlet.setError(req, WRONG_CAR_MODEL_MSG);
 			return false;
 		}
 		final String model=FCServlet.getParameterValue(req,Names.CAR_MODEL_PARAMETER);		
@@ -53,28 +53,28 @@ public class SaveCarAction extends AdminAction {
 		final String manufacturer=FCServlet.getParameterValue(req,Names.MANUFACTURER_PARAMETER);		
 		final Optional<Manufacturer> manufacturerValue = Inspector.getByLabel(Manufacturer.class, manufacturer);
 		if(!manufacturerValue.isPresent()) {
-			FCServlet.setError(req, FCServlet.localize(WRONG_MANUFACTURER_MSG));
+			FCServlet.setError(req, WRONG_MANUFACTURER_MSG);
 			return false;
 		}
 		
 		final String qualityGrade=FCServlet.getParameterValue(req,Names.QUALITY_GRADE_PARAMETER);
 		final Optional<QualityGrade> qualityGradeValue = Inspector.getByLabel(QualityGrade.class, qualityGrade);
 		if(!qualityGradeValue.isPresent()) {
-			FCServlet.setError(req, FCServlet.localize(WRONG_QUALITY_GRADE_MSG));
+			FCServlet.setError(req, WRONG_QUALITY_GRADE_MSG);
 			return false;			
 		}
 
 		final String color=FCServlet.getParameterValue(req,Names.COLOR_PARAMETER);		
 		final Optional<Color> colorValue = Inspector.getByLabel(Color.class, color);
 		if(!colorValue.isPresent()) {
-			FCServlet.setError(req, FCServlet.localize(WRONG_COLOR_MSG));
+			FCServlet.setError(req, WRONG_COLOR_MSG);
 			return false;
 		}
 
 		final String style=FCServlet.getParameterValue(req,Names.STYLE_PARAMETER);
 		final Optional<Style> styleValue = Inspector.getByLabel(Style.class, style);
 		if(!styleValue.isPresent()) {
-			FCServlet.setError(req, FCServlet.localize(WRONG_STYLE_MSG));
+			FCServlet.setError(req, WRONG_STYLE_MSG);
 			return false;
 		}
 		
@@ -82,7 +82,7 @@ public class SaveCarAction extends AdminAction {
 			final String rentCost=FCServlet.getParameterValue(req,Names.CAR_RENT_COST_PARAMETER);
 			final BigDecimal costValue = new BigDecimal(rentCost);
 			if(costValue.compareTo(BigDecimal.ZERO)<=0) {
-				FCServlet.setError(req, FCServlet.localize(COST_SHOULD_BE_POSITIVE_MSG));
+				FCServlet.setError(req, COST_SHOULD_BE_POSITIVE_MSG);
 				return false;
 			}
 			
@@ -92,7 +92,7 @@ public class SaveCarAction extends AdminAction {
 			final LocalDate prodDateValue = LocalDate.parse(productionDate);
 			final LocalDate now = LocalDate.now();
 			if(createNew.booleanValue() && now.isBefore(prodDateValue)) {
-				FCServlet.setError(req, String.format(FCServlet.localize(WRONG_PRODUCTION_DATE_VALUE_MSG), prodDateValue, now));
+				FCServlet.setError(req, WRONG_PRODUCTION_DATE_VALUE_MSG, prodDateValue, now);
 				return false;
 			}
 			
@@ -112,19 +112,19 @@ public class SaveCarAction extends AdminAction {
 				success = entityManager.merge(car);
 			}
 			if(!success) {
-				FCServlet.setError(req, FCServlet.localize(CANT_SAVE_CAR_MSG));
+				FCServlet.setError(req, CANT_SAVE_CAR_MSG);
 				return false;
 			}
-			FCServlet.setMessage(req, FCServlet.localize(CAR_SAVED_MSG));
+			FCServlet.setMessage(req, CAR_SAVED_MSG);
 			return true;
 		} catch(NumberFormatException e) {
-			logger.error(WRONG_RENT_COST_MSG, e);
-			FCServlet.setError(req, FCServlet.localize(WRONG_RENT_COST_MSG));
+			logger.error(Utils.message(WRONG_RENT_COST_MSG), e);
+			FCServlet.setError(req, WRONG_RENT_COST_MSG);
 		} catch(DateTimeParseException e) {
-			logger.error(WRONG_PRODUCTION_DATE_FORMAT_MSG, e);
-			FCServlet.setError(req, FCServlet.localize(WRONG_PRODUCTION_DATE_FORMAT_MSG));
+			logger.error(Utils.message(WRONG_PRODUCTION_DATE_FORMAT_MSG), e);
+			FCServlet.setError(req, WRONG_PRODUCTION_DATE_FORMAT_MSG);
 		} catch(DataAccessException e) {
-			logger.error(CANT_SAVE_CAR_MSG, e);
+			logger.error(Utils.message(CANT_SAVE_CAR_MSG), e);
 			FCServlet.setError(req, CANT_SAVE_CAR_MSG);			
 		}
 		return false;
