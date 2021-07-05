@@ -4,7 +4,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import edu.practice.finalproject.controller.FCServlet;
 import edu.practice.finalproject.controller.Names;
 import edu.practice.finalproject.controller.transition.FormDispatcher;
 import edu.practice.finalproject.model.analysis.Inspector;
@@ -12,21 +11,18 @@ import edu.practice.finalproject.model.dataaccess.EntityManager;
 import edu.practice.finalproject.model.entity.domain.Car;
 import edu.practice.finalproject.view.action.Action;
 
-public class NewEditCarForm extends Form {
+public class NewEditCarForm extends ActionMapForm {
+	private static final Map<String,Action> ACTION_MAP = Map.of(
+			Names.CREATE_MODIFY_CAR_PARAMETER,FormDispatcher.SAVE_CAR_ACTION
+	);
 
 	public NewEditCarForm(String name) {
 		super(name);
 	}
 
 	@Override
-	public Action getDefaultAction() {
-		return FormDispatcher.BACK_ACTION;
-	}
-
-	@Override
-	public Action getAction(Map<String, String[]> parameters) {
-		if(FCServlet.isActionPresent(parameters,Names.CREATE_MODIFY_CAR_PARAMETER)) return FormDispatcher.SAVE_CAR_ACTION;
-		return super.getAction(parameters);
+	protected Map<String, Action> getActionMap() {
+		return ACTION_MAP;
 	}
 
 	@Override
@@ -38,5 +34,4 @@ public class NewEditCarForm extends Form {
 
 		req.setAttribute(Names.CAR_MODEL_PATTERN_ATTRIBUTE, Names.CAR_MODEL_PATTERN);
 	}
-
 }

@@ -13,21 +13,18 @@ import edu.practice.finalproject.model.dataaccess.EntityManager;
 import edu.practice.finalproject.model.entity.document.OrderReview;
 import edu.practice.finalproject.view.action.Action;
 
-public class NewLeaseInvoiceForm extends Form {
+public class NewLeaseInvoiceForm extends ActionMapForm {
+	private static final Map<String,Action> ACTION_MAP = Map.of(
+			Names.SEND_LEASE_INVOICE_PARAMETER,FormDispatcher.LEASE_INVOICE_SUBMISSION_ACTION
+	);
 
 	public NewLeaseInvoiceForm(String name) {
 		super(name);
 	}
 
 	@Override
-	public Action getAction(final Map<String,String[]> parameters) {
-		if(FCServlet.isActionPresent(parameters,Names.SEND_LEASE_INVOICE_PARAMETER)) return FormDispatcher.LEASE_INVOICE_SUBMISSION_ACTION;
-		return super.getAction(parameters);
-	}
-
-	@Override
-	public Action getDefaultAction() {
-		return FormDispatcher.BACK_ACTION;
+	protected Map<String, Action> getActionMap() {
+		return ACTION_MAP;
 	}
 
 	@Override
@@ -39,5 +36,4 @@ public class NewLeaseInvoiceForm extends Form {
 		req.setAttribute(Names.INVOICE_SUM_ATTRIBUTE, invoiceSum);
 		req.setAttribute(Names.ACCOUNT_PATTERN_ATTRIBUTE, Names.ACCOUNT_PATTERN);
 	}
-
 }

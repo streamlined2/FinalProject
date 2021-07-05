@@ -14,28 +14,25 @@ import edu.practice.finalproject.model.entity.userrole.User;
 import edu.practice.finalproject.view.action.Action;
 import edu.practice.finalproject.utilities.Utils;
 
-public class UserBlockingForm extends Form {
+public class UserBlockingForm extends ActionMapForm {
+	private static final Map<String,Action> ACTION_MAP = Map.of(
+			Names.SELECT_USER_PARAMETER,FormDispatcher.CHANGE_USER_ACTION,
+			Names.BLOCK_USER_PARAMETER,FormDispatcher.BLOCK_USER_ACTION,
+			Names.NEXT_PAGE_PARAMETER,FormDispatcher.NEXT_PAGE_ACTION,
+			Names.PREVIOUS_PAGE_PARAMETER,FormDispatcher.PREVIOUS_PAGE_ACTION,
+			Names.FIRST_PAGE_PARAMETER,FormDispatcher.FIRST_PAGE_ACTION,
+			Names.LAST_PAGE_PARAMETER,FormDispatcher.LAST_PAGE_ACTION
+	);
 	
 	public UserBlockingForm(String name) {
 		super(name);
 	}
 
 	@Override
-	public Action getAction(final Map<String,String[]> parameters) {
-		if(FCServlet.isActionPresent(parameters,Names.SELECT_USER_PARAMETER)) return FormDispatcher.CHANGE_USER_ACTION;
-		if(FCServlet.isActionPresent(parameters,Names.BLOCK_USER_PARAMETER)) return FormDispatcher.BLOCK_USER_ACTION;
-		if(FCServlet.isActionPresent(parameters,Names.NEXT_PAGE_PARAMETER)) return FormDispatcher.NEXT_PAGE_ACTION;
-		if(FCServlet.isActionPresent(parameters,Names.PREVIOUS_PAGE_PARAMETER)) return FormDispatcher.PREVIOUS_PAGE_ACTION;
-		if(FCServlet.isActionPresent(parameters,Names.FIRST_PAGE_PARAMETER)) return FormDispatcher.FIRST_PAGE_ACTION;
-		if(FCServlet.isActionPresent(parameters,Names.LAST_PAGE_PARAMETER)) return FormDispatcher.LAST_PAGE_ACTION;
-		return super.getAction(parameters);
+	protected Map<String, Action> getActionMap() {
+		return ACTION_MAP;
 	}
 
-	@Override
-	public Action getDefaultAction() {
-		return FormDispatcher.BACK_ACTION;
-	}
-	
 	private <U extends User> void updateUserList(HttpServletRequest req, EntityManager entityManager,final Long firstElement,final Long lastElement){
 		final String userType = (String)FCServlet.getAttribute(req, Names.SELECTED_ROLE_ATTRIBUTE, User.Role.CLIENT.getLabel());			
 		final Class<U> userClass = (Class<U>)Utils.mapUserRoleToClass(userType);

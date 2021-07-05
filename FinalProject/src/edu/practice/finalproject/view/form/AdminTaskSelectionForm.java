@@ -2,23 +2,25 @@ package edu.practice.finalproject.view.form;
 
 import java.util.Map;
 
-import edu.practice.finalproject.controller.FCServlet;
 import edu.practice.finalproject.controller.Names;
 import edu.practice.finalproject.controller.transition.FormDispatcher;
 import edu.practice.finalproject.view.action.Action;
 
-public class AdminTaskSelectionForm extends Form {
+public class AdminTaskSelectionForm extends ActionMapForm {
+
+	private static final Map<ParameterValue,Action> PARAMETER_MAP = Map.of(
+			new ParameterValue(Names.ADMIN_TASK_PARAMETER,Names.CAR_MANAGEMENT_PARAMETER),FormDispatcher.CAR_MANAGEMENT_ACTION,
+			new ParameterValue(Names.ADMIN_TASK_PARAMETER,Names.USER_BLOCKING_PARAMETER),FormDispatcher.USER_BLOCKING_ACTION,
+			new ParameterValue(Names.ADMIN_TASK_PARAMETER,Names.MANAGER_REGISTRATION_PARAMETER),FormDispatcher.REGISTER_ACTION
+	);
 
 	public AdminTaskSelectionForm(String name) {
 		super(name);
 	}
 
 	@Override
-	public Action getAction(final Map<String,String[]> parameters) {
-		if(FCServlet.ifParameterEquals(parameters,Names.ADMIN_TASK_PARAMETER,Names.CAR_MANAGEMENT_PARAMETER)) return FormDispatcher.CAR_MANAGEMENT_ACTION;
-		if(FCServlet.ifParameterEquals(parameters,Names.ADMIN_TASK_PARAMETER,Names.USER_BLOCKING_PARAMETER)) return FormDispatcher.USER_BLOCKING_ACTION;
-		if(FCServlet.ifParameterEquals(parameters,Names.ADMIN_TASK_PARAMETER,Names.MANAGER_REGISTRATION_PARAMETER)) return FormDispatcher.REGISTER_ACTION;
-		return super.getAction(parameters);
+	protected Map<ParameterValue, Action> getParameterValueMap() {
+		return PARAMETER_MAP;
 	}
 
 	@Override
